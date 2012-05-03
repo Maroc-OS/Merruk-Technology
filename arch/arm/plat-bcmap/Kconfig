@@ -1,0 +1,77 @@
+if PLAT_BCMAP
+
+choice
+	prompt "Broadcom Application Processor Family"
+	default ARCH_BCM116X
+
+config ARCH_BCM116X
+	select CPU_V6
+	select HAVE_CLK
+	select COMMON_CLKDEV
+        bool "Broadcom BCM116X Family"
+	help
+	  Support for Broadcom 116X based systems. This runs on the ARM11
+	  apps processor of the 116X and depends on a shared memory
+	  interface to the ARM9 modem processor which runs the baseband
+	  stack and controls some vital subsystems.
+
+config ARCH_BCM215XX
+	select CPU_V6
+	select HAVE_CLK
+	select COMMON_CLKDEV
+        bool "Broadcom BCM215XX Family"
+	help
+	  Support for Broadcom 215XX based systems. This runs on the ARM11
+	  apps processor of the 215XX and depends on a shared memory
+	  interface to the ARM11 modem processor which runs the baseband
+	  stack and controls some vital subsystems.
+
+endchoice
+
+if ARCH_BCM215XX
+menu "Broadcom CSL and CHAL support"
+config OSDAL_SUPPORT
+	bool "OSDAL Support"
+	default n
+	help
+	  The OSDAL support is enabled when CSL and CHAL is enabled in the build
+
+config ATHENA
+	bool "Athena specific support"
+	default n
+	help
+	 This enables Athena specific configurations in CSL and CHAL
+endmenu
+endif
+config BCM_PWM_CORE
+	bool "Broadcom PWM Core"
+	help
+	  Enable Broadcom PWM core layer. This option is required for PWM device
+	  drivers and backlight drivers.
+
+config BCM_CPU_FREQ
+	bool "CPU Frequency Scaling Driver for Broadcom Chips"
+	depends on CPU_FREQ
+	help
+	  Enable support for cpu frequency scaling in Broadcom chips. Presently
+	  this is tested only for 215xx.
+
+config BCM_AVS
+	bool "AVS (Advaptive Voltage Scaling) Driver for Broadcom Chips"
+	depends on BCM_OTP
+	help
+	  Enable support for AVS (Advaptive Voltage Scaling) Driver in Broadcom chips. Presently
+	  this is tested only for 215xx.
+endif
+
+config BCM_POWEROFF_CHARGING
+	bool "Enable power off charging feature"
+	default n
+	help
+	  Enable this feature to have poweroff charging via USB.
+
+config CSL_SYSMAP
+       bool "Enable SYSMAP driver"	
+       default y
+       help 
+       Enable SYSMAP driver for use with RTOS code		

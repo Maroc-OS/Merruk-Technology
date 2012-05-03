@@ -1,0 +1,178 @@
+menu "Broadcom BCM215XX Implementations"
+	depends on ARCH_BCM215XX
+
+comment "BCM215XX Core Type"
+
+choice
+	prompt "Silicon version selection in BCM21553 family of devices"
+	depends on ARCH_BCM215XX
+	default ARCH_BCM21553_A0
+
+config ARCH_BCM21553_A0
+	bool "BCM21553 A0 based system"
+
+config ARCH_BCM21553_B0
+	select ARCH_HAS_CPUFREQ
+	bool "BCM21553 B0 based system"
+
+config BCM21553_B0_V3D_HACK
+	depends on ARCH_BCM21553_B0 && BRCM_V3D
+	bool "Enable V3D Hack to avoid the APB slave registers getting stuck"
+
+config ARCH_BCM21553_B1
+	select ARCH_HAS_CPUFREQ
+	bool "BCM21553 B1 based system"
+
+endchoice
+
+comment "Define for Locale"
+
+choice
+	prompt "TARGET LOCALE"
+	default TARGET_LOCALE_NONE
+
+        config TARGET_LOCALE_NONE
+                bool "LOCALE NONE"
+        help
+                No Specific locale
+
+	config TARGET_LOCALE_AUS_TEL
+		bool "AUS TEL"
+	help
+		Support AUS TEL Board
+
+	config TARGET_LOCALE_EUR_O2
+		bool "EUR O2"
+	help
+		Support EUR O2 Board
+
+	config TARGET_LOCALE_EUR_TMO
+		bool "EUR TMO"
+	help
+		Support EUR TMO Board		
+		
+	config TARGET_LOCALE_EUR_VODA
+		bool "EUR VODA"
+	help
+		Support EUR VODA Board				
+endchoice
+
+comment "BCM21553 Board Type"
+
+choice
+       prompt "Board selection in BCM21553 family of devices"
+       depends on ARCH_BCM21553_A0 || ARCH_BCM21553_B0 || ARCH_BCM21553_B1
+       default BOARD_ATHENARAY
+
+config BOARD_ATHENARAY
+	bool "Broadcom BCM21553 AthenaRay EDN10 development board"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM21553 EDN10 AthenaRay.
+
+config BOARD_ATHENARAY_EDN20
+	bool "Broadcom BCM21553 AthenaRay EDN20 development board"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM21553 EDN20 AthenaRay.
+
+config BOARD_THUNDERBIRD
+	bool "Broadcom BCM21553 Thunderbird board"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 Thunderbird.
+
+config BOARD_THUNDERBIRD_EDN31
+	bool "Broadcom BCM21553 Thunderbird EDN31 board"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 Thunderbird EDN31.
+
+config BOARD_THUNDERBIRD_EDN5x
+	bool "Broadcom BCM21553 Thunderbird EDN5x boards"
+	help
+	  Configure this option to specify whether the board used
+	  for development is a BCM21553 Thunderbird EDN5x.
+
+config BOARD_TOTORO
+	bool "Samsung BCM2155x Totoro board"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 Totoro board.
+
+config BOARD_LUISA
+	bool "Samsung BCM2155x LUISA board"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 Luisa board.
+
+config BOARD_TASSVE
+	bool "Samsung BCM2155x TASSVE board"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 TassVE board.
+
+config BOARD_COOPERVE
+	bool "Samsung BCM2155x COOPERVE board"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 TassVE board.
+	    	    
+endchoice
+
+config SDRAM_BASE_ADDR
+hex "SDRAM Base address"
+depends on ARCH_BCM215XX
+
+config MM_MEMPOOL_BASE_ADDR
+hex "Base address for multimedia memory"
+default 0
+depends on GE_WRAP
+depends on ARCH_BCM215XX
+
+config BCM21553_L2_EVCT
+        default y
+        depends on ARCH_BCM215XX && CACHE_L2X0
+        bool "Enable L2 eviction workaround"
+
+config BCM215XX_PM
+        bool "Enable Platform power management for BCM215XX platform"
+        depends on PM && ARCH_BCM215XX
+        help
+          Say Yes here to enable platform power management for BCM215XX platform
+
+config ARM1136JFS_CP15_DEBUG
+	bool "Enable code to debug ARM1136JF-S CP15 state save-restore"
+	depends on CPU_V6
+	help
+	  Say Yes here to enable code to debug the CP15 register save-restore
+	  during the dormant mode entry-exit sequence.
+
+config CPU_FREQ_GOV_BCM21553
+	tristate "'BCM21553' governor for BCM21553 frequency scaling"
+	depends on CPU_FREQ
+	help
+	  Enable this cpufreq governor for BCM21553 chipset.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cpufreq_bcm21553.
+
+config BCM21553_CPU_IDLE_DRV
+	bool "Enable CPUIDLE driver for BCM21553"
+	depends on PM && ARCH_BCM215XX && CPU_IDLE
+	help
+	  Say Yes here to enable the cpu idle driver for BCM21553. This driver
+	  enables the CPU to be moved to dormant state during system idle to
+	  enable more power savings.
+
+config BCM21553_V3D_SYNC_ENABLE
+	depends on BRCM_V3D
+    bool "Enable synchronization for V3D"
+    default N
+
+config HEADSET_DET_GPIO
+	bool "Samsung BCM2155x LUISA 0_2 board Headset"
+
+
+
+endmenu

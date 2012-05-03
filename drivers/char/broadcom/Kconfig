@@ -1,0 +1,75 @@
+#
+# Miscellaneous Broadcom device configuration
+#
+
+menu "Broadcom Miscellaneous Devices"
+
+config BCM_AUXADC
+	tristate "Aux ADC Driver"
+	depends on ARCH_BCM215XX || ARCH_BCM116X
+	default y
+	---help---
+	Aux ADC Driver driver for BCM215XX
+
+config BCM59038_SARADC
+        tristate "BCM59038 ADC driver"
+        depends on MFD_BCM59038
+        ---help---
+        Y to get the support of BCM59038 SAR ADC device
+
+config BCM59038_AUDIO
+	tristate "BCM59038 Audio Interface Driver"
+	depends on MFD_BCM59038
+	---help---
+	Y to get the support of BCM59038 Audio device
+
+config BCM_LCD_BACKLIGHT
+	bool "BCM LCD Backlight"
+	default n
+	---help---
+	Y for backlight support on bcm boards
+
+config BCM_GPIO_VIBRATOR
+    bool "Support vibrator support using timed GPIO"
+    depends on ANDROID_TIMED_GPIO
+    default n
+    ---help---
+    This driver provides vibrator support using timed gpio
+
+config BCM_PWM
+      tristate "PWM Driver"
+      depends on ARCH_BCM215XX || ARCH_BCM2157
+      select HAVE_PWM
+      default y
+      ---help---
+      PWM driver for BCM215XX/BCM2157
+
+config BCM_GPIO_VIBRATOR
+    bool "Support vibrator support using timed GPIO"
+    depends on ANDROID_TIMED_GPIO
+    default n
+    ---help---
+    This driver provides vibrator support using timed gpio
+
+config BCM_I2SDAI
+     tristate "I2S Driver"
+     depends on ARCH_BCM116X || ARCH_BCM215XX
+     default y
+     ---help---
+     I2SDAI driver for BCM2153
+
+config I2S_TEST_ENABLE
+	bool "I2s Test"
+	depends on BCM_I2SDAI
+	default n
+	---help---
+	Very Minimal Bare bones test code for checking I2S loopback. Use for debugging only!
+
+config BCM_OTP
+    tristate "OTP Driver"
+    depends on ARCH_BCM116X || ARCH_BCM215XX
+    default n
+    ---help---
+    This driver provides access to the One-Time Programmable (OTP) memory.
+
+endmenu

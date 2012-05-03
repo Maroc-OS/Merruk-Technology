@@ -1,0 +1,5 @@
+config HANTRO_WRAP
+	tristate "Wrapper for Hantro Memory Allocater"
+	default N
+	---help---
+		Hantro device driver support

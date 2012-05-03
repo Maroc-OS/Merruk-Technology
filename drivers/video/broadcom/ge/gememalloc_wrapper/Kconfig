@@ -1,0 +1,5 @@
+config GE_WRAP
+	tristate "Wrapper for GE Memory Allocater"
+	default N
+	---help---
+		GE device driver support

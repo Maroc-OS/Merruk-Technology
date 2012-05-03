@@ -1,0 +1,22 @@
+menuconfig BCM_DSS
+        bool "Broadcom Display Subsystem support (EXPERIMENTAL)"
+	default N
+        help
+          Broadcom Display Subsystem support.
+
+if BCM_DSS
+
+config BCM215XX_DSS
+        bool "BCM215XX Display Subsystem support (EXPERIMENTAL)"
+        depends on ARCH_BCM215XX
+	default y
+        help
+          BCM215XX Display Subsystem support.
+
+config LCD_FRAME_INVERSION_DURING_CALL
+        bool "BCM215XX LCD frame inversion during call"
+	default N
+        help
+          BCM215XX LCD frame inversion during call.
+          
+endif
