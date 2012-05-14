@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Start fresh
+make clean
+
+# Fetch AOSP kernel and prebuilt source
+echo "Fetching kernel ..."
+git clone -q git://android.git.kernel.org/kernel/msm ../kernel/msm
+echo "Fetching prebuilt toolchain binaries ..."
+git clone -q git://android.git.kernel.org/platform/prebuilt ../prebuilt
+
+# We use FRF91 (Froyo android-2.2_r1.1) kernel configuration
+echo "Configuring kernel ..."
+gunzip config.gz; mv config ../kernel/msm/.config
+cd ../kernel/msm; git checkout -q 3c98b0d; cd - &> /dev/null
+
+# Build the kernel
+echo "Building kernel ..."
+cd ../kernel/msm; make ARCH=arm CROSS_COMPILE=../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-; cd - &> /dev/null
+
+# Build Broadcom bthid driver
+echo "Building bthid driver ..."
+make
+echo "Building bthid driver done"; echo

@@ -1,0 +1,89 @@
+config BRCM_HAL_CAM
+	bool "Broadcom Camera HAL Driver"
+	depends on I2C
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default Y
+	---help---
+	  Broadcom Camera HAL Driver
+
+
+config BRCM_HAL_CAM_WITH_STILL_YUV
+	bool "Broadcom Camera HAL Driver for still YUV sensor "
+	depends on I2C
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default Y
+	---help---
+	  Broadcom Camera HAL Driver for still YUV sensor
+
+config BCM_CAM_MT9T111
+	bool "Camera MT9T111"
+	depends on BRCM_HAL_CAM
+	default N
+	---help---
+	Camera driver for MT9T111
+
+config BCM_CAM_STV0986
+	bool "Camera STV0986"
+	depends on BRCM_HAL_CAM
+	depends on BOARD_EXPLORER || ARCH_BCM2153
+	default N
+	---help---
+	Camera driver for STV0986
+
+config BCM_CAM_STV0987
+        bool "Camera STV0987"
+        depends on BRCM_HAL_CAM
+        depends on ARCH_BCM21553_B0
+        default N
+        ---help---
+        Camera driver for STV0987
+
+config BCM_CAM_SR200PC10
+        bool "Camera SR200PC10"
+        depends on BRCM_HAL_CAM
+        default Y
+        ---help---
+        Camera driver for SR200PC10
+
+config BCM_CAM_ISX005
+        bool "Camera ISX005"
+        depends on BRCM_HAL_CAM
+        default Y
+        ---help---
+        Camera driver for ISX005
+
+config BCM_CAM_S5K5CCGX
+        bool "Camera S5K5CCGX"
+        depends on BRCM_HAL_CAM
+        default Y
+        ---help---
+        Camera driver for S5K5CCGX
+
+config BCM_CAM_S5K4ECGX
+        bool "Camera S5K4ECGX"
+        depends on BRCM_HAL_CAM
+        default Y
+        ---help---
+        Camera driver for S5K4ECGX
+
+config CAM_CSI2
+	bool "CSI2 interface for STV0987"
+	depends on BCM_CAM_STV0987
+	default N
+        ---help---
+        Camera host interface CSI2 for STV0987
+
+config CAM_CPI
+	bool "CPI interface for SR200PC10"
+	depends on (BCM_CAM_STV0987 && !CAM_CSI2)||BCM_CAM_SR200PC10||BCM_CAM_ISX005||BCM_CAM_S5K5CCGX||BCM_CAM_S5K4ECGX
+        default Y
+        ---help---
+        Camera host interface CPI for SR200PC10
+
+config BCM_CAM_OV2655
+	bool "Camera OV2655"
+	depends on BRCM_HAL_CAM_WITH_STILL_YUV
+	default N
+	---help---
+	Camera driver for OV2655
+

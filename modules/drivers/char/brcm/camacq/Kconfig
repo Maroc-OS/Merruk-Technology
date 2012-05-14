@@ -1,0 +1,8 @@
+config VIDEO_CAMACQ
+	tristate "Camacq sensor support"
+	depends on I2C
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default y
+	---help---
+	  This is I2c and a Video4Linux2 sensor-level driver for the camacq.
+	  

@@ -1,0 +1,28 @@
+cd common
+
+#make clean
+
+make bcm21553_totoro_05_defconfig
+
+#nice -n 10 make CONFIG_DEBUG_SECTION_MISMATCH=y -j8 zImage > ../kernel_log.$$ 2>&1
+
+#nice -n 10 make -j2 modules > ../modules_log.$$ 2>&1
+
+make CONFIG_DEBUG_SECTION_MISMATCH=y -j3 > ../kernel_log.$$ 2>&1
+
+#make
+
+cd ..
+
+find . -name '*.ko' -exec cp -v {} ./MerrukTechnology_Output/system/lib/modules \;
+
+cp common/arch/arm/boot/zImage ./MerrukTechnology_Output/
+
+if [ -f common/arch/arm/boot/zImage ]; then
+      echo "Plague has been compiled!!! You can find it in /arch/arm/boot/zImage"
+else
+      echo "Kernel did not compile, please check for errors!!"
+fi
+
+cd ..
+

@@ -1,0 +1,1 @@
+cmd_../modules/../modules/drivers/sound/brcm/alsa_athena/built-in.o :=  /root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-ld -EL    -r -o ../modules/../modules/drivers/sound/brcm/alsa_athena/built-in.o ../modules/../modules/drivers/sound/brcm/alsa_athena/snd-brcm-omx.o ; scripts/mod/modpost ../modules/../modules/drivers/sound/brcm/alsa_athena/built-in.o

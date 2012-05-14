@@ -1,0 +1,455 @@
+#!/system/bin/sh -x
+
+FILESIZE=$(/sbin/busybox cat /data/local/Kernel-Ver | /sbin/busybox wc -c)
+USERNAME=$(/sbin/busybox whoami)
+SIGNATURE="Merruk Technology, SARL."
+
+exec > /data/local/Ker_userscript.log 2>&1
+
+/sbin/busybox chown 0.1000 /system/bin/sh
+/system/bin/toolbox chown root.system /system/bin/sh
+
+# Remove Kernel file if it is big
+if /sbin/busybox test "$FILESIZE" -ge "10000"; then
+	/sbin/busybox rm /data/local/Kernel-Ver
+fi
+/sbin/busybox sync
+
+# Start Logging
+echo "  " >> /data/local/Kernel-Ver
+echo " Starting Merruk Logger Script - ( AT ) - " $(/sbin/busybox date) >> /data/local/Kernel-Ver
+echo " - " >> /data/local/Kernel-Ver
+echo " - " >> /data/local/Kernel-Ver
+echo " " $(/sbin/busybox uname -a) >> /data/local/Kernel-Ver
+echo "  Username : " $USERNAME >> /data/local/Kernel-Ver
+echo " - " >> /data/local/Kernel-Ver
+echo " - " >> /data/local/Kernel-Ver
+
+############# Start the important things #############
+
+# UnlockBML & Remount Read/Write
+echo "	Unlock BML Blocks " >> /data/local/Kernel-Ver
+/sbin/bmlunlock
+
+echo "	Mount /System as R/W " >> /data/local/Kernel-Ver
+/sbin/busybox mount -o remount,rw -t ext4 /dev/block/stl9 /system
+/sbin/busybox mount -o remount,rw -t ext4 / /
+
+# Create Needed Directories
+###########################
+
+# Fix /etc Folder link to /system/etc
+if /sbin/busybox test -d /etc ; then
+	echo "	Symlink /etc to /system/etc " >> /data/local/Kernel-Ver
+	/sbin/busybox rm -Rf /etc
+	/sbin/busybox ln -s /system/etc /etc
+fi
+/sbin/busybox sync
+
+# Add /devices Link for /sys/devices to fix a bug
+if /sbin/busybox test -f /devices ; then
+	echo "Add Symlink to /sys/devices" >> /data/local/Kernel-Ver
+	/sbin/busybox rm -R /devices
+	/sbin/busybox ln -s /sys/devices /devices
+fi
+/sbin/busybox sync
+
+# Create sd-ext & external_sd folders
+if /sbin/busybox test ! -d /sd-ext ; then
+	echo "	Create /sd-ext Folder " >> /data/local/Kernel-Ver
+	/sbin/busybox mkdir -p /sd-ext
+fi
+/sbin/busybox sync
+
+if /sbin/busybox test ! -d /sdcard/external_sd ; then
+	echo "	Create /sdcard/external_sd Folder " >> /data/local/Kernel-Ver
+	/sbin/busybox mkdir -p /sdcard/external_sd
+fi
+/sbin/busybox sync
+
+# Create Needed CIFS/SMB Mount Share Filesystem
+if /sbin/busybox test ! -d /swap ; then
+	echo "	Create the /smb Directory " >> /data/local/Kernel-Ver
+	/sbin/busybox mkdir -p /smb
+	echo "	Create the /smb/public Directory " >> /data/local/Kernel-Ver
+	/sbin/busybox mkdir -p /smb/public
+fi
+/sbin/busybox sync
+
+# Create init.d Filder Scripts & Fix permissions
+echo "	Create /system/etc/init.d Folder " >> /data/local/Kernel-Ver
+if /sbin/busybox test ! -d /system/etc/init.d ; then
+	/sbin/busybox mkdir -p /system/etc/init.d
+	echo "		* Fix init.d Scripts Permissions -Folder/Permissions Done!- " >> /data/local/Kernel-Ver
+	/sbin/busybox chmod 0777 /system/etc/init.d
+	/sbin/busybox cp /lib/scripts/* /system/etc/init.d/
+	/sbin/busybox chmod 0777 /system/etc/init.d/*
+else
+	echo "		* Fix init.d Scripts Permissions -Permissions Done!- " >> /data/local/Kernel-Ver
+	/sbin/busybox chmod 0777 /system/etc/init.d
+	/sbin/busybox cp /lib/scripts/* /system/etc/init.d/
+	/sbin/busybox chmod 0777 /system/etc/init.d/*
+fi
+/sbin/busybox sync
+
+# Fix permissions in /sbin
+echo "	Fix Permissions on /sbin " >> /data/local/Kernel-Ver
+/sbin/busybox chmod 755 /sbin/*
+echo "		* Set a Special Permissions for Busybox & Su " >> /data/local/Kernel-Ver
+/sbin/busybox chmod 06755 /sbin/busybox
+/system/bin/toolbox chown root.root /sbin/su
+/sbin/busybox chmod 06755 /sbin/su
+
+# Fix fstabe files
+if /sbin/busybox test -f /etc/recovery.fstab ; then
+	echo "	Replace Recovery 'fstab' File -Status 1- " >> /data/local/Kernel-Ver
+	/sbin/busybox rm /etc/recovery.fstab
+	/sbin/busybox cp /sbin/recovery.fstab /etc/recovery.fstab
+else
+	echo "	Replace Recovery 'fstab' File -Status 2- " >> /data/local/Kernel-Ver
+	/sbin/busybox cp /sbin/recovery.fstab /etc/recovery.fstab
+fi
+/sbin/busybox sync
+
+# Fix ext4 Partitions
+if /sbin/busybox test -f /etc/fstab ; then
+	echo "	Replace System 'fstab' File -Status 1- " >> /data/local/Kernel-Ver
+	/sbin/busybox rm /etc/fstab
+	/sbin/busybox cp /sbin/fstab /etc/fstab
+else
+	echo "	Replace System 'fstab' File -Status 2- " >> /data/local/Kernel-Ver
+	/sbin/busybox cp /sbin/fstab /etc/fstab
+fi
+/sbin/busybox sync
+
+# Good Tools For enjoing the system
+if /sbin/busybox test -f /etc/sysctl.conf ; then
+	echo "	Add SysCtl Config File -Status 1- " >> /data/local/Kernel-Ver
+	/sbin/busybox rm /etc/sysctl.conf
+	/sbin/busybox cp /sbin/sysctl.conf /etc/sysctl.conf
+else
+	echo "	Add SysCtl Config File -Status 2- " >> /data/local/Kernel-Ver
+	/sbin/busybox cp /sbin/sysctl.conf /etc/sysctl.conf
+fi
+/sbin/busybox sync
+
+if /sbin/busybox test -f /etc/mke2fs.conf ; then
+	echo "	Add Mke2fs Config File -Status 1- " >> /data/local/Kernel-Ver
+	/sbin/busybox rm /etc/mke2fs.conf
+	/sbin/busybox cp /sbin/mke2fs.conf /etc/mke2fs.conf
+else
+	echo "	Add Mke2fs Config File -Status 2- " >> /data/local/Kernel-Ver
+	/sbin/busybox cp /sbin/mke2fs.conf /etc/mke2fs.conf
+fi
+/sbin/busybox sync
+
+#######################################################
+
+#Fix sh file/dalvik-cach in some CM7 Versions
+/sbin/busybox ln -s /sbin/busybox /system/bin/sh
+if /sbin/busybox test ! -f /system/bin/sh0 ; then
+	echo " Rename /system/bin/sh " >> /data/local/Kernel-Ver 
+	/sbin/busybox cp /system/bin/sh /system/bin/sh0
+	#/sbin/busybox ln -s /sbin/busybox /system/bin/sh
+	echo " Fix /data/dalvik-cache " >> /data/local/Kernel-Ver 
+	/sbin/busybox ln -s /data/dalvik-cache /cache/dalvik-cache
+fi
+/sbin/busybox sync
+
+# Install New BusyBox Version
+echo "	Install New BusyBox Version " >> /data/local/Kernel-Ver
+/sbin/busybox --install -s /sbin/
+ln -s /sbin/recovery /sbin/busybox
+
+#####################################################################
+# system now works with busybox commands                            #
+# without full path to busybox file.                                #
+# Ex : command [option] insted of /sbin/busybox command [option]    #
+#####################################################################
+
+#if test -f /system/bin/busybox ; then
+#	echo "		* Link BusyBox to /system/bin -Status 1- " >> /data/local/Kernel-Ver
+#	rm /system/bin/busybox
+#	ln -s /sbin/busybox /system/bin/busybox
+#else
+#	echo "		* Link BusyBox to /system/bin -Status 2- " >> /data/local/Kernel-Ver
+#	ln -s /sbin/busybox /system/bin/busybox
+#fi
+#sync
+
+if test -f /system/xbin/busybox ; then
+	echo "		* Link BusyBox to /system/xbin -Status 1- " >> /data/local/Kernel-Ver 
+	rm /system/xbin/busybox
+	ln -s /sbin/busybox /system/xbin/busybox
+else
+	echo "		* Link BusyBox to /system/xbin -Status 2- " >> /data/local/Kernel-Ver 
+	ln -s /sbin/busybox /system/xbin/busybox
+fi
+sync
+
+#echo "	 - Run BusyBox Symlink Script " >> /data/local/Kernel-Ver
+#chmod 777 /symlink.sh
+#sh /symlink.sh
+
+# Fix Screwy Ownerships Problems to root.system
+echo "	Fix Screwy Ownerships Problems : " >> /data/local/Kernel-Ver
+for merruktechnology in default.prop init init.goldfish.rc init.rc init.charge.rc init.bcm21553.rc ueventd.rc recovery.rc fota.rc lib res sbin
+do
+	echo "		* Fix - " $merruktechnology >> /data/local/Kernel-Ver
+	/system/bin/toolbox chown root.system /$merruktechnology
+	/system/bin/toolbox chown root.system /$merruktechnology/*
+done
+
+/system/bin/toolbox chown root.system /lib/modules/*
+/system/bin/toolbox chown root.system /system/lib/modules/*
+/system/bin/toolbox chown root.system /res/*
+/system/bin/toolbox chown root.system /res/images/*
+chmod 0644 /system/build.prop
+/system/bin/toolbox chown root.root /system/build.prop
+chmod 0755 /etc/dbus.conf
+
+# Provide support for a shell script to protect root access
+if test ! -f /system/app/Superuser.apk ; then
+	echo "	Install New Superuser.apk Version -Done!- " >> /data/local/Kernel-Ver
+	cp /sbin/Superuser.apk /system/app/Superuser.apk
+	chmod 755 /system/app/Superuser.apk
+	rm /sbin/Superuser.apk
+else
+	echo "	Install New Superuser.apk Version -Already Exist- " >> /data/local/Kernel-Ver
+	chmod 755 /system/app/Superuser.apk
+	rm /sbin/Superuser.apk
+fi
+sync
+
+# Setup tmpfs for Su & Install/Fix Permissions for New Su
+echo "	Install 32k tmpfs for Su " >> /data/local/Kernel-Ver
+mkdir /merruk
+mount -o size=32k -t tmpfs tmpfs /merruk
+
+echo "	Install New Su Binary Version " >> /data/local/Kernel-Ver
+chmod 0777 /sbin/su
+cat /sbin/su > /merruk/su
+chmod 06755 /merruk/su
+
+# Establish root in common system directories for 3rd party applications & fix permissions
+echo "	Establish Root in Common System Directories " >> /data/local/Kernel-Ver
+if test -f /system/bin/su ; then
+	rm /system/bin/su
+	ln -s /merruk/su /system/bin/su
+	chmod 06755 /system/bin/su
+	echo "		* Fixed /system/bin/su -Status 1- " >> /data/local/Kernel-Ver
+else
+	ln -s /merruk/su /system/bin/su
+	chmod 06755 /system/bin/su
+	echo "		* Fixed /system/bin/su -Status 2- " >> /data/local/Kernel-Ver
+fi
+sync
+
+if test -f /system/xbin/su ; then
+	rm /system/xbin/su
+	ln -s /merruk/su /system/xbin/su
+	chmod 06755 /system/xbin/su
+	echo "		* Fixed /system/xbin/su -Status 1- " >> /data/local/Kernel-Ver
+else
+	echo "		* Fixed /system/xbin/su -Status 2- " >> /data/local/Kernel-Ver
+	ln -s /merruk/su /system/xbin/su
+	chmod 06755 /system/xbin/su
+fi
+sync
+
+if test -f /system/bin/jk-su ; then
+	rm /system/bin/jk-su
+	ln -s /merruk/su /system/bin/jk-su
+	chmod 06755 /system/bin/jk-su
+	echo "		* Fixed /system/bin/jk-su -Status 1- " >> /data/local/Kernel-Ver
+else
+	echo "		* Fixed /system/bin/jk-su -Status 2- " >> /data/local/Kernel-Ver
+	ln -s /merruk/su /system/bin/jk-su
+	chmod 06755 /system/bin/jk-su
+fi
+sync
+
+# Remove Su from the problematic locations
+if test -f /bin/su ; then
+	echo "	Remove Su From Problematic Locations -Status 1- " >> /data/local/Kernel-Ver
+	rm /bin/su
+	rm /sbin/su
+else
+	echo "	Remove Su From Problematic Locations -Status 2- " >> /data/local/Kernel-Ver
+	rm /sbin/su
+fi
+sync
+
+# Fix BusyBox DNS while system is read-write
+if test ! -f /system/etc/resolv.conf ; then
+	echo "	Fix BusyBox DNS While System is Read/Write " >> /data/local/Kernel-Ver
+	echo "nameserver 8.8.8.8" >> /system/etc/resolv.conf
+	echo "nameserver 8.8.8.4" >> /system/etc/resolv.conf
+fi
+sync
+
+# Patch to prevent certain malware apps
+if test -f /system/bin/profile ; then
+	echo "	Install a Patch to Prevent Certin Malware Apps " >> /data/local/Kernel-Ver
+	rm /system/bin/profile
+	touch /system/bin/profile
+	chmod 644 /system/bin/profile
+fi
+sync
+
+# Setup proper passwd and group files for 3rd party root access
+echo "	Setup Proper passwd & group files for 3rd party root access " >> /data/local/Kernel-Ver
+if test ! -f /system/etc/passwd ; then
+	echo "		* passwd Done! " >> /data/local/Kernel-Ver
+	echo "root::0:0:root:/data/local:/system/bin/sh" > /system/etc/passwd
+	chmod 0666 /system/etc/passwd
+fi
+sync
+
+if test ! -f /system/etc/group ; then
+	echo "		* group Done! " >> /data/local/Kernel-Ver
+	echo "root::0:" > /system/etc/group
+	chmod 0666 /system/etc/group
+fi
+sync
+
+# Force Mount SD-Card
+echo "	Force Mount the SD-Card " >> /data/local/Kernel-Ver
+mount -t vfat -o rw,nosuid,nodev,noexec,uid=1000,gid=1015,fmask=0002,dmask=0002,allow_utime=0020,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro /dev/block/mmcblk0p1 /sdcard
+
+# Install Kernel Modules
+if test -d /sdcard/system/lib/modules ; then
+	echo "	Install Kernel Modules " >> /data/local/Kernel-Ver
+	cp -R /sdcard/system/lib/modules/* /system/lib/modules/
+	echo "	Remove Kernel Modules From SD-Card " >> /data/local/Kernel-Ver
+	rm -Rf /sdcard/system
+	/system/bin/toolbox chown root.system /system/lib/modules/*
+fi
+sync
+
+# Install init.d Scripts from the SD-Card
+if test -d /sdcard/scripts ; then
+	echo "	Install init.d Scripts from SD-Card " >> /data/local/Kernel-Ver
+	cp -R /sdcard/scripts/* /system/etc/init.d/
+	chmod 777 /system/etc/init.d/*
+else
+	echo "	Create /sdcard/scripts Folder " >> /data/local/Kernel-Ver
+	mkdir -p /sdcard/scripts
+fi
+sync
+
+# Unmount /sdcard so the app's are here again :)
+echo "	Un-Mount /SdCard to fix the Apps Problem... " >> /data/local/Kernel-Ver
+umount /sdcard
+sync
+
+# Replace The Original WIFI Driver
+if test -f /system/lib/modules/bcm4330.ko ; then
+	echo "	Replace The Original WIFI Driver " >> /data/local/Kernel-Ver
+	mv /system/lib/modules/dhd.ko /system/lib/modules/dhd_old.ko
+	mv /system/lib/modules/bcm4330.ko /system/lib/modules/dhd.ko
+fi
+sync
+
+# Replace The Original Headset Driver
+if test -f /system/lib/modules/brcm-headsetsw.ko ; then
+	echo "	Replace The Original Headset Driver " >> /data/local/Kernel-Ver
+	mv /system/lib/modules/bcm_headsetsw.ko /system/lib/modules/bcm_headsetsw_old.ko
+	mv /system/lib/modules/brcm-headsetsw.ko /system/lib/modules/bcm_headsetsw.ko
+fi
+sync
+
+# Load Modules
+echo "	load The Needed Modules... " >> /data/local/Kernel-Ver
+insmod /system/lib/modules/usbcore.ko
+sleep 1
+insmod /system/lib/modules/usbhid.ko
+sleep 1
+insmod /system/lib/modules/scsi_mod.ko
+sleep 1
+insmod /system/lib/modules/scsi_wait_scan.ko
+sleep 1
+insmod /system/lib/modules/libata.ko
+sleep 1
+insmod /system/lib/modules/tun.ko
+sleep 1
+insmod /system/lib/modules/ipip.ko
+sleep 1
+insmod /system/lib/modules/tpm.ko
+sleep 1
+insmod /system/lib/modules/raw.ko
+sleep 1
+insmod /system/lib/modules/ssb.ko
+sleep 1
+insmod /system/lib/modules/nls_utf8.ko
+sleep 1
+insmod /system/lib/modules/cifs.ko
+sleep 1
+insmod /system/lib/modules/ns558.ko
+sleep 1
+insmod /system/lib/modules/lightning.ko
+sleep 1
+insmod /system/lib/modules/vibrator.ko
+sleep 1
+insmod /system/lib/modules/gameport.ko
+sleep 1
+
+# Hack BootLogo
+#echo "	Mount LFS File System " >> /data/local/Kernel-Ver
+#/sbin/su -c "mount -o remount,rw /dev/block/stl6 /mnt/.lfs"
+#if test ! -f /mnt/.lfs/logo.jpg ; then
+#	echo "	This is The Trick You like :) Enjoy " >> /data/local/Kernel-Ver
+#	/sbin/su -c "mv /res/logo.jpg /mnt/.lfs/logo.jpg"
+#fi
+#sync
+
+# Small logcat fixes :)
+if test ! -f /system/csc/feature.xml ; then
+	echo "	Small Fix in logcat -CSC-" >> /data/local/Kernel-Ver
+	touch /system/csc/feature.xml
+	echo "" >> /system/csc/feature.xml
+fi
+sync
+
+if test ! -f /system/lib/egl/libGLES_hgl_server.so ; then
+	echo "	Small Fix in logcat -GLES-" >> /data/local/Kernel-Ver
+	cp -r /system/lib/egl/libGLES_hgl.so /system/lib/egl/libGLES_hgl_server.so
+fi
+sync
+
+# Add UMS File Link to fix a bug USB_STORAGE_MOUNT
+#mkdir /device/platform
+#mkdir /device/platform/usb_mass_storage
+#mkdir /device/platform/usb_mass_storage/lun0
+#ln -s /devices/lm-2/gadget/lun0 devices/platform/usb_mass_storage/lun0
+
+# Enable init.d support
+if test -d /system/etc/init.d ; then
+	echo "	Run Init.d Scripts " >> /data/local/Kernel-Ver
+	/system/bin/logwrapper /sbin/busybox run-parts /system/etc/init.d
+fi
+sync
+
+# Debbug things
+rm -R /data/local/mount.log
+mount > /data/local/mount.log
+rm -R /data/local/system_files.log
+ls -arls /system/bin/ > /data/local/system_files.log
+rm /data/local/logcat.log
+/system/bin/logcat > /data/local/logcat.log
+
+# Remount /System read only and continue
+echo "	Re-Mount /System as R/O & Continue Booting... " >> /data/local/Kernel-Ver
+mount -o remount,rw -t ext4 /dev/block/stl9 /system
+mount -o remount,rw -t ext4 / /
+mount -a
+sync
+
+# Stop Logging
+echo " - " >> /data/local/Kernel-Ver
+echo " - " >> /data/local/Kernel-Ver
+echo " End of Merruk Logger Script - ( AT ) - " $(date) >> /data/local/Kernel-Ver
+echo " " >> /data/local/Kernel-Ver
+echo " --------------------------------------------------------------------" >> /data/local/Kernel-Ver
+echo "		MerrukTechnology Kernel By Maroc-OS @ XDA-Devolopers		" >> /data/local/Kernel-Ver
+echo " --------------------------------------------------------------------" >> /data/local/Kernel-Ver

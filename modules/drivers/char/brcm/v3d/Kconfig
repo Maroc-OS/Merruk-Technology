@@ -1,0 +1,13 @@
+# V3D
+config BRCM_V3D
+	tristate "Broadcom OpenGL engine support"
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default N
+	config BRCM_V3D_OPT
+		bool "Broadcom V3D Graphics Engine Optimized driver"
+		depends on BRCM_V3D && BMEM
+		default N
+		help
+		  Broadcom V3D Graphics Engine Optimized driver
+	help
+	  Broadcom OpenGL engine support

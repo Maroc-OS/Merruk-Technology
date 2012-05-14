@@ -1,0 +1,95 @@
+choice
+	prompt "BCM116X Core Type"
+	depends on ARCH_BCM116X
+	default ARCH_BCM2153
+
+config ARCH_BCM1161
+	bool "BCM1161 SoC based system"
+
+config ARCH_BCM2153
+	bool "BCM2153 SoC based system"
+
+config ARCH_BCM2157
+       bool "BCM2157/BCM2151B"
+endchoice
+
+choice
+	prompt "Board selection in BCM2153 family of devices"
+	depends on ARCH_BCM2153
+	default MACH_MARTINI
+
+config MACH_MARTINI
+	bool "BCM2153 Martini Board"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM2153 MARTINI.
+endchoice
+
+choice
+       prompt "Board selection in BCM2157 family of devices"
+       depends on ARCH_BCM2157
+       default BOARD_EXPLORER
+
+config BOARD_BONDRAY
+	bool "Board Bondray"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM2157 BONDRAY.
+
+config BOARD_EXPLORER
+	bool "Board Explorer"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM2157 Explorer.
+
+config BOARD_BRAVA
+	bool "Board Brava"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM2157 BRAVA.
+
+config BOARD_BRAVA_EDN10
+        bool "Board Brava EDN10"
+        help
+          Configure this option to specify the EDN version
+          used on BCM2157 Brava.
+
+config BOARD_JDSM_ORIENTED
+	bool "Board JDSM_oriented"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM2157 JDSM_oriented.
+endchoice
+
+config BCM_FUSE_APPS_PROCESSOR
+  bool "BCM_FUSE_APPS_PROCESSOR"
+  depends on ARCH_BCM116X
+  help
+  Various changes required for communicating with CP.
+
+config SDRAM_BASE_ADDR
+    hex "SDRAM Base address"
+    depends on ARCH_BCM116X
+
+config BCM_RFKILL
+	bool "BCM  RFkill for Bluetooth"
+	depends on RFKILL || !RFKILL
+
+menu "BCM Options"
+	depends on ARCH_BCM116X || ARCH_BCMRING
+
+endmenu
+
+menu "BCM116X Options"
+	depends on ARCH_BCM116X
+
+config BCM215X_PM
+	bool "Enable Platform power management for BCM2153/BCM2157 platform"
+	depends on PM && (ARCH_BCM2153 || ARCH_BCM2157)
+	help
+	  Say Yes here to enable platform power management
+	  for BCM2153/BCM2157 platform
+
+
+endmenu
+

@@ -1,0 +1,7 @@
+# BMEM
+config BMEM
+	tristate "BMEM support"
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV && BMEM_WRAP
+	default N
+	help
+		Broadcom Unified Memory Allocator device driver support

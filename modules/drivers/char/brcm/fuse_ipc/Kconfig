@@ -1,0 +1,8 @@
+config BRCM_FUSE_IPC_CIB
+	#tristate "Broadcom FUSE IPC drivers CIB"
+	boolean "Broadcom FUSE IPC drivers CIB"
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default N
+	---help---
+	  Broadcom FUSE IPC drivers CIB
+

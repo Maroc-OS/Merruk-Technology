@@ -1,0 +1,26 @@
+menuconfig HAPTIC
+	bool "HAPTIC support"
+	default y
+	help
+	  Say Y to enalbe haptic support. It enables the haptic and controlled
+	  from both userspace and kernel
+
+if HAPTIC
+
+config HAPTIC_CLASS
+	tristate "Haptic Class Support"
+	default y
+	help
+	  This option enables the haptic sysfs class in /sys/class/haptic.
+
+comment "Haptic drivers"
+
+config HAPTIC_SAMSUNG_PWM
+	tristate "Haptic Support for SAMSUNG PWM-controlled motor (ISA1000)"
+	default y
+	depends on HAPTIC_CLASS
+	help
+	  This options enables support for haptic connected to GPIO lines
+	  controlled by a PWM timer on SAMSUNG CPUs.
+
+endif	# HAPTIC

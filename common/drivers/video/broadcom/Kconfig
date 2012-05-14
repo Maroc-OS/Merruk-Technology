@@ -1,0 +1,15 @@
+config FB_BCM_116X
+        tristate "BCM 116X platform framebuffer support"
+        depends on FB_BCM && ARCH_BCM116X
+        default n
+
+config FB_BCM_215XX
+        tristate "BCM 215XX platform framebuffer support"
+        depends on FB_BCM && ARCH_BCM215XX
+        default n
+
+source "drivers/video/broadcom/bmem_wrapper/Kconfig"
+source "drivers/video/broadcom/dss/Kconfig"
+source "drivers/video/broadcom/displays/Kconfig"
+source "drivers/video/broadcom/hantro/memalloc_wrapper/Kconfig"
+source "drivers/video/broadcom/ge/gememalloc_wrapper/Kconfig"

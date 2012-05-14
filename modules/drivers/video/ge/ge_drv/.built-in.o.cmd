@@ -1,0 +1,1 @@
+cmd_../modules/../modules/drivers/video/ge/ge_drv/built-in.o :=  rm -f ../modules/../modules/drivers/video/ge/ge_drv/built-in.o; /root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-ar rcs ../modules/../modules/drivers/video/ge/ge_drv/built-in.o

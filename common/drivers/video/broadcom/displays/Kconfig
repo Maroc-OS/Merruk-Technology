@@ -1,0 +1,120 @@
+menu "Broadcom Display Device Drivers"
+
+config PANEL_MAGNA_D51E5TA7601
+        tristate "Magna TrulyHVGA LCD Panel with D51E5TA7601 controller"
+        default N
+        help
+          Magna TrulyHVGA LCD Panel with D51E5TA7601 controller
+
+config BCM_LCD_NT35582
+        tristate "LCD Panel- N35582 controller"
+        default N
+        help
+	  WVGA LCD panel (N35582 controller)
+
+config BCM_LCD_S6D04H0A01
+        tristate "LCD Panel- S6D04H0A01 controller"
+        default N
+        help
+	  QVGA LCD panel (S6D04H0A01 controller)
+
+config BCM_LCD_S6D04H0A01_TASSVE
+        tristate "LCD Panel- S6D04H0A01 controller"
+        default N
+        help
+	  QVGA LCD panel (S6D04H0A01 controller)	  
+
+config BCM_LCD_S6D05A1X31_COOPERVE
+        tristate "LCD Panel- S6D04H0A01 controller"
+        default N
+        help
+	  QVGA LCD panel (S6D04H0A01 controller)	  
+
+config BCM_LCD_ILI9341_BOE
+        tristate "LCD Panel- S6D04H0A01 controller"
+        default Y
+        help
+	  QVGA LCD panel (BOE controller)
+
+config BCM_LCD_ILI9341_BOE_REV05
+        tristate "LCD Panel- S6D04H0A01 controller"
+        default Y
+        help
+	  QVGA LCD panel (BOE controller)
+
+config BCM_LCD_S6D04K1
+        tristate "LCD Panel- S6D04K1 controller"
+        default N
+        help
+	  QVGA LCD panel (S6D04H0A01 controller)
+	  
+config BCM_LCD_S6D04K1_LUISA_HW02
+        tristate "LCD Panel- S6D04K1 controller"
+        default N
+        help
+	  QVGA LCD panel (S6D04H0A01 controller)
+	  
+config BCM_LCD_R61581
+        tristate "LCD Controller- R61581 controller"
+        default N
+        help
+	  HVGA LCD panel (Renesas R61581 controller)
+
+
+if BCM_LCD_NT35582 || BCM_LCD_R61581
+menu "Custom display resolution"
+config ENABLE_HVGA
+    bool "Enable HVGA display"
+    depends on BCM_LCD_NT35582
+    default y
+    ---help---
+    Select this to enable HVGA display
+
+config ENABLE_QVGA
+    bool "Enable QVGA display"
+    depends on (BCM_LCD_NT35582 || BCM_LCD_R61581) && !ENABLE_HVGA
+    default n
+    ---help---
+    Select this to enable QVGA display
+endmenu
+endif
+
+config BCM_LCD_BTG222432
+        tristate "HYUNDAI BTG222432 LCD support"
+        depends on MACH_MARTINI || BOARD_BONDRAY || BOARD_EXPLORER
+        ---help---
+         Support for HYUNDAI BTG222432 LCD
+         Say Y here to enable HYUNDAI BTG222432 LCD driver
+         Say m to make it a loadable module
+
+config BCM_LCD_HX8352_DF2440V8
+    tristate "Wintek HX8352 DF2440V8 LCD support"
+    depends on BOARD_BRAVA || BOARD_BRAVA_EDN10
+    ---help---
+     Support for WINTEK HX8352 DF2440V8 LCD Driver
+     Say Y here to enable Wintek HX8352 DF2440V8 LCD driver
+     Say m to make it a loadable module
+
+config BCM_LCD_HX8347_TFT1P5158
+    tristate "Truely HX8347 TFT1P5158 LCD support"
+     default n
+    ---help---
+     Support for Truely HX8347 TFT1P5158 LCD Driver
+     Say Y here to enable Truely HX8347 TFT1P5158 LCD driver
+     Say m to make it a loadable module
+
+config BCM_LCD_SKIP_INIT
+    bool "Skip LCD controller and panel initialization"
+     default n
+    ---help---
+     Support for skipping LCD controller and panel initialization.
+     Say Y here if bootloader does the job of initialization
+
+config ARGB8888
+    bool "Enable 24bit colour mode"
+    depends on BCM_LCD_NT35582 || BCM_LCD_R61581
+    default n
+    ---help---
+    Say Y to enable 24bit colour mode
+
+endmenu

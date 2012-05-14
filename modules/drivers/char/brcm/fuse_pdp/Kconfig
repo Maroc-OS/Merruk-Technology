@@ -1,0 +1,8 @@
+config BRCM_FUSE_PDP_CIB
+	#tristate "Broadcom FUSE PDP drivers CIB"
+	boolean "Broadcom FUSE PDP drivers CIB"
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default N
+	---help---
+	  Broadcom FUSE PDP drivers CIB
+

@@ -1,0 +1,1 @@
+cmd_../modules/../modules/drivers/sound/brcm/headset/brcm-headsetsw.o := /root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-ld -EL    -r -o ../modules/../modules/drivers/sound/brcm/headset/brcm-headsetsw.o ../modules/../modules/drivers/sound/brcm/headset/brcm_headset.o ; scripts/mod/modpost ../modules/../modules/drivers/sound/brcm/headset/brcm-headsetsw.o

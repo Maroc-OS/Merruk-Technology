@@ -1,0 +1,14 @@
+config BRCM_FUSE_RIL_CIB
+	#tristate "Broadcom FUSE RIL drivers CIB"
+	boolean "Broadcom FUSE RIL drivers CIB"
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default N
+	---help---
+	  Broadcom FUSE RIL drivers CIB
+
+config BRCM_SIM_SECURE_ENABLE
+	boolean "Broadcom SIM Secure Enable"
+	depends on BRCM_MODULES && BRCM_MODULES_PRIV
+	default N
+	---help---
+	  Broadcom SIM Secure Enable
