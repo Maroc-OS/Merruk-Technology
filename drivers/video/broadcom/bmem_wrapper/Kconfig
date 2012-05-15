@@ -1,5 +1,0 @@
-config BMEM_WRAP
-	tristate "Wrapper for Broadcom Unified Memory Allocater"
-	default N
-	---help---
-		Broadcom Unified Memory Allocator device driver support

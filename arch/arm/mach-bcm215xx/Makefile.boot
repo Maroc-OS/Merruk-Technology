@@ -1,1 +1,0 @@
-zreladdr-y	:= $(CONFIG_SDRAM_BASE_ADDR)+0x8000
