@@ -4,7 +4,7 @@ rm -Rf boot
 mkdir -p unpack
 mkdir -p source_img
 cd sources_img
-tar -xvf stock_kernel*
+tar -xvf stock_kernel.tar
 cd ..
 tools/unpackbootimg -i source_img/boot.img -o unpack
 
