@@ -49,7 +49,7 @@ fi
 sync
 
 # Decommpress the RamDisk.
-# (TODO : Test the Support of Parameters Ex: ramdisk= "merruk" or "stock" )
+# (TODO : Test if Parameters Support Works. Ex: Install.sh "merruk" or "stock" )
 
 function help
 {
