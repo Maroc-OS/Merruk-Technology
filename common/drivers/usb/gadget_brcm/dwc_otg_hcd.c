@@ -142,7 +142,7 @@ static int32_t dwc_otg_hcd_start_cb(void *_p)
         }
         
 	/* Need to start the HCD in a non-interrupt context. */
-	INIT_WORK(&dwc_otg_hcd->start_work, hcd_start_func);
+	INIT_WORK(&dwc_otg_hcd->start_work, hcd_start_func, _p);
         schedule_work(&dwc_otg_hcd->start_work);
         
         return 1;
@@ -429,7 +429,7 @@ int __init dwc_otg_hcd_init(struct lm_device *_lmdev)
 	 * Allocate memory for the base HCD plus the DWC OTG HCD.
 	 * Initialize the base HCD.
 	 */
-	hcd = usb_create_hcd(&dwc_otg_hc_driver, &_lmdev->dev, _lmdev->id);
+	hcd = usb_create_hcd(&dwc_otg_hc_driver, &_lmdev->dev, _lmdev->dev.bus_id);
 	if (hcd == NULL) {
 		retval = -ENOMEM;
 		goto error1;
@@ -502,7 +502,7 @@ int __init dwc_otg_hcd_init(struct lm_device *_lmdev)
 	 * allocates the DMA buffer pool, registers the USB bus, requests the
 	 * IRQ line, and calls dwc_otg_hcd_start method.
 	 */
-	retval = usb_add_hcd(hcd, _lmdev->irq, IRQF_SHARED);
+	retval = usb_add_hcd(hcd, _lmdev->irq, SA_SHIRQ);
 	if (retval < 0) {
 		goto error2;
 	}
@@ -530,7 +530,7 @@ int __init dwc_otg_hcd_init(struct lm_device *_lmdev)
 	}
 
 	DWC_DEBUGPL(DBG_HCD, "DWC OTG HCD Initialized HCD, bus=%s, usbbus=%d\n", 
-		    _lmdev->id, hcd->self.busnum);
+		    _lmdev->dev.bus_id, hcd->self.busnum);
         
 	return 0;
 
@@ -619,7 +619,7 @@ int dwc_otg_hcd_start(struct usb_hcd *_hcd)
   	struct usb_device *udev;
   	struct usb_bus *bus;
 
-	//int retval;
+	int retval;
 
 	DWC_DEBUGPL(DBG_HCD, "DWC OTG HCD START\n");
 
@@ -646,10 +646,8 @@ int dwc_otg_hcd_start(struct usb_hcd *_hcd)
 			DWC_DEBUGPL(DBG_HCD, "DWC OTG HCD Error udev alloc\n");
 			return -ENODEV;
 		}
-
-		extern int register_root_hub(udev, _hcd);
-		if (register_root_hub != 0) {
-			DWC_DEBUGPL(DBG_HCD, "DWC OTG HCD Error registering %d\n", register_root_hub);
+		if ((retval = usb_hcd_register_root_hub(udev, _hcd)) != 0) {
+			DWC_DEBUGPL(DBG_HCD, "DWC OTG HCD Error registering %d\n", retval);
                         return -ENODEV;
 		}
 	}
