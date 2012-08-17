@@ -1,5 +1,5 @@
 ###################################################################
-# Merruk Technology Install Script For A new Installation/Update  #
+# Merruk Technology Compress Script For A new Installation/Update #
 # For InitRamFS (ramdisk) Envirement .                            #
 ###################################################################
 # Author    : Yahya Lmallas                                       #
@@ -25,8 +25,8 @@ function help
     echo "Positional parameter 1 is empty !"
     echo "How To Use :"
     echo "./Compress.sh [Parameter]"
-    echo "  - merruk  =     Use Merruk Technology InitRamFS"
-    echo "  - stock   =     Use Merruk Technology InitRamFS"
+    echo "  - merruk  =     Use Merruk Technology RamDisk"
+    echo "  - stock   =     Use Samsung Stock RamDisk"
     echo "Please spesifie a parameter of listed above"
     exit 1
 } # end help
@@ -41,13 +41,13 @@ else
           echo ""
           echo "Merruk Technology RamDisk."
           echo ""
-          gzip -dc ../unpack/boot.img-ramdisk.gz | cpio -i
+          tools/mkbootfs boot | lzma > unpack/boot.img-ramdisk.gz
       elif [ "$1" == "stock" ];
         then
           echo ""
           echo "Samsung Stock RamDisk."
           echo ""
-          tools/mkbootfs boot | lzma > unpack/boot.img-ramdisk.gz
+          tools/mkbootfs boot | gzip > unpack/boot.img-ramdisk.gz
       else
         $(help)
     fi
