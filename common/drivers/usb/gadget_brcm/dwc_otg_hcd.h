@@ -36,11 +36,7 @@
 
 #include <linux/list.h>
 #include <linux/usb.h>
-/*#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-#include <linux/usb/hcd.h>
-#else*/
 #include <../drivers/usb/core/hcd.h>
-/*#endif*/
 
 struct lm_device;
 struct dwc_otg_device;
