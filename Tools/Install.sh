@@ -56,8 +56,8 @@ function help
     echo "Positional parameter 1 is empty !"
     echo "How To Use :"
     echo "./Install.sh [Parameter]"
-    echo "    - merruk  =         Use Merruk Technology InitRamFS"
-    echo "    - stock   =         Use Merruk Technology InitRamFS"
+    echo "    - merruk  =         Use Merruk Technology RamDisk"
+    echo "    - stock   =         Use Samsung Stock RamDisk"
     echo "Please spesifie a parameter of listed above"
     exit 1
 }   # end help
