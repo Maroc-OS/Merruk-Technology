@@ -66,13 +66,17 @@ if [ "$1" == "" ];
   then
     $(help)
 else
-    echo "Decommpressing Kernel RamDisk... = " $1
-    if [ "$1" == "merruk"];
+    echo "Decommpressing Kernel RamDisk..."
+    if [ "$1" == "merruk" ];
       then
         echo ""
+        echo "Merruk Technology RamDisk."
+        echo ""
         gzip -dc ../unpack/boot.img-ramdisk.gz | cpio -i
-    elif
+    elif [ "$1" == "stock" ];
       then
+        echo ""
+        echo "Samsung Stock RamDisk."
         echo ""
         xz -dc ../unpack/boot.img-ramdisk.gz | cpio -i
     else
