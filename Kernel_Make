@@ -13,7 +13,7 @@
 # Beging Of Copmile Script Declarations
 
 KERNEL_MAKE_VERSION="v.1.0"
-CPU_CORES="3"
+CPU_CORES="cat /proc/cpuinfo| grep processor| wc -c"
 
 function Help
 {
