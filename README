@@ -7,23 +7,23 @@ Merruk Technology Kernel v.2.0 For Samsung Galaxy Y 'Yong' GT-S5360.
 _______________
 
 For Compiling Merruk Technology Kernels Open the Command Prompt (CONSOLE) and see the Follows :
-  - ----------------------------------------------------------------------------------------------------------------------------------------- -
-	- Discreption								: Mean									* Command [-Parametter] 							                                              		-
-	------------------------------------------------------------------------------------------------------------------------------------------- -
-	- New Compile/Update Existing Kernel	  : "First Compile or Only Modded Codes"	* Kernel_Make -MT											                      -
-	- Specefic CONFIG_FILE Compile				  : "Must be in '/arch/arm/configs/'" 	  * Kernel_Make -CF totoro_brcm21553_05_defconfig		      		-
-	- Clean Build (0 Files already built's)	: "Like First Time, Clean Files&Build"	* Kernel_Make -CL											                      -
-	- Specifie Number Of Prosessors 			  : "Script Guess That Automaticlly"		  * Kernel_Make -CPU [Number of Cores], By Default (All Core) -
-	- ----------------------------------------------------------------------------------------------------------------------------------------- -
+- --------------------------------------------------------------------------------------------------------------------------------------------- -
+- Discreption				: What That Mean?			* Command [-Parametter]						-
+----------------------------------------------------------------------------------------------------------------------------------------------- -
+- New Compile/Update Existing Kernel	: "First Compile or Only Modded Codes"	* Kernel_Make -MT						-
+- Specefic CONFIG_FILE Compile		: "Must be in '/arch/arm/configs/'"	* Kernel_Make -CF totoro_brcm21553_05_defconfig			-
+- Clean Build (0 Files already built's)	: "Like First Time, Clean Files&Build"	* Kernel_Make -CL						-
+- Specifie Number Of Prosessors		: "Script Guess That Automaticlly"	* Kernel_Make -CPU [Number of Cores], By Default (All Core)	-
+- --------------------------------------------------------------------------------------------------------------------------------------------- -
 
 root#/: ./Kernel_Make -Help
 Welcome To Merruk Technology Kernel Tools v.1.0 !
 
-	-MT								              	  : Standard Compile Option, Automatic Kernel/Modules Installation
-	-CF totoro_brcm21553_05_defconfig	  : Specefie the defconfig File you Like, PS: Must Be In 'arch/arm/configs'
-	-CL									                : Make AClean Compilation From Scratch
-	-CPU [Number Of Cores]			      	: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)
-	-HELP/-H							              : Show This Help Prompt.
+	-MT					: Standard Compile Option, Automatic Kernel/Modules Installation
+	-CF totoro_brcm21553_05_defconfig	: Specefie the defconfig File you Like, PS: Must Be In 'arch/arm/configs'
+	-CL					: Make AClean Compilation From Scratch
+	-CPU [Number Of Cores]			: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)
+	-HELP/-H				: Show This Help Prompt.
 #####################################################################
 
 *ENVIREMENT PREPARATION :*
@@ -33,12 +33,13 @@ First Use of Tools Directory You Nees To Setup The Envirement :
 
 How To Use :
 
-    cd ./Tools
+	cd ./Tools
 
-    ./Install.sh [Parameter]
-        - merruk  =         Use Merruk Technology InitRamFS
-        - stock   =         Use Samsung Stock InitRamFS
-    Please spesifie a parameter of listed above
+	./Install.sh [Parameter]
+	- merruk	= Use Merruk Technology InitRamFS
+	- stock		= Use Samsung Stock InitRamFS
+
+	Please spesifie a parameter of listed above
 ------------------------
 
 *KERNEL COMPRESSION :*
@@ -48,15 +49,18 @@ You Can Simply Call This Tools After You Make Changes In Boot Directory (RamFS) 
 
 How To Use :
 
-    cd ./Tools
+	cd ./Tools
 
-    ./Compress.sh [Parameter]
-        - merruk  =         Use Merruk Technology Kernel
-        - stock   =         Use Samsung Stock Kernel
-    Please spesifie a parameter of listed above
+	./Compress.sh [Parameter]
+	- merruk	= Use Merruk Technology Kernel
+	- stock		= Use Samsung Stock Kernel
+
+	Please spesifie a parameter of listed above
 ------------------------
 
 #########################################################################
 ###NOTE :###
 
-Your Compressed Kernel Will Be Named as: ###PDA.[parameter].tar### : Odin Flashable File
+Your Compressed Kernel Will Be Named as: 
+
+###PDA.[parameter].tar### : Odin Flashable File
