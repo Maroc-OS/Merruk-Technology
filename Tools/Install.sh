@@ -1,3 +1,4 @@
+#!/bin/sh
 ###################################################################
 # Merruk Technology Install Script For A new Installation/Update  #
 # For InitRamFS (ramdisk) Envirement .                            #
@@ -11,47 +12,61 @@
 
 # Setup the Nedded Directories.
 
-if [ test ! -d "source_img" ];
+if [ ! -d "source_img" ];
 then
-  mkdir -p sources_img
+	mkdir -p source_img
+	chmod 777 source_img
 fi
 sync
 
-if [ test ! -d "unpack" ];
+if [ ! -d "target_img" ];
 then
-  mkdir -p unpack
-else
-  rm -Rf unpack
-  mkdir -p unpack
+	mkdir -p target_img
+	chmod 777 target_img
 fi
 sync
 
-if [ test ! -d "boot" ];
+if [ ! -d "unpack" ];
 then
-  mkdir -p boot
+	mkdir -p unpack
+	chmod 777 unpack
 else
-  rm -Rf boot
-  mkdir -p boot
+	rm -Rf unpack
+	mkdir -p unpack
+	chmod 777 unpack
 fi
 sync
+
+if [ ! -d "boot" ];
+then
+	mkdir -p boot
+	chmod 777 boot
+else
+	rm -Rf boot
+	mkdir -p boot
+	chmod 777 boot
+fi
+sync
+
+chmod 777 ./tools/*
 
 # Check if there is a Complete Kernel (boot.img) in "Source_Img"
 
-if [ test ! -f "source_img/boot.img" ];
+if [ ! -f "source_img/boot.img" ];
 then
-  cd sources_img
-  tar -xvf ../stock_kernel.tar
-  cd ..
-  tools/unpackbootimg -i source_img/boot.img -o unpack
+	cd source_img
+	tar -xvf ../stock_kernel.tar
+	chmod 777 *
+	cd ..
+	./tools/unpackbootimg -i ./source_img/boot.img -o ./unpack
 else
-  tools/unpackbootimg -i source_img/boot.img -o unpack
+	./tools/unpackbootimg -i ./source_img/boot.img -o ./unpack
 fi
 sync
 
 # Decommpress the RamDisk.
-# (TODO : Test if Parameters Support Works. Ex: Install.sh "merruk" or "stock" )
 
-function help
+function Help
 {
     echo "Positional parameter 1 is empty !"
     echo "How To Use :"
@@ -63,31 +78,44 @@ function help
 }   # end help
 
 if [ "$1" == "" ];
-  then
-    $(help)
+then
+	Help
 else
-    echo "Decommpressing Kernel RamDisk..."
-    if [ "$1" == "merruk" ];
-      then
-        echo ""
-        echo "Merruk Technology RamDisk."
-        echo ""
-        gzip -dc ../unpack/boot.img-ramdisk.gz | cpio -i
-    elif [ "$1" == "stock" ];
-      then
-        echo ""
-        echo "Samsung Stock RamDisk."
-        echo ""
-        xz -dc ../unpack/boot.img-ramdisk.gz | cpio -i
-    else
-      $(help)
-  fi
+	echo "Decommpressing Kernel RamDisk..."
+	if [ "$1" == "merruk" ];
+	then
+		echo ""
+		echo "Merruk Technology RamDisk."
+		echo ""
+		gzip -dc ../unpack/boot.img-ramdisk.gz | cpio -i
+		rm ./unpack/boot.img-zImage
+
+	elif [ "$1" == "stock" ];
+	then
+		echo ""
+		echo "Samsung Stock RamDisk."
+		echo ""
+		xz -dc ../unpack/boot.img-ramdisk.gz | cpio -i
+		rm ./unpack/boot.img-zImage
+
+	else
+		Help
+	fi
 fi
 
 # Add Init.d Directory to the RamDisk
-mkdir boot/system/etc
-mkdir boot/system/etc/init.d
 
-rm unpack/boot.img-zImage
+if [ -d "boot/system" ];
+then
+	mkdir ./boot/system/etc
+	mkdir ./boot/system/etc/init.d
+	chmod 777 ./boot/system/etc/init.d
+else
+	mkdir -p boot
+	mkdir ./boot/system/etc
+	mkdir ./boot/system/etc/init.d
+	chmod 777 ./boot/system/etc/init.d
+fi
+sync
 
 cp ../MerrukTechnology_Output/zImage ./unpack/

@@ -1,3 +1,4 @@
+#!/bin/sh
 ###################################################################
 # Merruk Technology Compilation/Update Kernel Make Script         #
 # Kernel_Make -HELP For More Infos.                               #
@@ -9,85 +10,106 @@
 # UserName  : Maroc-OS                                            #
 ###################################################################
 
-# Beging Of Copmile
+# Beging Of Copmile Script Declarations
+
 KERNEL_MAKE_VERSION="v.1.0"
-CPU_CORES=""
-function help
+CPU_CORES="3"
+
+function Help
 {
-    echo "Welcome To Merruk Technology Kernel Tools $KERNEL_MAKE_VERSION !"
-    echo ""
-    echo "  -MT		      			: Standard Compile Option, Automatic Kernel/Modules Installation."
-    echo "  -CF totoro_brcm21553_05_defconfig	: Specefie the defconfig File you Like, PS: Must Be In 'arch/arm/configs'."
-    echo "  -CL						: Make AClean Compilation From Scratch."
-    echo "  -CPU [Number Of Cores]			: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)."
-    echo "  -Help/-H					: Show This Help Prompt."
-    exit 1
-}   # end help
+	echo "Welcome To Merruk Technology Kernel Tools $KERNEL_MAKE_VERSION !"
+	echo ""
+	echo "  -MT		      			: Standard Compile Option, Automatic Kernel/Modules Installation."
+	echo "  -CF totoro_brcm21553_05_defconfig	: Specefie the defconfig File you Like, PS: Must Be In 'arch/arm/configs'."
+	echo "  -CL					: Make AClean Compilation From Scratch."
+	echo "  -CPU [Number Of Cores]			: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)."
+	echo "  -Help/-H				: Show This Help Prompt."
+	exit 1
+} # end help
 
 # Make Then Kernel With Chosen Parameter
+
 if [ "$1" == "" ];
-  then
-    $(help)
-  else
-    # Go Inside Working Directory
-    cd common
+then
+	Help
+else
+	# Go Inside Working Directory
 
-    echo "Starting Kernel Make Operations..."
-    if [ "$1" == "-MT" ];
-      then
-        echo ""
-        echo "Merruk Technology Standard Compile."
-        echo ""
-        make bcm21553_totoro_05_defconfig
-        make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
+	cd common
 
-    elif [ "$1" == "-CF" ];
-      then
-        echo ""
-        echo "Merruk Technology Special CONFIG_FILE."
-        echo ""
-        make $2
-        make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
+	echo "Starting Kernel Make Operations..."
+	if [ "$1" == "-MT" ];
+		then
+			echo ""
+			echo "Merruk Technology Standard Compile."
+			echo ""
+			make bcm21553_totoro_05_defconfig
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
 
-    elif [ "$1" == "-CL" ];
-      then
-        echo ""
-        echo "Merruk Technology Clean Compile."
-        echo ""
-        make clean
-        make bcm21553_totoro_05_defconfig
-        make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
+	elif [ "$1" == "-CF" ];
+		then
+			echo ""
+			echo "Merruk Technology Special CONFIG_FILE."
+			echo ""
+			make $2
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
 
-    elif [ "$1" == "-CPU" ];
-      then
-        echo ""
-        echo "Merruk Technology CPU Specefied Cores Compile."
-        echo ""
-        make bcm21553_totoro_05_defconfig
-        make CONFIG_DEBUG_SECTION_MISMATCH=y -j$2 > ../kernel_log.$$ 4>&3
+	elif [ "$1" == "-CL" ];
+		then
+			echo ""
+			echo "Merruk Technology Clean Compile."
+			echo ""
+			make clean
+			make bcm21553_totoro_05_defconfig
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
 
-    elif [ "$1" == "-H" ];
-      then
-        $(help)
-    elif [ "$1" == "-HELP" ];
-      then
-        $(help)
-    else
-      $(help)
-    fi
-cd ..
+	elif [ "$1" == "-CPU" ];
+		then
+			echo ""
+			echo "Merruk Technology CPU Specefied Cores Compile."
+			echo ""
+			make bcm21553_totoro_05_defconfig
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$2 > ../kernel_log.$$ 4>&3
+
+	elif [ "$1" == "-H" ];
+		then
+			Help
+	elif [ "$1" == "-HELP" ];
+		then
+			Help
+	else
+		Help
+	fi
+
+	# Go Back To Root Directory
+
+	cd ..
 fi
 sync
 
-# Find All Compiled Modules And Copy Them to Tqrget Directory
-find . -name '*.ko' -exec cp -v {} ./MerrukTechnology_Output/system/lib/modules \;
+# Check if Compile has Completely Done
 
-if [ -f common/arch/arm/boot/zImage ];
-      then
-            echo "Merruk Technology Kernel Done!! You can find it in /arch/arm/boot/zImage"
-            # Copy The Compiled Kernel Into Output Directory
-            cp common/arch/arm/boot/zImage ./MerrukTechnology_Output/
-      else
-            echo "Merruk Technology Kernel did not Compile, Please Check 'kernel_log.*' For Errors!!"
-            exit 0
+if [ -f "common/arch/arm/boot/zImage" ];
+then
+	# Find All Compiled Modules And Copy Them into Output Directory
+
+	find . -name '*.ko' -exec cp -v {} ./MerrukTechnology_Output/system/lib/modules \;
+
+	echo "Merruk Technology Kernel/Modules Are Done!!"
+	echo "./common/arch/arm/boot/zImage & All Modules Are copied to :"
+	echo ""
+	echo "/MerrukTechnology_Output Directory"
+	echo ""
+	echo "###########################################################"
+
+	# Copy The Compiled Kernel Into Output Directory
+
+	cp ./common/arch/arm/boot/zImage ./MerrukTechnology_Output/
+else
+	echo "Merruk Technology Kernel did not Compiled !!"
+	echo "Please Check 'kernel_log.*' File For Output Errors!!"
+	echo ""
+	echo "###########################################################"
+	exit 0
 fi
+
