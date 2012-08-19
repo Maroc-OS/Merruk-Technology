@@ -8,12 +8,12 @@ _______________
 
 For compiling Merruk Technology Kernel open the command prompt (CONSOLE) and see this :
 - --------------------------------------------------------------------------------------------------------------------------------------------- -
-- Description							: What does that mean?					* Command [-Parametter]											-
+- Description				: What does that mean?			* Command [-Parameter]						-
 ----------------------------------------------------------------------------------------------------------------------------------------------- -
-- New Compile/Update Existing Kernel	: "First Compile or Only Modded Codes"	* Kernel_Make -MT												-
-- Specific CONFIG_FILE Compile			: "Must be in '/arch/arm/configs/'"		* Kernel_Make -CF totoro_brcm21553_05_defconfig					-
-- Clean Build (0 Files already built's)	: "Like First Time, Clean Files&Build"	* Kernel_Make -CL												-
-- Specify Number Of Prosessors			: "Script Guess That Automaticlly"		* Kernel_Make -CPU [Number of Cores], By Default (All Core)		-
+- New Compile/Update Existing Kernel	: "First Compile or Only Modded Codes"	* Kernel_Make -MT						-
+- Specific CONFIG_FILE Compile		: "Must be in '/arch/arm/configs/'"	* Kernel_Make -CF totoro_brcm21553_05_defconfig			-
+- Clean Build (0 Files already built's)	: "Like First Time, Clean Files&Build"	* Kernel_Make -CL						-
+- Specify Number Of Prosessors		: "Script Guess That Automaticlly"	* Kernel_Make -CPU [Number of Cores] (all cores by default) 	-
 - --------------------------------------------------------------------------------------------------------------------------------------------- -
 
 root#/: ./Kernel_Make -Help
