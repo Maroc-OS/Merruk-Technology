@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ###################################################################
 # Merruk Technology Compilation/Update Kernel Make Script         #
 # Kernel_Make -HELP For More Infos.                               #
@@ -13,7 +13,8 @@
 # Beging Of Copmile Script Declarations
 
 KERNEL_MAKE_VERSION="v.1.0"
-CPU_CORES="cat /proc/cpuinfo| grep processor| wc -c"
+#CPU_CORES="cat /proc/cpuinfo| grep processor| wc -l"
+CPU_CORES="3"
 
 function Help
 {
@@ -44,7 +45,7 @@ else
 			echo "Merruk Technology Standard Compile."
 			echo ""
 			make bcm21553_totoro_05_defconfig
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-CF" ];
 		then
@@ -52,7 +53,7 @@ else
 			echo "Merruk Technology Special CONFIG_FILE."
 			echo ""
 			make $2
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-CL" ];
 		then
@@ -61,7 +62,7 @@ else
 			echo ""
 			make clean
 			make bcm21553_totoro_05_defconfig
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 4>&3
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-CPU" ];
 		then
@@ -69,7 +70,7 @@ else
 			echo "Merruk Technology CPU Specefied Cores Compile."
 			echo ""
 			make bcm21553_totoro_05_defconfig
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$2 > ../kernel_log.$$ 4>&3
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$2 > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-H" ];
 		then
@@ -112,4 +113,3 @@ else
 	echo "###########################################################"
 	exit 0
 fi
-

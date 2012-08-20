@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ###################################################################
 # Merruk Technology Compress Script For A new Installation/Update #
 # For InitRamFS (ramdisk) Envirement .                            #
