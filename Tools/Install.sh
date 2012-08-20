@@ -72,8 +72,8 @@ function Help
     echo "How To Use :"
     echo "./Install.sh [Parameter]"
     echo "    - merruk  =         Use Merruk Technology RamDisk"
-    echo "    - stock   =         Use Samsung Stock RamDisk"
-    echo "Please spesifie a parameter of listed above"
+    echo "    - stock   =         Use Samsung stock RamDisk"
+    echo "Please specify one of those listed above"
     exit 1
 }   # end help
 
@@ -81,11 +81,11 @@ if [ "$1" == "" ];
 then
 	Help
 else
-	echo "Decommpressing Kernel RamDisk..."
+	echo "Decommpressing kernel RamDisk..."
 	if [ "$1" == "merruk" ];
 	then
 		echo ""
-		echo "Merruk Technology RamDisk."
+		echo "Merruk Technology RamDisk"
 		echo ""
 		gzip -dc ../unpack/boot.img-ramdisk.gz | cpio -i
 		rm ./unpack/boot.img-zImage
@@ -93,7 +93,7 @@ else
 	elif [ "$1" == "stock" ];
 	then
 		echo ""
-		echo "Samsung Stock RamDisk."
+		echo "Samsung RamDisk"
 		echo ""
 		xz -dc ../unpack/boot.img-ramdisk.gz | cpio -i
 		rm ./unpack/boot.img-zImage

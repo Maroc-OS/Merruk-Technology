@@ -23,7 +23,7 @@ function Help
 	echo "./Compress.sh [Parameter]"
 	echo "  - merruk  =     Use Merruk Technology RamDisk"
 	echo "  - stock   =     Use Samsung Stock RamDisk"
-	echo "Please spesifie a parameter of listed above"
+	echo "Please specify one of those listed above"
 	exit 1
 } # end Help
 
@@ -31,7 +31,7 @@ function Make_Img
 {
 # Making The New Kernel :)
 	echo ""
-	echo "Making the New Kernel..."
+	echo "Making the new kernel..."
 	echo ""
 	./tools/mkbootimg --kernel ./unpack/zImage --ramdisk ./unpack/boot.img-ramdisk.gz -o ./target_img/boot.img --base `cat ./unpack/boot.img-base`
 } # end Make_Img
@@ -40,17 +40,17 @@ if [ "$1" == "" ];
 then
 	Help
 else
-	echo "Commpressing Kernel RamDisk..."
+	echo "Commpressing kernel RamDisk..."
 	if [ "$1" == "merruk" ];
 	then
 		echo ""
-		echo "Merruk Technology RamDisk."
+		echo "Merruk Technology RamDisk"
 		echo ""
 		./tools/mkbootfs ./boot | lzma > ./unpack/boot.img-ramdisk.gz
 	elif [ "$1" == "stock" ];
 	then
 		echo ""
-		echo "Samsung Stock RamDisk."
+		echo "Samsung RamDisk"
 		echo ""
 		./tools/mkbootfs ./boot | gzip > ./unpack/boot.img-ramdisk.gz
 	else
