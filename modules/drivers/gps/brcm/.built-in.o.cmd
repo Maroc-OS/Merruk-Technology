@@ -1,1 +1,0 @@
-cmd_../modules/../modules/drivers/gps/brcm/built-in.o :=  /root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-ld -EL    -r -o ../modules/../modules/drivers/gps/brcm/built-in.o ../modules/../modules/drivers/gps/brcm/gps_cntin_driver.o ../modules/../modules/drivers/gps/brcm/gps_driver.o ; scripts/mod/modpost ../modules/../modules/drivers/gps/brcm/built-in.o

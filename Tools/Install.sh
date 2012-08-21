@@ -10,112 +10,164 @@
 # UserName  : Maroc-OS                                            #
 ###################################################################
 
+# Set Tools Paths
+
+WORKING_DIR="pwd"
+export MERRUK_TOOLS=$($WORKING_DIR)"/bin"
+export TARBALL_KERNELS=$($WORKING_DIR)"/TarBall_Kernels"
+export SOURCE_IMG=$($WORKING_DIR)/"/Source_Img"
+export TARGET_IMG=$($WORKING_DIR)"/Target_Img"
+export UNPACK=$($WORKING_DIR)"/Unpack"
+export BOOT=$($WORKING_DIR)"/Boot"
+
 # Setup the Nedded Directories.
 
-if [ ! -d "source_img" ];
+if [ ! -d "$SOURCE_IMG" ];
 then
-	mkdir -p source_img
-	chmod 777 source_img
+	mkdir -p $SOURCE_IMG
+	chmod 777 $SOURCE_IMG
 fi
 sync
 
-if [ ! -d "target_img" ];
+if [ ! -d "$TARGET_IMG" ];
 then
-	mkdir -p target_img
-	chmod 777 target_img
+	mkdir -p $TARGET_IMG
+	chmod 777 $TARGET_IMG
 fi
 sync
 
-if [ ! -d "unpack" ];
+if [ ! -d "$UNPACK" ];
 then
-	mkdir -p unpack
-	chmod 777 unpack
+	mkdir -p $UNPACK
+	chmod 777 $UNPACK
 else
-	rm -Rf unpack
-	mkdir -p unpack
-	chmod 777 unpack
+	rm -Rf $UNPACK
+	mkdir -p $UNPACK
+	chmod 777 $UNPACK
 fi
 sync
 
-if [ ! -d "boot" ];
+if [ ! -d "$BOOT" ];
 then
-	mkdir -p boot
-	chmod 777 boot
+	mkdir -p $BOOT
+	chmod 777 $BOOT
 else
-	rm -Rf boot
-	mkdir -p boot
-	chmod 777 boot
+	rm -Rf $BOOT
+	mkdir -p $BOOT
+	chmod 777 $BOOT
 fi
 sync
 
-chmod 777 ./tools/*
+chmod 777 $MERRUK_TOOLS/*
 
-# Check if there is a Complete Kernel (boot.img) in "Source_Img"
+# Check if there is a Complete Kernel Boot Image (boot.img) in "Source_Img"
 
-if [ ! -f "source_img/boot.img" ];
-then
-	cd source_img
-	tar -xvf ../stock_kernel.tar
-	chmod 777 *
-	cd ..
-	./tools/unpackbootimg -i ./source_img/boot.img -o ./unpack
-else
-	./tools/unpackbootimg -i ./source_img/boot.img -o ./unpack
-fi
-sync
+function Install_Kernel_Img () {
+	if [ -f "$SOURCE_IMG/boot.img" ];
+	then
+		echo ""
+		echo "Boot.Img File Found ! Reinstall the Boot Image ..."
+		rm -f $SOURCE_IMG/boot.img
+		cd $SOURCE_IMG
+		echo ""
+		tar -xvf $TARBALL_KERNELS/$1
+		chmod 777 *
+		cd ..
+		echo "Samsung Boot Image Installed With Success."
+		echo ""
+		$MERRUK_TOOLS/unpackbootimg -i $SOURCE_IMG/boot.img -o $UNPACK
+		echo "Boot Image Extracted to '$UNPACK' Directory."
+	else
+        	echo ""
+        	echo "Installing the Boot Image File ..."
+        	cd $SOURCE_IMG
+        	echo ""
+        	tar -xvf $TARBALL_KERNELS/$1
+        	chmod 777 *
+        	cd ..
+        	echo "Samsung Boot Image Installed With Success."
+        	echo ""
+        	$MERRUK_TOOLS/unpackbootimg -i $SOURCE_IMG/boot.img -o $UNPACK
+	        echo "Boot Image Extracted to '$UNPACK' Directory."
+	fi
+	sync
+}
 
 # Decommpress the RamDisk.
 
 function Help
 {
-    echo "Positional parameter 1 is empty !"
-    echo "How To Use :"
-    echo "./Install.sh [Parameter]"
-    echo "    - merruk  =         Use Merruk Technology RamDisk"
-    echo "    - stock   =         Use Samsung Stock RamDisk"
-    echo "Please spesifie a parameter of listed above"
-    exit 1
-}   # end help
+	echo "Positional Parameter [1] is Empty !"
+	echo ""
+	echo "How To Use :"
+	echo ""
+	echo "./Install.sh [Parameter]"
+	echo ""
+	echo "  - merruk  =     Use Merruk Technology RamDisk"
+	echo "  - stock   =     Use Samsung RamDisk"
+	echo ""
+	echo "Please specify a parameter from listed above"
+	exit 1
+} # end Help
+
+# Start Decompression
 
 if [ "$1" == "" ];
 then
 	Help
 else
-	echo "Decommpressing Kernel RamDisk..."
+	echo "Decommpressing Kernel RamDisk ..."
 	if [ "$1" == "merruk" ];
 	then
+		Install_Kernel_Img "merruk_kernel.tar"
 		echo ""
 		echo "Merruk Technology RamDisk."
 		echo ""
-		gzip -dc ../unpack/boot.img-ramdisk.gz | cpio -i
-		rm ./unpack/boot.img-zImage
+		cd $BOOT
+		gzip -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
+		rm $UNPACK/boot.img-zImage
+		cd ..
 
 	elif [ "$1" == "stock" ];
 	then
+		Install_Kernel_Img "stock_kernel.tar"
 		echo ""
 		echo "Samsung Stock RamDisk."
 		echo ""
-		xz -dc ../unpack/boot.img-ramdisk.gz | cpio -i
-		rm ./unpack/boot.img-zImage
+		cd $BOOT
+		xz -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
+		rm $UNPACK/boot.img-zImage
+		cd..
 
 	else
 		Help
 	fi
 fi
+sync
 
 # Add Init.d Directory to the RamDisk
 
-if [ -d "boot/system" ];
+if [ -d "$BOOT/system" ];
 then
-	mkdir ./boot/system/etc
-	mkdir ./boot/system/etc/init.d
-	chmod 777 ./boot/system/etc/init.d
+	mkdir $BOOT/system/etc
+	mkdir $BOOT/system/etc/init.d
+	chmod 777 $BOOT/system/etc/init.d
 else
-	mkdir -p boot
-	mkdir ./boot/system/etc
-	mkdir ./boot/system/etc/init.d
-	chmod 777 ./boot/system/etc/init.d
+	echo ""
+	echo "Boot Directory Not Found !"
+	echo ""
 fi
 sync
 
-cp ../MerrukTechnology_Output/zImage ./unpack/
+# Copy The Compiled Kernel From The Output Directory
+
+if [ -f "../MerrukTechnology_Output/zImage" ];
+then
+	echo "MerrukTechnology Kernel Found ! Make a Copy into '$($UNPACK)' Direcroty."
+	cp ../MerrukTechnology_Output/zImage $UNPACK/
+	echo ""
+else
+	echo "MerrukTechnology Kernel Not Copmiled ! Please Go Back & Run ./Kernel_Make [Parameter]"
+	echo ""
+fi
+sync

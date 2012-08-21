@@ -10,60 +10,112 @@
 # UserName  : Maroc-OS                                            #
 ###################################################################
 
+# Set Tools Paths
+
+WORKING_DIR="pwd"
+export MERRUK_TOOLS=$($WORKING_DIR)"/bin"
+export SOURCE_IMG=$($WORKING_DIR)"/Source_Img"
+export TARGET_IMG=$($WORKING_DIR)"/Target_Img"
+export UNPACK=$($WORKING_DIR)"/Unpack"
+export BOOT=$($WORKING_DIR)"/Boot"
+
 # Copy The Compiled Kernel From the Output Directory.
 
-cp ../MerrukTechnology_Output/zImage ./unpack/
+if [ -f "../MerrukTechnology_Output/zImage" ];
+then
+        echo "MerrukTechnology Kernel Found ! Make a Copy into '$UNPACK' Direcroty."
+        cp ../MerrukTechnology_Output/zImage $UNPACK/
+        echo ""
+else
+        echo "MerrukTechnology Kernel Not Copmiled ! Please Run ./Kernel_Make -[Parameter]"
+        echo ""
+fi
+sync
 
 # Commpress the RamDisk.
 
 function Help
 {
-	echo "Positional parameter 1 is empty !"
+	echo "Positional parameter [1] is empty !"
+	echo ""
 	echo "How To Use :"
+	echo ""
 	echo "./Compress.sh [Parameter]"
+	echo ""
 	echo "  - merruk  =     Use Merruk Technology RamDisk"
-	echo "  - stock   =     Use Samsung Stock RamDisk"
-	echo "Please spesifie a parameter of listed above"
+	echo "  - stock   =     Use Samsung RamDisk"
+	echo ""
+	echo "Please specify a parameter from listed above"
 	exit 1
 } # end Help
 
+# Making The New Kernel :)
+
 function Make_Img
 {
-# Making The New Kernel :)
 	echo ""
-	echo "Making the New Kernel..."
+	echo "Making the New Kernel ..."
 	echo ""
-	./tools/mkbootimg --kernel ./unpack/zImage --ramdisk ./unpack/boot.img-ramdisk.gz -o ./target_img/boot.img --base `cat ./unpack/boot.img-base`
+	$MERRUK_TOOLS/mkbootimg --kernel $UNPACK/zImage --ramdisk $UNPACK/boot.img-ramdisk.gz -o $TARGET_IMG/boot.img --base `cat $UNPACK/boot.img-base`
 } # end Make_Img
+
+# Start Compression
 
 if [ "$1" == "" ];
 then
 	Help
 else
-	echo "Commpressing Kernel RamDisk..."
+	echo "Commpressing Kernel RamDisk ..."
 	if [ "$1" == "merruk" ];
 	then
 		echo ""
 		echo "Merruk Technology RamDisk."
 		echo ""
-		./tools/mkbootfs ./boot | lzma > ./unpack/boot.img-ramdisk.gz
+		$MERRUK_TOOLS/mkbootfs $BOOT | lzma > $UNPACK/boot.img-ramdisk.gz
 	elif [ "$1" == "stock" ];
 	then
 		echo ""
 		echo "Samsung Stock RamDisk."
 		echo ""
-		./tools/mkbootfs ./boot | gzip > ./unpack/boot.img-ramdisk.gz
+		$MERRUK_TOOLS/mkbootfs $BOOT | gzip > $UNPACK/boot.img-ramdisk.gz
 	else
 		Help
 	fi
 fi
+sync
 
 Make_Img
 
 # Remove the old TAR Compressed Kernel.
-  cd target_img
-  rm -Rf *.tar
+
+	cd $TARGET_IMG
+	rm -Rf *.tar
 
 # Make a Tarball for the Constructed Kernel Image (boot.img).
-  tar cvf PDA.$1.tar *
-  cd ../
+
+if [ -f "$TARGET_IMG/boot.img" ];
+then
+	# Remove the old TAR Compressed Kernel.
+	echo ""
+	echo "Remove Old PDA TarBall File ... "
+        cd $TARGET_IMG
+        rm -Rf *.tar
+
+	# Make a Tarball for the Constructed Kernel Image (boot.img).
+
+	echo ""
+	echo "Making The New Odin Flashable 'PDA.$1.tar' & Raw 'Kernel.$1.Boot.img' Flashable with 'DD' Command ..."
+	tar cvf PDA.$1.tar *
+	mv  boot.img Kernel.$1.Boot.img
+	echo ""
+	echo "Go Find The Result Files in '$TARGET_IMG' Directory."
+	echo ""
+	cd ../
+else
+	echo ""
+	echo "$TARGET_IMG/boot.img Not Found !"
+	echo ""
+	echo "PDA.$1.tar Not Created !"
+	echo ""
+fi
+sync

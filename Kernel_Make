@@ -10,11 +10,22 @@
 # UserName  : Maroc-OS                                            #
 ###################################################################
 
-# Beging Of Copmile Script Declarations
+# Copmile Script Declarations
 
 KERNEL_MAKE_VERSION="v.1.0"
-#CPU_CORES="cat /proc/cpuinfo| grep processor| wc -l"
-CPU_CORES="3"
+
+CPU_CORES=$(cat /proc/cpuinfo | grep processor | wc -l)
+
+if [ "$CPU_CORES" == "" ];
+then
+	CPU_CORES="-j3"
+elif [ "$CPU_CORES" == "0" ];
+then
+	CPU_CORES="-j3"
+else
+	CPU_CORES="-j$CPU_CORES"
+fi
+sync
 
 function Help
 {
@@ -38,14 +49,14 @@ else
 
 	cd common
 
-	echo "Starting Kernel Make Operations..."
+	echo "Starting Kernel Make Operations ..."
 	if [ "$1" == "-MT" ];
 		then
 			echo ""
 			echo "Merruk Technology Standard Compile."
 			echo ""
 			make bcm21553_totoro_05_defconfig
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 2>&1
+			make CONFIG_DEBUG_SECTION_MISMATCH=y $CPU_CORES > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-CF" ];
 		then
@@ -53,7 +64,7 @@ else
 			echo "Merruk Technology Special CONFIG_FILE."
 			echo ""
 			make $2
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 2>&1
+			make CONFIG_DEBUG_SECTION_MISMATCH=y $CPU_CORES > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-CL" ];
 		then
@@ -62,7 +73,7 @@ else
 			echo ""
 			make clean
 			make bcm21553_totoro_05_defconfig
-			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$CPU_CORES > ../kernel_log.$$ 2>&1
+			make CONFIG_DEBUG_SECTION_MISMATCH=y $CPU_CORES > ../kernel_log.$$ 2>&1
 
 	elif [ "$1" == "-CPU" ];
 		then
@@ -96,7 +107,7 @@ then
 
 	find . -name '*.ko' -exec cp -v {} ./MerrukTechnology_Output/system/lib/modules \;
 
-	echo "Merruk Technology Kernel/Modules Are Done!!"
+	echo "Merruk Technology Kernel/Modules Are Done !"
 	echo "./common/arch/arm/boot/zImage & All Modules Are copied to :"
 	echo ""
 	echo "/MerrukTechnology_Output Directory"

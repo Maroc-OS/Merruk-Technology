@@ -192,7 +192,8 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # /root/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?=arm
-CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
+#CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
+CROSS_COMPILE	?=$($CCOMPILER)
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
