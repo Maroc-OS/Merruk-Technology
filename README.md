@@ -1,8 +1,8 @@
-Merruk Technology Kernel v.2.0 
-=================================
-For Samsung Galaxy Y "Young" GT-S5360
-========================================
+Merruk Technology Kernel For Samsung Galaxy Y "Young" GT-S5360
+======================================================================
 
+Version : 2.0
+==============
 
 
 Introduction
@@ -87,8 +87,8 @@ Parameters:
 </dl>
 
 
-Output
---------
+Output files
+--------------
 
 Your compressed kernel will be built as:
 
