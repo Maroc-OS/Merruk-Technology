@@ -1,30 +1,32 @@
-Merruk Technology Kernel v.2.0 For Samsung Galaxy Y "Young" GT-S5360
-========================================================================
+Merruk Technology Kernel v.2.0 
+=================================
+For Samsung Galaxy Y "Young" GT-S5360
+========================================
 
 
 
 Introduction
 --------------
 
-This kernel source code repository has included tools to simplify building the kernel, create/install the environment and, eventually, compress the kernel image (zImage, RamDisk) after you make your modifications in the boot directory.
+-	This kernel source code repository has included tools to simplify building the kernel, create/install the environment and, eventually, compress the kernel image `(zImage, RamDisk)` after you make your modifications in the `Boot` directory.
 
 When you execute the scripts you will see the verbose output for better understanding the processes.
 
 This can be done in three steps:
 <dl>
-	<dt>1. Compiling</dt>
-	<dd>Build the kernel. There are 4 parameters to customize your build.</dd>
-	<dt>2. Preparing the environment</dt>
-	<dd>Set up the environment and decompress the RamDisk.</dd>
-	<dt>3. Kernel compression</dt>
-	<dd>Compress the kernel image with modifications in the boot directory or with default Merruk or Samsung files.</dd>
+	<dt>* 1. Compiling</dt>
+	<dd>	Build the kernel. There are 4 parameters to customize your build.</dd>
+	<dt>* 2. Preparing the environment</dt>
+	<dd>	Set up the environment and decompress the RamDisk.</dd>
+	<dt>* 3. Kernel compression</dt>
+	<dd>	Compress the kernel image with modifications in the boot directory or with default Merruk or Samsung files.</dd>
 </dl>
 
 
 Compiling
 ---------------
 
-For compiling Merruk Technology kernel open the command prompt (CONSOLE) and see this :
+For compiling Merruk Technology kernel open the command prompt `(CONSOLE)` and see this :
 
 <table>
   <tr>
@@ -34,7 +36,7 @@ For compiling Merruk Technology kernel open the command prompt (CONSOLE) and see
 	<td>New Compile/Update Existing Kernel</td><td>First Compile or Only Modded Codes</td><td>Kernel_Make</td><td>-MT</td>
   </tr>
   <tr>
-	<td>Specific CONFIG_FILE Compile</td><td>Must be in <b>'/arch/arm/configs/'</b></td><td>Kernel_Make</td><td>-CF totoro_brcm21553_05_defconfig</td>
+	<td>Specific 'CONFIG_FILE' Compile</td><td>Must be in <b>/arch/arm/configs/</b></td><td>Kernel_Make</td><td>-CF totoro_brcm21553_05_defconfig</td>
   </tr>
   <tr>
 	<td>Clean Build (0 files already built)</td><td>Like first time, clean files and build</td><td>Kernel_Make</td><td>-CL</td>
@@ -68,7 +70,7 @@ Parameters:
 Kernel compression
 --------------------
 
-You can simply call this tool after you made changes in the boot directory `(RamFS)` :
+You can simply call this tool after you made changes in the 'Boot' directory `(RamFS)` :
 
 Usage:
 
