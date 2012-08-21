@@ -554,6 +554,17 @@ struct platform_device bcm215xx_lcdc_device = {
 #define BCM_CORE_CLK_LOWAR	BCM21553_CORECLK_KHZ_156
 #define BCM_CORE_CLK_HIMED	BCM21553_CORECLK_KHZ_832
 
+//#define BCM_COREC_LK_OSUPER	BCM21553_CORECLK_KHZ_1GB
+//#define BCM_CORE_CLK_SUPER	BCM21553_CORECLK_KHZ_312
+//#define BCM_CORECLK_TURBO	BCM21553_CORECLK_KHZ_156
+//#define BCM_CORE_CLK_HEIGHER	BCM21553_CORECLK_KHZ_832
+//#define BCM_CORE_CLK_OMEDIUM	BCM21553_CORECLK_KHZ_1GB
+//#define BCM_CORE_CLK_UMEDIUM	BCM21553_CORECLK_KHZ_312
+//#define BCM_CORE_CLK_NORMAL	BCM21553_CORECLK_KHZ_156
+//#define BCM_CORE_CLK_STARTER	BCM21553_CORECLK_KHZ_832
+//#define BCM_CORE_CLK_LOWER	BCM21553_CORECLK_KHZ_156
+//#define BCM_CORE_CLK_ULOWER	BCM21553_CORECLK_KHZ_832
+
 #if defined(CONFIG_BCM_CPU_FREQ)
 /*********************************************************************
  *                  DATA FOR BCM CPUFREQ PLAT DRIVER                 *
@@ -565,6 +576,17 @@ enum {
 	BCM_NORMAL_MODE,
 	BCM_HIMED_MODE,
 	BCM_TURBO_MODE,
+
+	//BCM_ULOWER_MODE,
+	//BCM_LOWER_MODE,
+	//BCM_STARTER_MODE,
+	//BCM_NORMAL_MODE,
+	//BCM_UMEDIUM_MODE,
+	//BCM_OMEDIUM_MODE,
+	//BCM_HEIGHER_MODE,
+	//BCM_TURBO_MODE,
+	//BCM_SUPER_MODE,
+	//BCM_OSUPER_MODE,
 };
 
 /* Voltage-Frequency mapping for BCM21553 CPU0 */
@@ -573,6 +595,17 @@ static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
 	FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 1140000),
 	FTBL_INIT(BCM_CORE_CLK_HIMED / 1000, 1240000),
 	FTBL_INIT(BCM_CORECLK_TURBO / 1000, 1340000),
+
+	//FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 0000000), /* NOW WE NEED ONLY TO FIXE VOLTAGES*/
+	//FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_STARTER / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_UMEDIUM / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_OMEDIUM / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_HEIGHER / 1000, 0000000),
+	//FTBL_INIT(BCM_CORECLK_TURBO / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 0000000),
+	//FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 0000000),
 };
 /* BCM21553 CPU info */
 static struct bcm_cpu_info bcm215xx_cpu_info[] = {
@@ -607,10 +640,19 @@ struct platform_device bcm21553_cpufreq_drv = {
  *********************************************************************/
 
 static struct bcm21553_cpufreq_gov_plat bcm21553_cpufreq_gov_plat = {
-	.freq_osuper = BCM_CORECLK_TURBO,
-	.freq_turbo	= BCM_CORE_CLK_HIMED,
+	.freq_turbo = BCM_CORECLK_TURBO,
 	.freq_normal = BCM_CORE_CLK_NORMAL,
-	.freq_freq_ulower = BCM_CORE_CLK_LOWAR,
+
+	//.freq_osuper = BCM_CORE_CLK_OSUPER,
+	//.freq_super = BCM_CORE_CLK_SUPER,
+	//.freq_turbo = BCM_CORECLK_TURBO,
+	//.freq_higher = BCM_CORE_CLK_HEIGHER,
+	//.freq_omedium = BCM_CORE_CLK_OMEDIUM,
+	//.freq_umedium = BCM_CORE_CLK_UMEDIUM,
+	//.freq_normal = BCM_CORE_CLK_NORMAL,
+	//.freq_starter = BCM_CORE_CLK_STARTER,
+	//.freq_lower = BCM_CORE_CLK_LOWER,
+	//.freq_ulower = BCM_CORE_CLK_ULOWER,
 };
 
 struct platform_device bcm21553_cpufreq_gov = {
@@ -626,6 +668,7 @@ struct platform_device bcm21553_cpufreq_gov = {
 /*********************************************************************
  *                        DATA FOR AVS DRIVER                        *
  *********************************************************************/
+/* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT IT'S NOT HARD */
 
 #define NM2_FF_VOLTAGE_NORMAL	1180000
 #define NM2_TT_VOLTAGE_NORMAL	1240000
@@ -670,6 +713,8 @@ static struct silicon_type_info part_type_ff = {
  */
 static void bcm215xx_avs_notify(int silicon_type)
 {
+/* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT IT'S NOT HARD */
+
 	int normal;
 	int turbo;
 
