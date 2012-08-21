@@ -76,6 +76,8 @@ Your compressed kernel will be built as:
 <table>
 	<tr>
 		<td>PDA.[parameter].tar</td><td>Odin file</td>
+	</tr>
+	<tr>
 		<td>Kernel.[parameter].Boot.img</td><td>Raw file, Use With 'dd' Command</td>
 	</tr>
 </table>
