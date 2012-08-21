@@ -1,4 +1,4 @@
-<table><tr><strong>Merruk Technology Kernel v.2.0 For Samsung Galaxy Y <b>`Young`</b> GT-S5360.</tr></strong></table>
+<table><tr><strong>Merruk Technology Kernel v.2.0 For Samsung Galaxy Y "Young" GT-S5360.</tr></strong></table>
 
 How to use
 ==============
@@ -16,7 +16,7 @@ For compiling Merruk Technology Kernel open the command prompt (CONSOLE) and see
 	<td>New Compile/Update Existing Kernel</td><td>First Compile or Only Modded Codes</td><td>Kernel_Make</td><td>-MT</td>
   </tr>
   <tr>
-	<td>Specific CONFIG_FILE Compile</td><td>Must be in <b>"/arch/arm/configs/"</b></td><td>Kernel_Make</td><td>-CF totoro_brcm21553_05_defconfig</td>
+	<td>Specific CONFIG_FILE Compile</td><td>Must be in <b>'/arch/arm/configs/'</b></td><td>Kernel_Make</td><td>-CF totoro_brcm21553_05_defconfig</td>
   </tr>
   <tr>
 	<td>Clean Build (0 files already built)</td><td>Like first time, clean files and build</td><td>Kernel_Make</td><td>-CL</td>
@@ -75,7 +75,7 @@ Your compressed kernel will be built as:
 
 <table>
 	<tr>
-		<td>PDA.[parameter].tar</td><td>Odin file, Search for Compatible Version</td>
+		<td>PDA.[parameter].tar</td><td>Odin file, Search for a Compatible Version</td>
 	</tr>
 	<tr>
 		<td>Kernel.[parameter].Boot.img</td><td>Raw file, Use With `dd` Command</td>
