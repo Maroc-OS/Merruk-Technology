@@ -1,3 +1,6 @@
 .DS_Store
 *cmd.*
 *.o
+.config*
+auto.conf
+autoconf.h
