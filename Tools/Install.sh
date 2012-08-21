@@ -97,6 +97,7 @@ function Install_Kernel_Img () {
 
 function Help
 {
+<<<<<<< HEAD
 	echo "Positional Parameter [1] is Empty !"
 	echo ""
 	echo "How To Use :"
@@ -111,17 +112,31 @@ function Help
 } # end Help
 
 # Start Decompression
+=======
+    echo "Positional parameter 1 is empty !"
+    echo "How To Use :"
+    echo "./Install.sh [Parameter]"
+    echo "    - merruk  =         Use Merruk Technology RamDisk"
+    echo "    - stock   =         Use Samsung stock RamDisk"
+    echo "Please specify one of those listed above"
+    exit 1
+}   # end help
+>>>>>>> 7a10642bbdf365e73a30e49617fccf19186affcd
 
 if [ "$1" == "" ];
 then
 	Help
 else
+<<<<<<< HEAD
 	echo "Decommpressing Kernel RamDisk ..."
+=======
+	echo "Decommpressing kernel RamDisk..."
+>>>>>>> 7a10642bbdf365e73a30e49617fccf19186affcd
 	if [ "$1" == "merruk" ];
 	then
 		Install_Kernel_Img "merruk_kernel.tar"
 		echo ""
-		echo "Merruk Technology RamDisk."
+		echo "Merruk Technology RamDisk"
 		echo ""
 		cd $BOOT
 		gzip -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
@@ -132,7 +147,7 @@ else
 	then
 		Install_Kernel_Img "stock_kernel.tar"
 		echo ""
-		echo "Samsung Stock RamDisk."
+		echo "Samsung RamDisk"
 		echo ""
 		cd $BOOT
 		xz -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
