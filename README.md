@@ -1,4 +1,4 @@
-<center><strong>Merruk Technology Kernel v.2.0 For Samsung Galaxy Y 'Young' GT-S5360.</strong></center>
+<table><tr><strong>Merruk Technology Kernel v.2.0 For Samsung Galaxy Y <b>'Young'</b> GT-S5360.</tr></strong></table>
 
 How to use
 ==============
