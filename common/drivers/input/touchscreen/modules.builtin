@@ -1,0 +1,2 @@
+kernel/drivers/input/touchscreen/silabs_f760.ko
+kernel/drivers/input/touchscreen/bl_master.ko

@@ -1,0 +1,2 @@
+kernel/drivers/usb/gadget_brcm/dwc_otg.ko
+kernel/drivers/usb/gadget_brcm/g_android.ko

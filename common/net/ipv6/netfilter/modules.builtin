@@ -1,0 +1,3 @@
+kernel/net/ipv6/netfilter/ip6_tables.ko
+kernel/net/ipv6/netfilter/ip6_queue.ko
+kernel/net/ipv6/netfilter/nf_conntrack_ipv6.ko

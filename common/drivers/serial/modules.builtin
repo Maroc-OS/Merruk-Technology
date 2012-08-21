@@ -1,0 +1,3 @@
+kernel/drivers/serial/serial_core.ko
+kernel/drivers/serial/8250.ko
+kernel/drivers/serial/brcm_bt_lpm.ko

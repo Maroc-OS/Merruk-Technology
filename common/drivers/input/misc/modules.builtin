@@ -1,0 +1,2 @@
+kernel/drivers/input/misc/uinput.ko
+kernel/drivers/input/misc/ponkey-max8986.ko

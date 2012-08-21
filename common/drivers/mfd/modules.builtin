@@ -1,0 +1,2 @@
+kernel/drivers/mfd/mfd-core.ko
+kernel/drivers/mfd/max8986-core.ko

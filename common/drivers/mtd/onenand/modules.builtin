@@ -1,0 +1,2 @@
+kernel/drivers/mtd/onenand/onenand.ko
+kernel/drivers/mtd/onenand/bcm_xboard.ko

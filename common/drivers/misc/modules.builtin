@@ -1,0 +1,7 @@
+kernel/drivers/misc/bma222_driver.ko
+kernel/drivers/misc/bma222.ko
+kernel/drivers/misc/gp2a_prox.ko
+kernel/drivers/misc/mmc328x.ko
+kernel/drivers/misc/mecs.ko
+kernel/drivers/misc/max8986-audio.ko
+kernel/drivers/misc/max8986-muic.ko

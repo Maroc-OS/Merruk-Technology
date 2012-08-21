@@ -1,0 +1,7 @@
+kernel/drivers/mtd/nand/nand.ko
+kernel/drivers/mtd/nand/nand_ecc.ko
+kernel/drivers/mtd/nand/nand_ids.ko
+kernel/drivers/mtd/nand/nand_burst_read.ko
+kernel/drivers/mtd/nand/nand_brcm_nvsram.ko
+kernel/drivers/mtd/nand/nand_correct_data512.ko
+kernel/drivers/mtd/nand/nand_calculate_ecc512.ko

@@ -1,0 +1,4 @@
+kernel/drivers/video/broadcom/bmem_wrapper/bmem_wrapper.ko
+kernel/drivers/video/broadcom/fb/lcdfb.ko
+kernel/drivers/video/broadcom/ge/gememalloc_wrapper/gememalloc_wrapper.ko
+kernel/drivers/video/broadcom/hantro/memalloc_wrapper/memalloc_wrapper.ko
