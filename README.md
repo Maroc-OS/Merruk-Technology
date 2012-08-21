@@ -16,7 +16,7 @@ For compiling Merruk Technology Kernel open the command prompt (CONSOLE) and see
 	<td>New Compile/Update Existing Kernel</td><td>First Compile or Only Modded Codes</td><td>Kernel_Make</td><td>-MT</td>
   </tr>
   <tr>
-	<td>Specific CONFIG_FILE Compile</td><td>Must be in '/arch/arm/configs/'</td><td>Kernel_Make</td><td>-CF totoro_brcm21553_05_defconfig</td>
+	<td>Specific CONFIG_FILE Compile</td><td>Must be in `/arch/arm/configs/`</td><td>Kernel_Make</td><td>-CF totoro_brcm21553_05_defconfig</td>
   </tr>
   <tr>
 	<td>Clean Build (0 files already built)</td><td>Like first time, clean files and build</td><td>Kernel_Make</td><td>-CL</td>
@@ -30,7 +30,7 @@ For compiling Merruk Technology Kernel open the command prompt (CONSOLE) and see
 Preparing the environment
 ----------------------------
 
-On first use of the "Tools" directory you need to set up the environment :
+On first use of the `Tools` directory you need to set up the environment :
 
 Usage :
 
@@ -51,7 +51,7 @@ Parameters:
 Kernel compression
 --------------------
 
-You can simply call this tool after you made changes in the boot directory (RamFS) :
+You can simply call this tool after you made changes in the boot directory `(RamFS)` :
 
 How To Use :
 
@@ -75,9 +75,9 @@ Your compressed kernel will be built as:
 
 <table>
 	<tr>
-		<td>PDA.[parameter].tar</td><td>Odin file</td>
+		<td>PDA.[parameter].tar</td><td>Odin file, Search for Compatible Version</td>
 	</tr>
 	<tr>
-		<td>Kernel.[parameter].Boot.img</td><td>Raw file, Use With 'dd' Command</td>
+		<td>Kernel.[parameter].Boot.img</td><td>Raw file, Use With `dd` Command</td>
 	</tr>
 </table>
