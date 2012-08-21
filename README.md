@@ -1,12 +1,25 @@
-<table><tr><strong>Merruk Technology Kernel v.2.0 For Samsung Galaxy Y "Young" GT-S5360.</tr></strong></table>
+Merruk Technology Kernel v.2.0 For Samsung Galaxy Y "Young" GT-S5360
+========================================================================  
+  
+Introduction
+--------------  
+This kernel source code repository has included tools to simplify building the kernel, create/install the environment and, finally, compress the kernel image (zImage, RamDisk) after you make your modifications in the boot directory.
 
-How to use
-==============
+When you execute the scripts you will see the verbose output for better understanding the processes.
 
+This can be done in three steps:
+<dl>
+	<dt>1. Compiling</dt>
+	<dd>Build the kernel. You have 4 Parameters to customize your build.</dd>
+	<dt>2. Preparing the environment</dt>
+	<dd>Set up the environment and decompress the RamDisk.</dd>
+	<dt>3. Kernel compression</dt>
+	<dd>Compress the kernel image with modifications in the boot directory or with default Merruk or Samsung files.</dd>
+</dl>  
+  
 Compiling
----------------
-
-For compiling Merruk Technology Kernel open the command prompt (CONSOLE) and see this :
+---------------  
+For compiling Merruk Technology kernel open the command prompt (CONSOLE) and see this :
 
 <table>
   <tr>
@@ -24,12 +37,10 @@ For compiling Merruk Technology Kernel open the command prompt (CONSOLE) and see
   <tr>
 	<td>Specify number of prosessors</td><td>Script guesses that automatically</td><td>Kernel_Make</td><td>-CPU [Number of cores] (all cores by default)</td>
   </tr>
-</table>
-
-
+</table>  
+  
 Preparing the environment
-----------------------------
-
+----------------------------  
 On first use of the `Tools` directory you need to set up the environment :
 
 Usage :
@@ -44,13 +55,10 @@ Parameters:
 	<dd>Use Merruk Technology RamDisk</dd>
 	<dt>stock</dt>
 	<dd>Use Samsung RamDisk</dd>
-</dl>
-
-
-
+</dl>  
+  
 Kernel compression
---------------------
-
+--------------------  
 You can simply call this tool after you made changes in the boot directory `(RamFS)` :
 
 How To Use :
@@ -65,12 +73,10 @@ Parameters:
 	<dd>Use Merruk Technology kernel</dd>
 	<dt>stock</dt>
 	<dd>Use Samsung kernel</dd>
-</dl>
-
-
+</dl>  
+  
 Note:
-------
-
+------  
 Your compressed kernel will be built as:
 
 <table>
@@ -78,6 +84,6 @@ Your compressed kernel will be built as:
 		<td>PDA.[parameter].tar</td><td>Odin file, Search for a Compatible Version</td>
 	</tr>
 	<tr>
-		<td>Kernel.[parameter].Boot.img</td><td>Raw file, Use With `dd` Command</td>
+		<td>Kernel.[parameter].Boot.img</td><td>Raw file, flash with 'dd' Command</td>
 	</tr>
 </table>
