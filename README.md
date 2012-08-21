@@ -1,7 +1,8 @@
-MerrukTechnology Kernel For Samsung GT-S5360 :
-================================================
-`Galaxy Y Young` Version : 2.0
-===============================
+MerrukTechnology Kernel Version : 2.0
+=======================================
+For Samsung GT-S5360 : `Galaxy Y Young`
+========================================
+
 
 ______________
 
@@ -12,7 +13,7 @@ Introduction
 
 -	This kernel source code repository has included tools to simplify building the kernel, create/install the environment and, eventually, compress the kernel image `(zImage, RamDisk)` after you make your modifications in the `Boot` directory.
 
-When you execute the scripts you will see the verbose output for better understanding the processes.
+-	When you execute the scripts you will see the verbose output for better understanding the processes.
 
 This can be done in three steps:
 <dl>
