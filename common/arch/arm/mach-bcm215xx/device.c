@@ -640,8 +640,10 @@ struct platform_device bcm21553_cpufreq_drv = {
  *********************************************************************/
 
 static struct bcm21553_cpufreq_gov_plat bcm21553_cpufreq_gov_plat = {
-	.freq_turbo = BCM_CORECLK_TURBO,
 	.freq_normal = BCM_CORE_CLK_NORMAL,
+	.freq_osuper = BCM_CORECLK_TURBO,
+	.freq_turbo  = BCM_CORE_CLK_HIMED,
+	.freq_freq_ulower = BCM_CORE_CLK_LOWAR,
 
 	//.freq_osuper = BCM_CORE_CLK_OSUPER,
 	//.freq_super = BCM_CORE_CLK_SUPER,
