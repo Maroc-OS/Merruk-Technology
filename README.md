@@ -37,8 +37,8 @@ Usage :
 	cd ./Tools
 
 	./Install.sh [Parameter]
-	
-	Parameters:
+
+Parameters:
 <dl>
 	<dt>merruk</dt>
 	<dd>Use Merruk Technology InitRamFS</dd>
@@ -58,8 +58,8 @@ How To Use :
 	cd ./Tools
 
 	./Compress.sh [Parameter]
-	
-	Parameters:
+
+Parameters:
 <dl>
 	<dt>merruk</dt>
 	<dd>Use Merruk Technology kernel</dd>
