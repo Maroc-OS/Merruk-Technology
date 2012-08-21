@@ -1,8 +1,9 @@
-Merruk Technology Kernel  For Samsung Galaxy Y "Young" GT-S5360
-======================================================================
+MerrukTechnology Kernel For Samsung GT-S5360 Galaxy Y `Young`
+================================================================
 
-Version : 2.0
+<b>Version : 2.0</b>
 ______________
+
 
 
 Introduction
