@@ -13,7 +13,7 @@ When you execute the scripts you will see the verbose output for better understa
 This can be done in three steps:
 <dl>
 	<dt>1. Compiling</dt>
-	<dd>Build the kernel. You have 4 Parameters to customize your build.</dd>
+	<dd>Build the kernel. There are 4 parameters to customize your build.</dd>
 	<dt>2. Preparing the environment</dt>
 	<dd>Set up the environment and decompress the RamDisk.</dd>
 	<dt>3. Kernel compression</dt>
@@ -50,7 +50,7 @@ Preparing the environment
 
 On first use of the `Tools` directory you need to set up the environment :
 
-Usage :
+Usage:
 
 	cd ./Tools
 
@@ -70,7 +70,7 @@ Kernel compression
 
 You can simply call this tool after you made changes in the boot directory `(RamFS)` :
 
-How To Use :
+Usage:
 
 	cd ./Tools
 
@@ -92,9 +92,9 @@ Your compressed kernel will be built as:
 
 <table>
 	<tr>
-		<td>PDA.[parameter].tar</td><td>Odin file, Search for a Compatible Version</td>
+		<td>PDA.[parameter].tar</td><td>Odin file, search for a compatible version</td>
 	</tr>
 	<tr>
-		<td>Kernel.[parameter].Boot.img</td><td>Raw file, flash with 'dd' Command</td>
+		<td>Kernel.[parameter].Boot.img</td><td>Raw file, flash with 'dd' command</td>
 	</tr>
 </table>
