@@ -10,7 +10,7 @@
 # UserName  : Maroc-OS                                            #
 ###################################################################
 
-# Set Tools Paths
+# Set Tool Paths
 
 WORKING_DIR="pwd"
 export MERRUK_TOOLS=$($WORKING_DIR)"/bin"
@@ -65,30 +65,32 @@ chmod 777 $MERRUK_TOOLS/*
 function Install_Kernel_Img () {
 	if [ -f "$SOURCE_IMG/boot.img" ];
 	then
-		echo ""
-		echo "Boot.Img File Found ! Reinstall the Boot Image ..."
+        	echo "#                 ----------------------------------------                    #"
+		echo "#             Boot.Img File Found ! Reinstall the Boot Image...               #"
+        	echo "#                 ----------------------------------------                    #"
 		rm -f $SOURCE_IMG/boot.img
 		cd $SOURCE_IMG
-		echo ""
 		tar -xvf $TARBALL_KERNELS/$1
 		chmod 777 *
 		cd ..
-		echo "Samsung Boot Image Installed With Success."
-		echo ""
+		echo "#                    Boot Image Installed With Success.                       #"
+        	echo "#                 ----------------------------------------                    #"
 		$MERRUK_TOOLS/unpackbootimg -i $SOURCE_IMG/boot.img -o $UNPACK
-		echo "Boot Image Extracted to '$UNPACK' Directory."
+		echo "#               Boot Image Extracted to '$UNPACK' Directory.                  #"
+        	echo "#                 ----------------------------------------                    #"
 	else
-        	echo ""
-        	echo "Installing the Boot Image File ..."
+        	echo "#                 ----------------------------------------                    #"
+        	echo "#                     Installing the Boot Image File...                       #"
+        	echo "#                 ----------------------------------------                    #"
         	cd $SOURCE_IMG
-        	echo ""
         	tar -xvf $TARBALL_KERNELS/$1
         	chmod 777 *
         	cd ..
-        	echo "Samsung Boot Image Installed With Success."
-        	echo ""
+		echo "#                    Boot Image Installed With Success.                       #"
+        	echo "#                 ----------------------------------------                    #"
         	$MERRUK_TOOLS/unpackbootimg -i $SOURCE_IMG/boot.img -o $UNPACK
-	        echo "Boot Image Extracted to '$UNPACK' Directory."
+	        echo "#               Boot Image Extracted to '$UNPACK' Directory.                  #"
+        	echo "#                 ----------------------------------------                    #"
 	fi
 	sync
 }
@@ -97,16 +99,23 @@ function Install_Kernel_Img () {
 
 function Help
 {
-	echo "Positional parameter (ONE) is empty !"
-	echo ""
-	echo "How To Use :"
-	echo ""
-	echo "./Install.sh [Parameter]"
-	echo ""
-	echo "  - merruk  =     Use Merruk Technology RamDisk"
-	echo "  - stock   =     Use Samsung RamDisk"
-	echo ""
-	echo "Please specify one of those listed above"
+        echo "#                 ----------------------------------------                    #"
+	echo "###############################################################################"
+        echo "#                 MerrukTechnology Envirement Installer.sh                    #"
+	echo "#                  Positional parameter [$] is empty !                        #"
+	echo "###############################################################################"
+	echo "# How To Use :                                                                #"
+	echo "# ___________                                                                 #"
+        echo "#                                                                             #"
+	echo "#		./Installer.sh [Parameter]                                          #"
+	echo "#                                                                             #"
+	echo "#			- merruk  =     Use Merruk Technology RamDisk               #"
+	echo "#			- stock   =     Use Samsung RamDisk                         #"
+        echo "#                                                                             #"
+	echo "#	Please specify one of those listed above                                    #"
+        echo "#                                                                             #"
+	echo "###############################################################################"
+        echo "#                 ----------------------------------------                    #"
 	exit 1
 } # end Help
 
@@ -116,14 +125,18 @@ if [ "$1" == "" ];
 then
 	Help
 else
-	echo "Decommpressing kernel RamDisk..."
+        echo "#                 ----------------------------------------                    #"
+	echo "###############################################################################"
+	echo "# Decommpressing kernel RamDisk..."
+	echo "###############################################################################"
+        echo "#                 ----------------------------------------                    #"
 
 	if [ "$1" == "merruk" ];
 	then
 		Install_Kernel_Img "merruk_kernel.tar"
-		echo ""
-		echo "Merruk Technology RamDisk"
-		echo ""
+        	echo "#                 ----------------------------------------                    #"
+		echo "#                      Merruk Technology RamDisk                              #"
+        	echo "#                 ----------------------------------------                    #"
 		cd $BOOT
 		gzip -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
 		rm $UNPACK/boot.img-zImage
@@ -132,9 +145,9 @@ else
 	elif [ "$1" == "stock" ];
 	then
 		Install_Kernel_Img "stock_kernel.tar"
-		echo ""
-		echo "Samsung RamDisk"
-		echo ""
+        	echo "#                 ----------------------------------------                    #"
+		echo "#                           Samsung RamDisk                                   #"
+        	echo "#                 ----------------------------------------                    #"
 		cd $BOOT
 		xz -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
 		rm $UNPACK/boot.img-zImage
@@ -143,6 +156,8 @@ else
 	else
 		Help
 	fi
+	echo "###############################################################################"
+        echo "#                 ----------------------------------------                    #"
 fi
 sync
 
@@ -150,25 +165,38 @@ sync
 
 if [ -d "$BOOT/system" ];
 then
+        echo "#                 ----------------------------------------                    #"
+	echo "###############################################################################"
+	echo "#                        Create 'init.d' directory                            #"
+	echo "###############################################################################"
+        echo "#                 ----------------------------------------                    #"
 	mkdir $BOOT/system/etc
 	mkdir $BOOT/system/etc/init.d
 	chmod 777 $BOOT/system/etc/init.d
 else
-	echo ""
-	echo "Boot Directory Not Found !"
-	echo ""
+        echo "#                 ----------------------------------------                    #"
+	echo "###############################################################################"
+	echo "#                        Boot Directory Not Found !                           #"
+	echo "###############################################################################"
+        echo "#                 ----------------------------------------                    #"
 fi
 sync
 
-# Copy The Compiled Kernel From The Output Directory
+# Copy The Compiled Kernel From the Output Directory.
 
 if [ -f "../MerrukTechnology_Output/zImage" ];
 then
-	echo "MerrukTechnology Kernel Found ! Make a Copy into '$($UNPACK)' Direcroty."
-	cp ../MerrukTechnology_Output/zImage $UNPACK/
-	echo ""
+	echo "###############################################################################"
+        echo "#    MerrukTechnology Kernel Found ! Make a Copy into '$UNPACK' Direcroty.    #"
+	echo "###############################################################################"
+        cp ../MerrukTechnology_Output/zImage $UNPACK/
 else
-	echo "MerrukTechnology Kernel Not Copmiled ! Please Go Back & Run ./Kernel_Make [Parameter]"
-	echo ""
+	echo "###############################################################################"
+        echo "# MerrukTechnology Kernel Not Copmiled ! Please Run ./Kernel_Make [Parameter] #"
+	echo "###############################################################################"
+        echo "#                 Samsung Stock zImage used as default...!                    #"
+        echo "#                 ----------------------------------------                    #"
+	echo "###############################################################################"
+	cp $WORKING_DIR/ZMG $UNPACK/zImage
 fi
 sync
