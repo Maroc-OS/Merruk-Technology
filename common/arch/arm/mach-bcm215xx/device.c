@@ -689,13 +689,12 @@ static void bcm215xx_avs_notify(int silicon_type)
 		turbo = part_type_ss.nm2_turbo_voltage;
 		break;
 	}
-
-	if (normal >= 0)
+	{
 		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
-			(u32)normal;
-	if (turbo >= 0)
+			1140000;
 		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
-			(u32)turbo;
+			1240000;
+	}
 }
 #else
 #define bcm215xx_avs_notify NULL
