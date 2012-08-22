@@ -241,10 +241,10 @@ int bcmsdhc_enable_int(void __iomem *ioaddr, u8 ctrl_slot)
 	return 0;
 }
 
-/* *************************************************************************************************** */
-/* Function Name: bcmsdhc_external_reset */
-/* Description: external reset SD host */
-/* *************************************************************************************************** */
+/* *************************************************** */
+/* Function Name: bcmsdhc_external_reset               */
+/* Description: external reset SD host                 */
+/* *************************************************** */
 
 int bcmsdhc_external_reset(void __iomem *ioaddr, u8 ctrl_slot)
 {
@@ -549,21 +549,21 @@ struct platform_device bcm215xx_lcdc_device = {
 };
 #endif
 
-#define BCM_CORECLK_TURBO	BCM21553_CORECLK_KHZ_1GB
-#define BCM_CORE_CLK_NORMAL	BCM21553_CORECLK_KHZ_312
-#define BCM_CORE_CLK_LOWAR	BCM21553_CORECLK_KHZ_156
-#define BCM_CORE_CLK_HIMED	BCM21553_CORECLK_KHZ_832
+//#define BCM_CORECLK_TURBO	BCM21553_CORECLK_KHZ_1GB
+//#define BCM_CORE_CLK_NORMAL	BCM21553_CORECLK_KHZ_312
+//#define BCM_CORE_CLK_LOWAR	BCM21553_CORECLK_KHZ_156
+//#define BCM_CORE_CLK_HIMED	BCM21553_CORECLK_KHZ_832
 
-//#define BCM_COREC_LK_OSUPER	BCM21553_CORECLK_KHZ_1GB
-//#define BCM_CORE_CLK_SUPER	BCM21553_CORECLK_KHZ_312
-//#define BCM_CORECLK_TURBO	BCM21553_CORECLK_KHZ_156
-//#define BCM_CORE_CLK_HEIGHER	BCM21553_CORECLK_KHZ_832
-//#define BCM_CORE_CLK_OMEDIUM	BCM21553_CORECLK_KHZ_1GB
-//#define BCM_CORE_CLK_UMEDIUM	BCM21553_CORECLK_KHZ_312
-//#define BCM_CORE_CLK_NORMAL	BCM21553_CORECLK_KHZ_156
-//#define BCM_CORE_CLK_STARTER	BCM21553_CORECLK_KHZ_832
-//#define BCM_CORE_CLK_LOWER	BCM21553_CORECLK_KHZ_156
-//#define BCM_CORE_CLK_ULOWER	BCM21553_CORECLK_KHZ_832
+#define BCM_COREC_LK_OSUPER	BCM21553_CORECLK_KHZ_1GB
+#define BCM_CORE_CLK_SUPER	BCM21553_CORECLK_KHZ_936
+#define BCM_CORECLK_TURBO	BCM21553_CORECLK_KHZ_832
+#define BCM_CORE_CLK_HEIGHER	BCM21553_CORECLK_KHZ_624
+#define BCM_CORE_CLK_OMEDIUM	BCM21553_CORECLK_KHZ_468
+#define BCM_CORE_CLK_UMEDIUM	BCM21553_CORECLK_KHZ_416
+#define BCM_CORE_CLK_NORMAL	BCM21553_CORECLK_KHZ_312
+#define BCM_CORE_CLK_STARTER	BCM21553_CORECLK_KHZ_288
+#define BCM_CORE_CLK_LOWER	BCM21553_CORECLK_KHZ_208
+#define BCM_CORE_CLK_ULOWER	BCM21553_CORECLK_KHZ_156
 
 #if defined(CONFIG_BCM_CPU_FREQ)
 /*********************************************************************
@@ -572,40 +572,41 @@ struct platform_device bcm215xx_lcdc_device = {
 
 /* Indices for the voltage to frequency mapping table */
 enum {
-	BCM_LOWAR_MODE,
-	BCM_NORMAL_MODE,
-	BCM_HIMED_MODE,
-	BCM_TURBO_MODE,
-
-	//BCM_ULOWER_MODE,
-	//BCM_LOWER_MODE,
-	//BCM_STARTER_MODE,
+	//BCM_LOWAR_MODE,
 	//BCM_NORMAL_MODE,
-	//BCM_UMEDIUM_MODE,
-	//BCM_OMEDIUM_MODE,
-	//BCM_HEIGHER_MODE,
+	//BCM_HIMED_MODE,
 	//BCM_TURBO_MODE,
-	//BCM_SUPER_MODE,
-	//BCM_OSUPER_MODE,
+
+	BCM_ULOWER_MODE,
+	BCM_LOWER_MODE,
+	BCM_STARTER_MODE,
+	BCM_NORMAL_MODE,
+	BCM_UMEDIUM_MODE,
+	BCM_OMEDIUM_MODE,
+	BCM_HEIGHER_MODE,
+	BCM_TURBO_MODE,
+	BCM_SUPER_MODE,
+	BCM_OSUPER_MODE,
 };
 
 /* Voltage-Frequency mapping for BCM21553 CPU0 */
 static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
-	FTBL_INIT(BCM_CORE_CLK_LOWAR / 1000, 1100000),
-	FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 1140000),
-	FTBL_INIT(BCM_CORE_CLK_HIMED / 1000, 1240000),
-	FTBL_INIT(BCM_CORECLK_TURBO / 1000, 1340000),
+	//FTBL_INIT(BCM_CORE_CLK_LOWAR / 1000, 1100000),
+	//FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 1140000),
+	//FTBL_INIT(BCM_CORE_CLK_HIMED / 1000, 1240000),
+	//FTBL_INIT(BCM_CORECLK_TURBO / 1000, 1340000),
 
-	//FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 0000000), /* NOW WE NEED ONLY TO FIXE VOLTAGES*/
-	//FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_STARTER / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_UMEDIUM / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_OMEDIUM / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_HEIGHER / 1000, 0000000),
-	//FTBL_INIT(BCM_CORECLK_TURBO / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 0000000),
-	//FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 0000000),
+	/* NOW WE NEED ONLY TO FIXE VOLTAGES*/
+	FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 1120000),
+	FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 1150000),
+	FTBL_INIT(BCM_CORE_CLK_STARTER / 1000, 1175000),
+	FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 1180000),
+	FTBL_INIT(BCM_CORE_CLK_UMEDIUM / 1000, 120000),
+	FTBL_INIT(BCM_CORE_CLK_OMEDIUM / 1000, 1220000),
+	FTBL_INIT(BCM_CORE_CLK_HEIGHER / 1000, 12500000),
+	FTBL_INIT(BCM_CORECLK_TURBO / 1000, 1280000),
+	FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 1310000),
+	FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 1340000),
 };
 /* BCM21553 CPU info */
 static struct bcm_cpu_info bcm215xx_cpu_info[] = {
@@ -640,21 +641,21 @@ struct platform_device bcm21553_cpufreq_drv = {
  *********************************************************************/
 
 static struct bcm21553_cpufreq_gov_plat bcm21553_cpufreq_gov_plat = {
-	.freq_normal = BCM_CORE_CLK_NORMAL,
-	.freq_osuper = BCM_CORECLK_TURBO,
-	.freq_turbo  = BCM_CORE_CLK_HIMED,
-	.freq_freq_ulower = BCM_CORE_CLK_LOWAR,
-
-	//.freq_osuper = BCM_CORE_CLK_OSUPER,
-	//.freq_super = BCM_CORE_CLK_SUPER,
-	//.freq_turbo = BCM_CORECLK_TURBO,
-	//.freq_higher = BCM_CORE_CLK_HEIGHER,
-	//.freq_omedium = BCM_CORE_CLK_OMEDIUM,
-	//.freq_umedium = BCM_CORE_CLK_UMEDIUM,
 	//.freq_normal = BCM_CORE_CLK_NORMAL,
-	//.freq_starter = BCM_CORE_CLK_STARTER,
-	//.freq_lower = BCM_CORE_CLK_LOWER,
-	//.freq_ulower = BCM_CORE_CLK_ULOWER,
+	//.freq_osuper = BCM_CORECLK_TURBO,
+	//.freq_turbo  = BCM_CORE_CLK_HIMED,
+	//.freq_freq_ulower = BCM_CORE_CLK_LOWAR,
+
+	.freq_osuper = BCM_CORE_CLK_OSUPER,
+	.freq_super = BCM_CORE_CLK_SUPER,
+	.freq_turbo = BCM_CORECLK_TURBO,
+	.freq_higher = BCM_CORE_CLK_HEIGHER,
+	.freq_omedium = BCM_CORE_CLK_OMEDIUM,
+	.freq_umedium = BCM_CORE_CLK_UMEDIUM,
+	.freq_normal = BCM_CORE_CLK_NORMAL,
+	.freq_starter = BCM_CORE_CLK_STARTER,
+	.freq_lower = BCM_CORE_CLK_LOWER,
+	.freq_ulower = BCM_CORE_CLK_ULOWER,
 };
 
 struct platform_device bcm21553_cpufreq_gov = {
@@ -671,18 +672,69 @@ struct platform_device bcm21553_cpufreq_gov = {
  *                        DATA FOR AVS DRIVER                        *
  *********************************************************************/
 /* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT IT'S NOT HARD */
+		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
+			1120000;
+		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
+			1150000;
+		bcm215xx_cpu0_freq_tbl[BCM_STARTER_MODE].cpu_voltage =
+			1175000;
+		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
+			1180000;
+		bcm215xx_cpu0_freq_tbl[BCM_UMEDIUM_MODE].cpu_voltage =
+			1200000;
+		bcm215xx_cpu0_freq_tbl[BCM_OMEDIUM_MODE].cpu_voltage =
+			1220000;
+		bcm215xx_cpu0_freq_tbl[BCM_HEIGHER_MODE].cpu_voltage =
+			1250000;
+		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
+			1280000;
+		bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_voltage =
+			1310000;
+		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
+			1340000;
+#define NM2_FF_VOLTAGE_ULOWER	1080000
+#define NM2_TT_VOLTAGE_ULOWER	1120000
+#define NM2_SS_VOLTAGE_ULOWER	1180000
 
-#define NM2_FF_VOLTAGE_NORMAL	1180000
-#define NM2_TT_VOLTAGE_NORMAL	1240000
-#define NM2_SS_VOLTAGE_NORMAL	1300000
+#define NM2_FF_VOLTAGE_LOWER	1110000
+#define NM2_TT_VOLTAGE_LOWER	1150000
+#define NM2_SS_VOLTAGE_LOWER	1210000
 
-#define NM2_FF_VOLTAGE_TURBO	1220000
-#define NM2_TT_VOLTAGE_TURBO	1300000
-#define NM2_SS_VOLTAGE_TURBO	1360000
+#define NM2_FF_VOLTAGE_STARTER	1135000
+#define NM2_TT_VOLTAGE_STARTER	1175000
+#define NM2_SS_VOLTAGE_STARTER	1235000
 
-#define NM_FF_VOLTAGE		1320000
+#define NM2_FF_VOLTAGE_NORMAL	1140000
+#define NM2_TT_VOLTAGE_NORMAL	1180000
+#define NM2_SS_VOLTAGE_NORMAL	1240000
+
+#define NM2_FF_VOLTAGE_UMEDIUM	1160000
+#define NM2_TT_VOLTAGE_UMEDIUM	1200000
+#define NM2_SS_VOLTAGE_UMEDIUM	1260000
+
+#define NM2_FF_VOLTAGE_OMEDIUM	1180000
+#define NM2_TT_VOLTAGE_OMEDIUM	1220000
+#define NM2_SS_VOLTAGE_OMEDIUM	1280000
+
+#define NM2_FF_VOLTAGE_HEIGHER	1210000
+#define NM2_TT_VOLTAGE_HEIGHER	1250000
+#define NM2_SS_VOLTAGE_HEIGHER	1310000
+
+#define NM2_FF_VOLTAGE_TURBO	1270000
+#define NM2_TT_VOLTAGE_TURBO	1280000
+#define NM2_SS_VOLTAGE_TURBO	1340000
+
+#define NM2_FF_VOLTAGE_SUPER	1270000
+#define NM2_TT_VOLTAGE_SUPER	1310000
+#define NM2_SS_VOLTAGE_SUPER	1360000
+
+#define NM2_FF_VOLTAGE_OSUPER	1300000
+#define NM2_TT_VOLTAGE_OSUPER	1340000
+#define NM2_SS_VOLTAGE_OSUPER	1360000
+
+#define NM_FF_VOLTAGE		1300000
 #define NM_TT_VOLTAGE		1320000
-#define NM_SS_VOLTAGE		1360000
+#define NM_SS_VOLTAGE		1340000
 
 #define FF_THRESHOLD 445
 #define SS_THRESHOLD 395
@@ -690,22 +742,46 @@ struct platform_device bcm21553_cpufreq_gov = {
 static struct silicon_type_info part_type_ss = {
 	.lpm_voltage = -1, /* Pass -1 if no update needed */
 	.nm_voltage = NM_SS_VOLTAGE,
+	.nm2_ulower_voltage = NM2_SS_VOLTAGE_ULOWER,
+	.nm2_lower_voltage = NM2_SS_VOLTAGE_LOWER,
+	.nm2_starter_voltage = NM2_SS_VOLTAGE_STARTER,
 	.nm2_normal_voltage = NM2_SS_VOLTAGE_NORMAL,
+	.nm2_umedium_voltage = NM2_SS_VOLTAGE_UMEDIUM,
+	.nm2_omedium_voltage = NM2_SS_VOLTAGE_OMEDIUM,
+	.nm2_higher_voltage = NM2_SS_VOLTAGE_HEIGHER,
 	.nm2_turbo_voltage = NM2_SS_VOLTAGE_TURBO,
+	.nm2_super_voltage = NM2_SS_VOLTAGE_SUPER,
+	.nm2_osuper_voltage = NM2_SS_VOLTAGE_OSUPER,
 };
 
 static struct silicon_type_info part_type_tt = {
 	.lpm_voltage = -1, /* Pass -1 if no update needed */
 	.nm_voltage = NM_TT_VOLTAGE,
+	.nm2_ulower_voltage = NM2_TT_VOLTAGE_ULOWER,
+	.nm2_lower_voltage = NM2_TT_VOLTAGE_LOWER,
+	.nm2_starter_voltage = NM2_TT_VOLTAGE_STARTER,
 	.nm2_normal_voltage = NM2_TT_VOLTAGE_NORMAL,
+	.nm2_umedium_voltage = NM2_TT_VOLTAGE_UMEDIUM,
+	.nm2_omedium_voltage = NM2_TT_VOLTAGE_OMEDIUM,
+	.nm2_higher_voltage = NM2_TT_VOLTAGE_HEIGHER,
 	.nm2_turbo_voltage = NM2_TT_VOLTAGE_TURBO,
+	.nm2_super_voltage = NM2_TT_VOLTAGE_SUPER,
+	.nm2_osuper_voltage = NM2_TT_VOLTAGE_OSUPER,
 };
 
 static struct silicon_type_info part_type_ff = {
 	.lpm_voltage = -1, /* Pass -1 if no update needed */
 	.nm_voltage = NM_FF_VOLTAGE,
+	.nm2_ulower_voltage = NM2_FF_VOLTAGE_ULOWER,
+	.nm2_lower_voltage = NM2_FF_VOLTAGE_LOWER,
+	.nm2_starter_voltage = NM2_FF_VOLTAGE_STARTER,
 	.nm2_normal_voltage = NM2_FF_VOLTAGE_NORMAL,
+	.nm2_umedium_voltage = NM2_FF_VOLTAGE_UMEDIUM,
+	.nm2_omedium_voltage = NM2_FF_VOLTAGE_OMEDIUM,
+	.nm2_higher_voltage = NM2_FF_VOLTAGE_HEIGHER,
 	.nm2_turbo_voltage = NM2_FF_VOLTAGE_TURBO,
+	.nm2_super_voltage = NM2_FF_VOLTAGE_SUPER,
+	.nm2_osuper_voltage = NM2_FF_VOLTAGE_OSUPER,
 };
 
 #ifdef CONFIG_BCM_CPU_FREQ
@@ -717,41 +793,93 @@ static void bcm215xx_avs_notify(int silicon_type)
 {
 /* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT IT'S NOT HARD */
 
+	int ulower;
+	int lower;
+	int starter;
 	int normal;
+	int umedium;
+	int omedium;
+	int higher;
 	int turbo;
+	int super;
+	int osuper;
 
 	pr_info("%s: silicon_type : %d\n", __func__, silicon_type);
 
 	switch(silicon_type)
 	{
 	case SILICON_TYPE_SLOW:
+		ulower = part_type_ss.nm2_ulower_voltage;
+		lower = part_type_ss.nm2_lower_voltage;
+		starter = part_type_ss.nm2_starter_voltage;
 		normal = part_type_ss.nm2_normal_voltage;
+		umedium = part_type_ss.nm2_umedium_voltage;
+		omedium = part_type_ss.nm2_omedium_voltage;
+		higher = part_type_ss.nm2_higher_voltage;
 		turbo = part_type_ss.nm2_turbo_voltage;
+		super = part_type_ss.nm2_super_voltage;
+		osuper = part_type_ss.nm2_osuper_voltage;
 		break;
 
 	case SILICON_TYPE_TYPICAL:
+		ulower = part_type_tt.nm2_ulower_voltage;
+		lower = part_type_tt.nm2_lower_voltage;
+		starter = part_type_tt.nm2_starter_voltage;
 		normal = part_type_tt.nm2_normal_voltage;
+		umedium = part_type_tt.nm2_umedium_voltage;
+		omedium = part_type_tt.nm2_omedium_voltage;
+		higher = part_type_tt.nm2_higher_voltage;
 		turbo = part_type_tt.nm2_turbo_voltage;
+		super = part_type_tt.nm2_super_voltage;
+		osuper = part_type_tt.nm2_osuper_voltage;
 		break;
 
 	case SILICON_TYPE_FAST:
+		ulower = part_type_ff.nm2_ulower_voltage;
+		lower = part_type_ff.nm2_lower_voltage;
+		starter = part_type_ff.nm2_starter_voltage;
 		normal = part_type_ff.nm2_normal_voltage;
+		umedium = part_type_ff.nm2_umedium_voltage;
+		omedium = part_type_ff.nm2_omedium_voltage;
+		higher = part_type_ff.nm2_higher_voltage;
 		turbo = part_type_ff.nm2_turbo_voltage;
+		super = part_type_ff.nm2_super_voltage;
+		osuper = part_type_ff.nm2_osuper_voltage;
 		break;
 
 	default:
+		ulower = part_type_ss.nm2_ulower_voltage;
+		lower = part_type_ss.nm2_lower_voltage;
+		starter = part_type_ss.nm2_starter_voltage;
 		normal = part_type_ss.nm2_normal_voltage;
+		umedium = part_type_ss.nm2_umedium_voltage;
+		omedium = part_type_ss.nm2_omedium_voltage;
+		higher = part_type_ss.nm2_higher_voltage;
 		turbo = part_type_ss.nm2_turbo_voltage;
+		super = part_type_ss.nm2_super_voltage;
+		osuper = part_type_ss.nm2_osuper_voltage;
 		break;
 	}
 	{
-		bcm215xx_cpu0_freq_tbl[BCM_LOWAR_MODE].cpu_voltage =
-			1100000;
+		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
+			1120000;
+		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
+			1150000;
+		bcm215xx_cpu0_freq_tbl[BCM_STARTER_MODE].cpu_voltage =
+			1175000;
 		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
-			1140000;
-		bcm215xx_cpu0_freq_tbl[BCM_HIMED_MODE].cpu_voltage =
-			1240000;
+			1180000;
+		bcm215xx_cpu0_freq_tbl[BCM_UMEDIUM_MODE].cpu_voltage =
+			1200000;
+		bcm215xx_cpu0_freq_tbl[BCM_OMEDIUM_MODE].cpu_voltage =
+			1220000;
+		bcm215xx_cpu0_freq_tbl[BCM_HEIGHER_MODE].cpu_voltage =
+			1250000;
 		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
+			1280000;
+		bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_voltage =
+			1310000;
+		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
 			1340000;
 	}
 }
@@ -811,13 +939,45 @@ struct platform_device bcm215xx_avs_device = {
 
 void __init update_avs_sysparm(void)
 {
+	SYSPARM_VOLT("nm2_ff_voltage_osuper", part_type_ff.nm2_osuper_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_osuper", part_type_tt.nm2_osuper_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_osuper", part_type_ss.nm2_osuper_voltage);
+
+	SYSPARM_VOLT("nm2_ff_voltage_super", part_type_ff.nm2_super_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_super", part_type_tt.nm2_super_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_super", part_type_ss.nm2_super_voltage);
+
 	SYSPARM_VOLT("nm2_ff_voltage_turbo", part_type_ff.nm2_turbo_voltage);
 	SYSPARM_VOLT("nm2_tt_voltage_turbo", part_type_tt.nm2_turbo_voltage);
 	SYSPARM_VOLT("nm2_ss_voltage_turbo", part_type_ss.nm2_turbo_voltage);
 
+	SYSPARM_VOLT("nm2_ff_voltage_higher", part_type_ff.nm2_higher_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_higher", part_type_tt.nm2_higher_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_higher", part_type_ss.nm2_higher_voltage);
+
+	SYSPARM_VOLT("nm2_ff_voltage_omedium", part_type_ff.nm2_omedium_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_omedium", part_type_tt.nm2_omedium_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_omedium", part_type_ss.nm2_omedium_voltage);
+
+	SYSPARM_VOLT("nm2_ff_voltage_umedium", part_type_ff.nm2_umedium_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_umedium", part_type_tt.nm2_umedium_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_umedium", part_type_ss.nm2_umedium_voltage);
+
 	SYSPARM_VOLT("nm2_ff_voltage_normal", part_type_ff.nm2_normal_voltage);
 	SYSPARM_VOLT("nm2_tt_voltage_normal", part_type_tt.nm2_normal_voltage);
 	SYSPARM_VOLT("nm2_ss_voltage_normal", part_type_ss.nm2_normal_voltage);
+
+	SYSPARM_VOLT("nm2_ff_voltage_starter", part_type_ff.nm2_starter_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_starter", part_type_tt.nm2_starter_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_starter", part_type_ss.nm2_starter_voltage);
+
+	SYSPARM_VOLT("nm2_ff_voltage_lower", part_type_ff.nm2_lower_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_lower", part_type_tt.nm2_lower_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_lower", part_type_ss.nm2_lower_voltage);
+
+	SYSPARM_VOLT("nm2_ff_voltage_ulower", part_type_ff.nm2_ulower_voltage);
+	SYSPARM_VOLT("nm2_tt_voltage_ulower", part_type_tt.nm2_ulower_voltage);
+	SYSPARM_VOLT("nm2_ss_voltage_ulower", part_type_ss.nm2_ulower_voltage);
 
 	SYSPARM_VOLT("nm_ff_voltage", part_type_ff.nm_voltage);
 	SYSPARM_VOLT("nm_tt_voltage", part_type_tt.nm_voltage);
