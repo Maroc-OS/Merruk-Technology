@@ -692,7 +692,7 @@ struct platform_device bcm21553_cpufreq_gov = {
 			1310000;
 		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
 			1340000;
-#define NM2_FF_VOLTAGE_ULOWER	1080000
+#define NM2_FF_VOLTAGE_ULOWER	1080000 /* you sure we need the following ~150 lines... */
 #define NM2_TT_VOLTAGE_ULOWER	1120000
 #define NM2_SS_VOLTAGE_ULOWER	1180000
 
@@ -859,8 +859,8 @@ static void bcm215xx_avs_notify(int silicon_type)
 		super = part_type_ss.nm2_super_voltage;
 		osuper = part_type_ss.nm2_osuper_voltage;
 		break;
-	}
-	{
+	} /* ... until here? */
+	{ /* they were originally meant to calculate the voltage applied here, but we apply it by hand now */
 		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
 			1120000;
 		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
