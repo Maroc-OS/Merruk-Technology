@@ -596,9 +596,15 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 	u32 apps_pll_freq = bcm21553_apps_pll_get_rate();
 
 	arm11_freq[0] = (apps_pll_freq*2)/16;
-	arm11_freq[1] = (apps_pll_freq*2)/8;
-	arm11_freq[2] = (apps_pll_freq*2)/3;
-	arm11_freq[3] = (apps_pll_freq*2)/2;
+	arm11_freq[1] = (apps_pll_freq*2)/12;
+	arm11_freq[2] = (apps_pll_freq*3)/13;
+	arm11_freq[3] = (apps_pll_freq*2)/8;
+	arm11_freq[4] = (apps_pll_freq*2)/6;
+	arm11_freq[5] = (apps_pll_freq*3)/8;
+	arm11_freq[6] = (apps_pll_freq*3)/6;
+	arm11_freq[7] = (apps_pll_freq*2)/3;
+	arm11_freq[8] = (apps_pll_freq*3)/4;
+	arm11_freq[9] = (apps_pll_freq);
 
 	/*we support only two modes  - 0xC & 0xF - thats what she said*/
 	if (val == arm11_freq[0])
@@ -1536,7 +1542,7 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
 	//writel(0x0C, ADDR_CLKPWR_CLK_ARMAHB_MODE);
 	/*I wanna Switch to 0x0E :p*/
-	bcm215xx_set_armahb_mode(0x0E;
+	bcm215xx_set_armahb_mode(0x0E);
 	udelay(100);
 
 	/* Write 0 bit 0 to POWER ON V3D island */
