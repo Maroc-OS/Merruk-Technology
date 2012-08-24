@@ -178,8 +178,8 @@ static int bcm_avs_drv_probe(struct platform_device *pdev)
 			ret = PTR_ERR(regl);
 			goto error;
 		}
-		regulator_set_voltage(regl, type_info->nm2_turbo_voltage,
-				      type_info->nm2_turbo_voltage);
+		regulator_set_voltage(regl, type_info->nm2_osuper_voltage,
+				      type_info->nm2_osuper_voltage);
 		regulator_put(regl);
 	}
 
