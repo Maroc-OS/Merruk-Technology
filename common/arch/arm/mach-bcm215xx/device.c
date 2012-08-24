@@ -832,7 +832,7 @@ static void bcm215xx_avs_notify(int silicon_type)
 		super	= part_type_ss.nm2_super_voltage;
 		osuper	= part_type_ss.nm2_osuper_voltage;
 		break;
-<<<<<<< HEAD
+
 	}
 
 	if (ulower >= 0)
