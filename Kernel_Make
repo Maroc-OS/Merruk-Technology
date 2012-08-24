@@ -18,10 +18,10 @@ CPU_CORES=$(cat /proc/cpuinfo | grep processor | wc -l)
 
 if [ "$CPU_CORES" == "" ];
 then
-	CPU_CORES="-j3"
+	CPU_CORES="-j2"
 elif [ "$CPU_CORES" == "0" ];
 then
-	CPU_CORES="-j3"
+	CPU_CORES="-j2"
 else
 	CPU_CORES="-j$CPU_CORES"
 fi

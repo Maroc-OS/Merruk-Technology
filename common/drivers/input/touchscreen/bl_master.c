@@ -48,8 +48,12 @@ extern int FW_VERSION;
 int SMB_Write (unsigned char *rbuf, int size)
 {
     int ret;
-    
-      ret=tsp_i2c_write(rbuf, size);    
+
+    ret=tsp_i2c_write(rbuf, size);
+
+    /*if (ret) {
+    	printk(KERN_DEBUG "SMB Write buffer\n");
+    }*/
     return ret;
 }
 
@@ -68,12 +72,16 @@ int SMB_Write (unsigned char *rbuf, int size)
 // 3) Read input data from <SMB_DATA_IN> variable array
 //
 //-----------------------------------------------------------------------------
-void SMB_Read (unsigned char *rbuf, int size)
+int SMB_Read (unsigned char *rbuf, int size)
 {
     int ret;
 
-    ret=tsp_i2c_read(rbuf, size);
-    mdelay(5);
+    ret = tsp_i2c_read(rbuf, size);
+	mdelay(5);
+
+    /*if (ret) {
+    	printk(KERN_DEBUG "SMB Read buffer\n");
+    }*/
     return ret;
 }
 

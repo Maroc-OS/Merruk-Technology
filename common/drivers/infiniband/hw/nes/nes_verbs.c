@@ -548,6 +548,7 @@ static int nes_query_device(struct ib_device *ibdev, struct ib_device_attr *prop
 			break;
 		default:
 			props->max_qp_rd_atom = 0;
+			break;
 	}
 	props->max_qp_init_rd_atom = props->max_qp_rd_atom;
 	props->atomic_cap = IB_ATOMIC_NONE;
@@ -1207,6 +1208,16 @@ static struct ib_qp *nes_create_qp(struct ib_pd *ibpd,
 								err = 0;
 								nes_debug(NES_DBG_QP, "Found PBL for virtual QP. nespbl=%p. user_base=0x%lx\n",
 									  nespbl, nespbl->user_base);
+
+								/* done with memory allocated
+								during nes_reg_user_mr() *make sure if this realy works* */
+								pci_free_consistent(
+									nesdev->pcidev,
+									nespbl->pbl_size,
+									nespbl->pbl_vbase,
+									nespbl->pbl_pbase);
+								kfree(nespbl);
+
 								break;
 							}
 						}
@@ -2830,7 +2841,7 @@ static int nes_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 	init_attr->qp_context = nesqp->ibqp.qp_context;
 	init_attr->send_cq = nesqp->ibqp.send_cq;
 	init_attr->recv_cq = nesqp->ibqp.recv_cq;
-	init_attr->srq = nesqp->ibqp.srq = nesqp->ibqp.srq;
+	init_attr->srq = nesqp->ibqp.srq;
 	init_attr->cap = attr->cap;
 
 	return 0;

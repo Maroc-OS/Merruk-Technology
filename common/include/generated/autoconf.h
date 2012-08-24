@@ -1,7 +1,7 @@
 /*
  * Automatically generated C config: don't edit
  * Linux kernel version: 2.6.35.7
- * Tue Aug 21 07:22:00 2012
+ * Fri Aug 24 14:35:40 2012
  */
 #define AUTOCONF_INCLUDED
 #define CONFIG_RING_BUFFER 1
@@ -70,7 +70,6 @@
 #define CONFIG_MSDOS_FS 1
 #define CONFIG_TUN_MODULE 1
 #define CONFIG_USB_OTG_UTILS 1
-#define CONFIG_BCM21553_V3D_SYNC_ENABLE 1
 #define CONFIG_DM_CRYPT 1
 #define CONFIG_SERIAL_8250 1
 #define CONFIG_HAVE_PROC_CPU 1
@@ -122,7 +121,6 @@
 #define CONFIG_RTC_INTF_SYSFS 1
 #define CONFIG_NET_EMATCH_U32 1
 #define CONFIG_BLK_DEV_INITRD 1
-#define CONFIG_BRCM_HAL_CAM_WITH_STILL_YUV 1
 #define CONFIG_ZLIB_INFLATE 1
 #define CONFIG_CRC_T10DIF 1
 #define CONFIG_CRYPTO_TWOFISH_COMMON 1
@@ -347,7 +345,6 @@
 #define CONFIG_BRCM_FUSE_LOG 1
 #define CONFIG_MD 1
 #define CONFIG_CRYPTO_ALGAPI 1
-#define CONFIG_BOOT_TRACER 1
 #define CONFIG_MISC_DEVICES 1
 #define CONFIG_INPUT_UINPUT 1
 #define CONFIG_BCM215XX_DSS 1
@@ -474,7 +471,6 @@
 #define CONFIG_BLK_DEV_RAM_COUNT 16
 #define CONFIG_BRCM_FUSE_IPC_CIB 1
 #define CONFIG_INET_XFRM_MODE_TUNNEL 1
-#define CONFIG_VGA_CONSOLE 1
 #define CONFIG_NF_NAT_NEEDED 1
 #define CONFIG_I2C_BCM1160 1
 #define CONFIG_ATA_VERBOSE_ERROR 1
@@ -486,7 +482,6 @@
 #define CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ 1
 #define CONFIG_MAX8986_POWER 1
 #define CONFIG_CPU_FREQ_STAT 1
-#define CONFIG_BRCM_LOGDRV_DEBUG 1
 #define CONFIG_MTD_BLKDEVS 1
 #define CONFIG_INET6_ESP 1
 #define CONFIG_MMC_BCM 1
@@ -530,7 +525,7 @@
 #define CONFIG_SCHED_DEBUG 1
 #define CONFIG_DEFAULT_MMAP_MIN_ADDR 4096
 #define CONFIG_IP_NF_IPTABLES 1
-#define CONFIG_CMDLINE "console=ttyS0,115200n8 mem=362M kmemleak=off root=/dev/ram0 rw mtdparts=bcm_umi-nand:256K@0K(bcm_boot),1536K@256K(bootloader)ro,1536K@1792K(loke)ro,512K@3328K(systemdata),512K@3840K(sysparm_dep),512K@4352K(umts_cal),15104K@4864K(modem),5M@19968K(param_lfs),2M@25088K(kpanic),6M@27136K(boot)ro,6M@33280K(boot_backup)rw,4M@39424K(recovery)rw,200M@43520K(system),70M@248320K(cache),192000K@320000K(userdata)rw,1M@500M(cal) androidboot.console=ttyS0 jtag"
+#define CONFIG_CMDLINE "console=ttyS0,115200n8 mem=362M kmemleak=on root=/dev/ram0 rw mtdparts=bcm_umi-nand:256K@0K(bcm_boot),1536K@256K(bootloader)ro,1536K@1792K(loke)ro,512K@3328K(systemdata),512K@3840K(sysparm_dep),512K@4352K(umts_cal),15104K@4864K(modem),5M@19968K(param_lfs),2M@25088K(kpanic),6M@27136K(boot)ro,6M@33280K(boot_backup)rw,4M@39424K(recovery)rw,200M@43520K(system),70M@248320K(cache),192000K@320000K(userdata)rw,1M@500M(cal) androidboot.console=ttyS0 jtag"
 #define CONFIG_HAPTIC 1
 #define CONFIG_MFD_SM501_MODULE 1
 #define CONFIG_USB_ARCH_HAS_HCD 1
@@ -774,7 +769,6 @@
 #define CONFIG_BITREVERSE 1
 #define CONFIG_BLK_DEV_RAM_SIZE 65536
 #define CONFIG_CRYPTO_PCOMP 1
-#define CONFIG_ARM1136JFS_CP15_DEBUG 1
 #define CONFIG_CRYPTO_BLKCIPHER 1
 #define CONFIG_ARCH_BCM215XX 1
 #define CONFIG_YAFFS_SHORT_NAMES_IN_RAM 1

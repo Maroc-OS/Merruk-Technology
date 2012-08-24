@@ -260,12 +260,14 @@ static int bcm1161_wait_interrupt(struct bcm1161_i2c *i2c)
 	}
 #endif
 	if (res == 0) {
+		/* i thnk this one is better :)*/
+		/* 	I2C_DEBUG(DBG_ERROR, "wait timed out, %d\n", &i2c->adapter.dev); */
 		dev_err(&i2c->adapter.dev, "Timeout on wait\n");
 		return -ETIMEDOUT;
 	} else {
 		res = i2c->interrupt;
 	}
-
+	/*shauld we set interrupt to 0 before call return?*/
 	i2c->interrupt = 0;
 
 	return res;

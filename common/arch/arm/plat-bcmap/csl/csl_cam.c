@@ -3027,13 +3027,12 @@ Int32 csl_cam_trigger_capture( CSL_CAM_HANDLE cslCamH )
  ***********************************************************/
 Int32 csl_cam_rx_start( CSL_CAM_HANDLE cslCamH )
 {
+	printk(KERN_INFO"csl_cam_rx_start called \n");
     Int32                       success = 0;                    // pass by default
     CAM_HANDLE                  camH = (CAM_HANDLE)cslCamH;
     CHAL_CAM_STATUS_CODES       chal_status = CHAL_OP_OK;
     CHAL_CAM_PARAM_st_t         chal_cam_param_st;
     UInt32 sem_count;
-
-	printk(KERN_INFO"csl_cam_rx_start called \n");
 
     memset(&chal_cam_param_st, 0, sizeof(CHAL_CAM_PARAM_st_t));
 // Interface

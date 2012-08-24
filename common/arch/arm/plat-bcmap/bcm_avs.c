@@ -168,6 +168,20 @@ static int bcm_avs_drv_probe(struct platform_device *pdev)
 				      type_info->nm2_turbo_voltage);
 		regulator_put(regl);
 	}
+	if (pdata->core_turbo_regl && type_info->nm2_osuper_voltage != -1)
+	{
+		regl = regulator_get(NULL, pdata->core_turbo_regl);
+		if(IS_ERR(regl))
+		{
+			pr_info("%s: Core Over_Super mode regulator_get failed\n",
+				__func__);
+			ret = PTR_ERR(regl);
+			goto error;
+		}
+		regulator_set_voltage(regl, type_info->nm2_turbo_voltage,
+				      type_info->nm2_turbo_voltage);
+		regulator_put(regl);
+	}
 
 	if (pdata->notify_silicon_type)
 		pdata->notify_silicon_type(silicon_type);

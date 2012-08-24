@@ -59,6 +59,7 @@ fi
 sync
 
 chmod 777 $MERRUK_TOOLS/*
+clear
 
 # Check if there is a Complete Kernel Boot Image (boot.img) in "Source_Img"
 
@@ -76,7 +77,7 @@ function Install_Kernel_Img () {
 		echo "#                    Boot Image Installed With Success.                       #"
         	echo "#                 ----------------------------------------                    #"
 		$MERRUK_TOOLS/unpackbootimg -i $SOURCE_IMG/boot.img -o $UNPACK
-		echo "#               Boot Image Extracted to '$UNPACK' Directory.                  #"
+		echo "#               Boot Image Extracted to '/Unpack' Directory.                  #"
         	echo "#                 ----------------------------------------                    #"
 	else
         	echo "#                 ----------------------------------------                    #"
@@ -89,7 +90,7 @@ function Install_Kernel_Img () {
 		echo "#                    Boot Image Installed With Success.                       #"
         	echo "#                 ----------------------------------------                    #"
         	$MERRUK_TOOLS/unpackbootimg -i $SOURCE_IMG/boot.img -o $UNPACK
-	        echo "#               Boot Image Extracted to '$UNPACK' Directory.                  #"
+	        echo "#               Boot Image Extracted to '/Unpack' Directory.                  #"
         	echo "#                 ----------------------------------------                    #"
 	fi
 	sync
@@ -99,6 +100,7 @@ function Install_Kernel_Img () {
 
 function Help
 {
+	clear
         echo "#                 ----------------------------------------                    #"
 	echo "###############################################################################"
         echo "#                 MerrukTechnology Envirement Installer.sh                    #"
@@ -138,7 +140,7 @@ else
 		echo "#                      Merruk Technology RamDisk                              #"
         	echo "#                 ----------------------------------------                    #"
 		cd $BOOT
-		gzip -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
+		xz -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
 		rm $UNPACK/boot.img-zImage
 		cd ..
 
@@ -149,9 +151,9 @@ else
 		echo "#                           Samsung RamDisk                                   #"
         	echo "#                 ----------------------------------------                    #"
 		cd $BOOT
-		xz -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
+		gzip -dc $UNPACK/boot.img-ramdisk.gz | cpio -i
 		rm $UNPACK/boot.img-zImage
-		cd..
+		cd ..
 
 	else
 		Help
@@ -187,7 +189,7 @@ sync
 if [ -f "../MerrukTechnology_Output/zImage" ];
 then
 	echo "###############################################################################"
-        echo "#    MerrukTechnology Kernel Found ! Make a Copy into '$UNPACK' Direcroty.    #"
+        echo "#    MerrukTechnology Kernel Found ! Make a Copy into '/Unpack' Direcroty.    #"
 	echo "###############################################################################"
         cp ../MerrukTechnology_Output/zImage $UNPACK/
 else

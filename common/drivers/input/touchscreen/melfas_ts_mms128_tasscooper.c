@@ -32,13 +32,13 @@
 #include "mcs8000_download.h"
 
 /** defines **/
-#define __TOUCH_DEBUG__  //TODO : ¼­¹ö¿¡ ¿Ã¸®´Â °æ¿ì¿¡´Â ¸·°í ¿Ã¸®±â.
-#define USE_THREADED_IRQ 1 //TODO : QUEUE ¹æ½ÄÀÌ ¾Æ´Ñ THREAD ¹æ½ÄÀ¸·Î º¯°æ. ÀÌ·¸°Ô ÇÏ´Ï, IRQ °¡ Á¤»óÀûÀ¸·Î ÀßµÊ.
+#define __TOUCH_DEBUG__  //TODO : è¾ç„æ‹­ è‡£è»’æ¾— äº•é…”æ‹­æ¾— å³å£± è‡£è»’å¥„.
+#define USE_THREADED_IRQ 1 //TODO : QUEUE å·ç¸¦æˆš ç„¼è¦³ THREAD å·ç¸¦ç”Ÿç¨½ ç—•äº•. æˆšä¿‚æƒŸ é¦¬è‰¦, IRQ äºœ èˆ›é›Œæ—‹ç”Ÿç¨½ è¨­å–«.
 #define DELAY_BEFORE_VDD
 #ifdef CONFIG_TOUCHSCREEN_TMA340_COOPERVE //CooperVE
-#define SET_DOWNLOAD_BY_GPIO 0 //TODO : TSP ÃÊ±âÈ­ ·çÆ¾¿¡¼­ °­Á¦·Î ÃÖ½Å FW ·Î ¾÷µ¥ÀÌÆ® ÇÏ´Â ·çÆ¾À¸·Î »ç¿ëÇÏ¸é ¾ÈµÊ.
-#define LATEST_FW_VER   0x03 //TODO : ÀÌºÎºĞÀ» 0x0 À¸·Î ÇÏ¸é, SET_DOWNLOAD_BY_GPIO 1 ÀÌ¾îµµ µ¿ÀÛÇÏÁö ¾ÈÇÔ.
-#define FORCED_DOWNLOAD_OF_BLANKMEMORY	// TSP blank memory( No firmware ) »óÅÂ½Ã ÀÚµ¿ Æß¿ş¾î ´Ù¿î·Îµå
+#define SET_DOWNLOAD_BY_GPIO 0 //TODO : TSP æ®µå¥„é‰¢ æ¬ é´‡æ‹­è¾ æ‚ªè–¦ç¨½ ç½®é‡ FW ç¨½ ç©£æ±½æˆšé—˜ é¦¬æ¾— æ¬ é´‡ç”Ÿç¨½ ç´«é‚é¦¬æª ç…§å–«.
+#define LATEST_FW_VER   0x03 //TODO : æˆšæ¡æ­³è– 0x0 ç”Ÿç¨½ é¦¬æª, SET_DOWNLOAD_BY_GPIO 1 æˆšå¬¢äº€ ç–‘æ‹™é¦¬èµ° ç…§æ•—.
+#define FORCED_DOWNLOAD_OF_BLANKMEMORY	// TSP blank memory( No firmware ) é›Œæ®¿ç£ åˆ‡ç–‘ éˆè£¾å¬¢ é™¥éŒ˜ç¨½çƒ
 #endif
 
 #define TOUCH_ON  1
@@ -130,7 +130,7 @@ int Is_MMS128_Connected(void)
 }
 #endif
 
- //TODO : touch_ctrl_regulator() ÇÔ¼ö´Â ´Ù¸¥ ÆÄÀÏ¿¡¼­ ¼±¾ğµÈµÚ, export µÇ¾î ÀÕÀ½. //synaptics_i2c_rmi_tma340_cooperve.c synaptics_i2c_rmi_tma340_tassveve.c
+ //TODO : touch_ctrl_regulator() æ•—å‘ªæ¾— é™¥çŒ® ç£ææ‹­è¾ è­˜æƒ…å‰åŠ, export é å¬¢ è²¬è£½. //synaptics_i2c_rmi_tma340_cooperve.c synaptics_i2c_rmi_tma340_tassveve.c
 void touch_ctrl_regulator_mms128(int on_off)
 {
     if (on_off == TOUCH_ON)
@@ -304,7 +304,7 @@ static void melfas_ts_work_func(struct work_struct *work)
 		touch_ctrl_regulator_mms128(TOUCH_OFF);
 		touch_ctrl_regulator_mms128(TOUCH_ON);
 		melfas_init_panel(ts);
-		return ;
+		return 0;
 	}
 	else
 	{
@@ -328,7 +328,7 @@ static void melfas_ts_work_func(struct work_struct *work)
 			touch_ctrl_regulator_mms128(TOUCH_OFF);
 			touch_ctrl_regulator_mms128(TOUCH_ON);
 			melfas_init_panel(ts);
-			return ;
+			return 0;
 		}
 		else
 		{
@@ -351,7 +351,7 @@ static void melfas_ts_work_func(struct work_struct *work)
 						touch_ctrl_regulator_mms128(TOUCH_OFF);
 						touch_ctrl_regulator_mms128(TOUCH_ON);
 						melfas_init_panel(ts);
-						return ;
+						return 0;
 					}
 
 					g_Mtouch_info[fingerID].posX = (uint16_t)(buf[i + 1] & 0x0F) << 8 | buf[i + 2];
@@ -602,7 +602,7 @@ static int melfas_ts_probe(struct i2c_client *client, const struct i2c_device_id
     if (ret <= 0)
     {
 	i2c_release_client(client);	
-       //touch_ctrl_regulator_mms128(TOUCH_OFF); //Melfas ¿¡¼­ TOUCH_OFF ÇÏ¸é, Cypress ·Î OFF µÈ´Ù.
+       //touch_ctrl_regulator_mms128(TOUCH_OFF); //Melfas æ‹­è¾ TOUCH_OFF é¦¬æª, Cypress ç¨½ OFF å‰é™¥.
 	kfree(ts);
 
 	return -ENXIO;

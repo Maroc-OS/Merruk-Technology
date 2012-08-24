@@ -26,6 +26,8 @@
 #include <plat/bcm_cpufreq_drv.h>
 #include <mach/reg_clkpwr.h>
 
+#define CPUFREQ_ETHERNAL	10000000
+
 /* Per-CPU private data */
 struct bcm_cpufreq {
 	struct clk *cpu_clk;
@@ -200,7 +202,7 @@ static int param_get_debug(char *buffer, struct kernel_param *kp)
 #else /* CONFIG_BCM215XX_PM_DEBUG */
 
 /* Helpers */
-#define IS_FLOW_DBG_ENABLED (false)
+#define IS_FLOW_DBG_ENABLED (true)
 
 #endif /* CONFIG_BCM215XX_PM_DEBUG */
 
@@ -321,7 +323,16 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	struct cpufreq_freqs freqs;
 	struct bcm_cpufreq *b = &bcm_cpufreq[policy->cpu];
 	struct bcm_cpu_info *info = &b->plat->info[policy->cpu];
+	unsigned int freq_osuper, index_osuper;
+	/*unsigned int freq_super, index_super;
 	unsigned int freq_turbo, index_turbo;
+	unsigned int freq_heigher, index_heigher;
+	unsigned int freq_omedium, index_omedium;
+	unsigned int freq_umedium, index_umedium;
+	unsigned int freq_normal, index_normal;
+	unsigned int freq_starter, index_starter;
+	unsigned int freq_lower, index_lower;
+	unsigned int freq_ulower, index_ulower;*/
 	int index;
 	int ret;
 
@@ -364,14 +375,14 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		}
 	}
 
-	/* Get the turbo mode frequency. Switching to and from turbo mode
+	/* Get the osuper mode frequency. Switching to and from osuper mode
 	 * needs special handling.
 	 */
-	index_turbo = info->index_turbo - 1;
-	freq_turbo = info->freq_tbl[index_turbo].cpu_freq * 1000;
+	index_osuper = info->index_osuper;
+	freq_osuper = info->freq_tbl[index_osuper].cpu_freq * 1000;
 
-	/* Set APPS PLL enable bit when entering to turbo mode */
-	if (freqs.new >= freq_turbo)
+	/* Set APPS PLL enable bit when entering to osuper mode */
+	if (freqs.new == freq_osuper)
 		clk_enable(b->appspll_en_clk);
 
 	/* freq.new will be in kHz. convert it to Hz for clk_set_rate */
@@ -380,7 +391,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
 
 	/* Clear APPS PLL enable bit when entering to normal mode */
-	if (freqs.new < freq_turbo)
+	if (freqs.new < freq_osuper)
 		clk_disable(b->appspll_en_clk);
 
 	/* If we are switching to a lower frequency, we can potentially
@@ -417,10 +428,9 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 {
 	struct bcm_cpufreq *b = NULL;
 	struct bcm_cpu_info *info = NULL;
-	//int spy;
 	int ret;
 	int cpu = policy->cpu;
-	//int cur = policy->cur;
+	int cur = policy->cur;
 
 	pr_info("%s\n", __func__);
 
@@ -455,8 +465,9 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 	/* Set default policy and cpuinfo */
 	policy->cur = bcm_cpufreq_get_speed(0);
 
-	/* FIXME: Tune this value */
-	policy->cpuinfo.transition_latency = 10000000;
+	/* FIX_ME: Tune this value */
+	/* I think it's alrady done :) */
+	policy->cpuinfo.transition_latency = CPUFREQ_ETHERNAL;
 
 	ret = bcm_create_cpufreqs_table(policy, &(b->bcm_freqs_table));
 	if (ret) {
@@ -473,8 +484,8 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 	}
 
 	cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cpu);
-	//spy = int cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cpu);
-	//if (!spy) {
+	//ret = int cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cpu);
+	//if (!ret) {
 		//pr_info("%s: cpufreq_frequency_table_get_attr failed\n",
 		//	__func__);
 		//goto err_get_attr;
@@ -500,16 +511,15 @@ err_clk_get_cpu_clk:
 
 static int bcm_cpufreq_exit(struct cpufreq_policy *policy)
 {
-	//int spy;
+	//int ret;
 	int cpu = policy->cpu;
 
 	struct bcm_cpufreq *b = &bcm_cpufreq[policy->cpu];
 	pr_info("%s\n", __func__);
-	cpufreq_frequency_table_put_attr(policy->cpu);
 
 	cpufreq_frequency_table_put_attr(cpu);
-	//spy = int cpufreq_frequency_table_put_attr(cpu);
-	//if (!spy) {
+	//ret = int cpufreq_frequency_table_put_attr(cpu);
+	//if (!ret) {
 	//	pr_info("%s: cpufreq_frequency_table_put_attr failed\n",
 	//		__func__);
 	//	goto err_put_attr;

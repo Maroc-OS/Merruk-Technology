@@ -683,17 +683,17 @@ unsigned long bcm21553_ahb_get_rate(struct clk *clk)
 {
 	u32 mode = 0, ahb;
 	u32 apps_pll_freq = 0;
-	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 	if(mode < 0xC)
 		ahb = clk_armahb_reg_to_ahb_freq_mapping[mode];
 	else
 	{
 		apps_pll_freq = bcm21553_apps_pll_get_rate();
 		/*We have really need this stupid manupilation !???
-		 * [ /FREQ_MHZ(1))*FREQ_MHZ(1) ]
+		 * [ ((apps_pll_freq/9)/FREQ_MHZ(1))*FREQ_MHZ(1) ]
 		 * Runing @ 138,666666667Mhz
 		 */
-		ahb = ((apps_pll_freq/9);
+		ahb = (apps_pll_freq/9);
 	}
 
 	return ahb;
@@ -704,9 +704,9 @@ unsigned long bcm21553_ahb_fast_get_rate(struct clk *clk)
 {
 	u32 mode = 0, ahb_fast;
 	u32 apps_pll_freq = 0;
-	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 
-	if(mode < 0x0C)
+	if(mode < 0x09)
 		ahb_fast = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 	else
 	{
@@ -715,7 +715,7 @@ unsigned long bcm21553_ahb_fast_get_rate(struct clk *clk)
 		 * [ (mode <= 8) ? apps_pll_freq/9 :  ] again !!!!!
 		 * Runing @ 208Mhz
 		 */ 
-		ahb_fast = apps_pll_freq/6;
+		ahb_fast = (apps_pll_freq/6);
 	}
 
 		/* What the hell is Going on with Samsung?
@@ -1030,12 +1030,12 @@ unsigned long bcm21553_sdram_get_rate(struct clk *clk)
 
 	if (sdram_mode & CLK_SDRAM_SYC_MODE)
 	{
-		mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+		mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 		if(mode < 0xC)
 			sdram_clk_speed = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 		else
 			/*STUPID THING AGAIN [ (mode <= 8) ? apps_pll_freq/9 :  ]*/
-			sdram_clk_speed = apps_pll_freq/6;
+			sdram_clk_speed = (apps_pll_freq/6);
 	}
 	else
 	{
@@ -1052,7 +1052,7 @@ unsigned long bcm21553_nvsram_get_rate(struct clk *clk)
 	u32 ahbVal;
 	regVal = readl(ADDR_CLKPWR_CLK_SRAM_MODE);
 	if (regVal & CLK_NVSRAM_SYNC_MODE) {
-		ahbVal = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+		ahbVal = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 		return clk_armahb_reg_to_ahb_freq_mapping[ahbVal];
 
 	} else {
@@ -1538,11 +1538,11 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	//writel(0x01, ADDR_SYSCFG_V3D_AHB_CLK_EN);
 
 	/*Save ahb mode and set ahb mode to 0xC*/
-	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 	//writel(0x0C, ADDR_CLKPWR_CLK_ARMAHB_MODE);
 	/*I wanna Switch to 0x0E :p*/
 	bcm215xx_set_armahb_mode(0x0E);
-	udelay(100);
+	udelay(50);
 
 	/* Write 0 bit 0 to POWER ON V3D island */
 	writel(V3D_POWER_ON, clk->enable_reg);
@@ -1942,7 +1942,7 @@ brcm_clk_proc_read(char *page, char **start,
 	u32 mode,dsp_mode,sdram_mode;
 
 	apps_pll_freq = bcm21553_apps_pll_get_rate();
-	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 	/*I heat you Samsung shauld i fix that? */
 	/*ps_pll_freq /= FREQ_MHZ(1);*/
 
@@ -1950,11 +1950,11 @@ brcm_clk_proc_read(char *page, char **start,
 	& mode value less than 0xC is not supported*/
 	if(mode <= 0xC)
 	{
-		arm11 = clk_armahb_reg_to_arm11_freq_mapping[mode];
-		cp_clk = clk_armahb_reg_to_cp_freq_mapping[mode];
-		ahb = clk_armahb_reg_to_ahb_freq_mapping[mode];
+		arm11	 = clk_armahb_reg_to_arm11_freq_mapping[mode];
+		cp_clk	 = clk_armahb_reg_to_cp_freq_mapping[mode];
+		ahb		 = clk_armahb_reg_to_ahb_freq_mapping[mode];
 		ahb_fast = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
-		v3d_clk = clk_armahb_reg_to_v3d_clk_mapping[mode];
+		v3d_clk	 = clk_armahb_reg_to_v3d_clk_mapping[mode];
 	}
 	else
 	{
@@ -1968,7 +1968,7 @@ brcm_clk_proc_read(char *page, char **start,
 	dsp_mode = readl(ADDR_CLKPWR_CLK_DSP_MODE) & 0x7;
 	if(dsp_mode == 0)
 		dsp_clk = 52; /*52 Mhz - only on main pll*/
-	/*special case 932 nope :) 1372 :P ??*/
+	/*special case 932 !! nope :) it's 1372 :P ??*/
 	else if(FREQ_MHZ(apps_pll_freq) == FREQ_MHZ(1372) && dsp_mode == 6)
 		dsp_clk = (apps_pll_freq*2)/9;
 	else
@@ -2096,7 +2096,7 @@ static int __init clk_init(void)
 	writel(0x00, ADDR_CLKPWR_CLK_POWERSWITCH_CTRL);	
 
 	/*To avoid panic in V3D disable call...*/
-	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x0F)
+	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x12)
 		bcm215xx_set_appll_enable(1);
 		//writel(0x01,ADDR_CLKPWR_CLK_APPSPLL_ENABLE);
 
@@ -2126,7 +2126,7 @@ static int __init clk_init(void)
 	}
 
 	/* In turbo mode CLK_APPSPLL_ENABLE should be high (as per ASIC team) */
-	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x0F)
+	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x12)
 	{
 		clk = clk_get(NULL,BCM_CLK_APPSPLL_EN_STR_ID);
 		if(IS_ERR(clk))

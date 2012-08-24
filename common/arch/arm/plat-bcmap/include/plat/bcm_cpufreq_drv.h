@@ -45,7 +45,16 @@ struct bcm_cpu_info {
 	/* Index of turbo mode cpu frequency in the DVFS table. Switching
 	 * to turbo mode needs special handling.
 	 */
+	int index_osuper;
+	int index_super;
 	int index_turbo;
+	int index_heigher;
+	int index_omedium;
+	int index_umedium;
+	int index_normal;
+	int index_starter;
+	int index_lower;
+	int index_ulower;
 };
 
 /* Platform data for BCM21553 cpufreq driver */

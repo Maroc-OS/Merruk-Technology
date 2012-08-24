@@ -36,7 +36,7 @@ struct bcm21553_cpufreq_gov_plat {
 	unsigned int freq_osuper;
 	unsigned int freq_super;
 	unsigned int freq_turbo;
-	unsigned int freq_higher;
+	unsigned int freq_heigher;
 	unsigned int freq_omedium;
 	unsigned int freq_umedium;
 	unsigned int freq_normal;

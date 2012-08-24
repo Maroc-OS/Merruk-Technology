@@ -2338,7 +2338,7 @@ int board_sysconfig(uint32_t module, uint32_t op)
 	case SYSCFG_SDHC1:
 		if (op == SYSCFG_INIT) {
 			u32 val;
-		        unsigned int regv;
+			unsigned int regv;
 
 #if 0	// Totoro doesn't use SDIO MUX for WLAN. Only on Thunderbird
 			/* Offset for IOCR5 = 0x24 */
@@ -3078,7 +3078,8 @@ static int __init ramdump_init(void)
 
 module_init(ramdump_init);
 
-/* TODO: Replace BCM1160 with BCM21553/AthenaRay once registered (Registred by Maroc-OS Need's now the bootloader)*/
+/* TODO: Replace BCM1160 with BCM21553/AthenaRay once registered */
+/* (Registred by Maroc-OS Need's now the bootloader) */
 MACHINE_START(BCM1160, "BCM21553 ThunderbirdEDN31 platform")
 	/* Maintainer: Broadcom Corporation */
 	.phys_io = BCM21553_UART_A_BASE,

@@ -4166,7 +4166,8 @@ static void ppc440spe_adma_init_capabilities(struct ppc440spe_adma_device *adev)
 		dma_cap_set(DMA_XOR, adev->common.cap_mask);
 		dma_cap_set(DMA_PQ, adev->common.cap_mask);
 		dma_cap_set(DMA_INTERRUPT, adev->common.cap_mask);
-		adev->common.cap_mask = adev->common.cap_mask;
+		/*is that an erorr?*/
+		/*adev->common.cap_mask = adev->common.cap_mask;*/
 		break;
 	}
 

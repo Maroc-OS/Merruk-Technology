@@ -159,12 +159,12 @@ void release_fiq(struct fiq_handler *f)
 
 void enable_fiq(int fiq)
 {
-	enable_irq(fiq + FIQ_START);
+	enable_irq(fiq); /* (fiq + FIQ_START) */
 }
 
 void disable_fiq(int fiq)
 {
-	disable_irq(fiq + FIQ_START);
+	disable_irq(fiq); /* (fiq + FIQ_START) */
 }
 
 EXPORT_SYMBOL(set_fiq_handler);

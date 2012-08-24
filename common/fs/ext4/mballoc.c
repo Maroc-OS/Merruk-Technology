@@ -1175,7 +1175,7 @@ repeat_load_buddy:
 	return 0;
 
 	if (page)
-		page_cache_release(page);	//added
+		page_cache_release(page);
 
 err:
 	if (e4b->bd_bitmap_page)

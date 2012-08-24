@@ -175,7 +175,7 @@ static inline void cpufreq_bcm_turbo_off(void)
 
 	if (bcm_cpufreq_gov_info.cur_policy)
 		cpufreq_driver_target(bcm_cpufreq_gov_info.cur_policy,
-				      plat->freq_normal, CPUFREQ_RELATION_H);
+				      plat->freq_ulower, CPUFREQ_RELATION_H);
 }
 
 static inline void cpufreq_bcm_turbo_on(void)
@@ -184,7 +184,7 @@ static inline void cpufreq_bcm_turbo_on(void)
 
 	if (bcm_cpufreq_gov_info.cur_policy)
 		cpufreq_driver_target(bcm_cpufreq_gov_info.cur_policy,
-				      plat->freq_turbo, CPUFREQ_RELATION_H);
+				      plat->freq_osuper, CPUFREQ_RELATION_H);
 }
 
 static void cpufreq_bcm_list_states(void)
@@ -279,7 +279,7 @@ void cpufreq_bcm_dvfs_disable(struct cpufreq_client_desc *desc)
 
 	if (dvfs_disable == 1) {
 		if (IS_FLOW_DBG_ENABLED)
-		pr_info("%s: switching to turbo mode: %s\n",
+		pr_info("%s: switching to OVER_SUPER mode: %s\n",
 			__func__, desc->name);
 		cpufreq_bcm_turbo_on();
 	}
@@ -378,10 +378,10 @@ static int cpufreq_governor_bcm(struct cpufreq_policy *policy,
 		 * requests and set the core voltage appropriately.
 		 */
 		if (dvfs_disable == 0)
-			__cpufreq_driver_target(policy, plat->freq_normal,
+			__cpufreq_driver_target(policy, plat->freq_ulower,
 						CPUFREQ_RELATION_H);
 		else
-			__cpufreq_driver_target(policy, plat->freq_turbo,
+			__cpufreq_driver_target(policy, plat->freq_osuper,
 						CPUFREQ_RELATION_H);
 		break;
 

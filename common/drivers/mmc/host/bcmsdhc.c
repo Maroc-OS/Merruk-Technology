@@ -1253,6 +1253,17 @@ static void bcmsdhc_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	clk_enable(host->bus_clk);
 	sdhc_update_qos_req(host, 0);
 
+#ifdef CONFIG_HAS_WAKELOCK
+	/* Check for the CMD type (expect response or not) */
+	if (mmc_resp_type(mrq->cmd) == MMC_RSP_NONE) {
+		/* Not valid to use wake_lock_timeout when CMD with no response expected */
+		wake_lock(&host->sdhc_wakelock);
+	} else {
+		/*Wakelock for the bcm_sdhc should be active for the longer period when CMD expects response from the card */
+		wake_lock_timeout(&host->sdhc_wakelock, msecs_to_jiffies(500));
+	}
+#endif
+
 #if defined(CONFIG_ARCH_BCM116X)  || defined(CONFIG_ARCH_BCM215XX)
 	/* For SD card power saving */
 	set_voltage = readb(host->ioaddr + SDHC_POWER_CONTROL);
@@ -1273,6 +1284,12 @@ static void bcmsdhc_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	}
 	/* Unlock the wakelock immediately after sending the command with no response
 	   On PM suspend case, deselcting card CMD will be send with no response */
+#ifdef CONFIG_HAS_WAKELOCK
+	if (mmc_resp_type(mrq->cmd) == MMC_RSP_NONE) {
+		/* unlock after CMD transaction */
+		wake_unlock(&host->sdhc_wakelock);
+	}
+#endif
 	mmiowb();
 	spin_unlock_irqrestore(&host->lock, flags);
 }
@@ -2364,6 +2381,10 @@ static int __init bcmsdhc_probe(struct platform_device *pdev)
 	sd_inserted = host->card_present;
 	
 	bcmsdhc_init(host, SOFT_RESET_ALL);
+#ifdef CONFIG_HAS_WAKELOCK
+	wake_lock_init(&host->sdhc_wakelock, WAKE_LOCK_SUSPEND,
+		       dev_name(&pdev->dev));
+#endif
 
 #ifdef CONFIG_MMC_DEBUG
 /*      bcmsdhc_dumpregs(host); */
@@ -2437,6 +2458,10 @@ static int bcmsdhc_remove(struct platform_device *pdev)
 
 #ifdef CONFIG_LEDS_CLASS
 	led_classdev_unregister(&host->led);
+#endif
+
+#ifdef CONFIG_HAS_WAKELOCK
+	wake_lock_destroy(&host->sdhc_wakelock);
 #endif
 
 	sdio_remove_qos_req(host);
