@@ -549,16 +549,16 @@ struct platform_device bcm215xx_lcdc_device = {
 };
 #endif
 
-#define BCM_CORE_CLK_OSUPER	BCM21553_CORECLK_KHZ_1GB
-#define BCM_CORE_CLK_SUPER	BCM21553_CORECLK_KHZ_936
-#define BCM_CORE_CLK_TURBO	BCM21553_CORECLK_KHZ_832
+#define BCM_CORE_CLK_OSUPER		BCM21553_CORECLK_KHZ_1GB
+#define BCM_CORE_CLK_SUPER		BCM21553_CORECLK_KHZ_936
+#define BCM_CORE_CLK_TURBO		BCM21553_CORECLK_KHZ_832
 #define BCM_CORE_CLK_HEIGHER	BCM21553_CORECLK_KHZ_624
 #define BCM_CORE_CLK_OMEDIUM	BCM21553_CORECLK_KHZ_468
 #define BCM_CORE_CLK_UMEDIUM	BCM21553_CORECLK_KHZ_416
-#define BCM_CORE_CLK_NORMAL	BCM21553_CORECLK_KHZ_312
+#define BCM_CORE_CLK_NORMAL		BCM21553_CORECLK_KHZ_312
 #define BCM_CORE_CLK_STARTER	BCM21553_CORECLK_KHZ_288
-#define BCM_CORE_CLK_LOWER	BCM21553_CORECLK_KHZ_208
-#define BCM_CORE_CLK_ULOWER	BCM21553_CORECLK_KHZ_156
+#define BCM_CORE_CLK_LOWER		BCM21553_CORECLK_KHZ_208
+#define BCM_CORE_CLK_ULOWER		BCM21553_CORECLK_KHZ_156
 
 #if defined(CONFIG_BCM_CPU_FREQ)
 /*********************************************************************
@@ -581,6 +581,7 @@ enum {
 
 /* Voltage-Frequency mapping for BCM21553 CPU0 */
 static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
+
 	/* NOW WE NEED ONLY TO FIXE VOLTAGES*/
 	FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 1120000),
 	FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 1150000),
@@ -635,6 +636,7 @@ struct platform_device bcm21553_cpufreq_drv = {
  *********************************************************************/
 
 static struct bcm21553_cpufreq_gov_plat bcm21553_cpufreq_gov_plat = {
+
 	.freq_osuper	= BCM_CORE_CLK_OSUPER,
 	.freq_super		= BCM_CORE_CLK_SUPER,
 	.freq_turbo		= BCM_CORE_CLK_TURBO,
@@ -660,6 +662,7 @@ struct platform_device bcm21553_cpufreq_gov = {
 /*********************************************************************
  *                        DATA FOR AVS DRIVER                        *
  *********************************************************************/
+
 /* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT */
 
 #define NM2_FF_VOLTAGE_ULOWER	1080000
@@ -829,6 +832,7 @@ static void bcm215xx_avs_notify(int silicon_type)
 		super	= part_type_ss.nm2_super_voltage;
 		osuper	= part_type_ss.nm2_osuper_voltage;
 		break;
+<<<<<<< HEAD
 	}
 
 	if (ulower >= 0)
