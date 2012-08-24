@@ -1,4 +1,4 @@
-MerrukTechnology Kernel Version : 2.0
+MerrukTechnology Kernel Version : 2.5
 =======================================
 For Samsung GT-S5360 : `Galaxy Y Young`
 ========================================
