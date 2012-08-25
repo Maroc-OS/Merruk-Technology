@@ -29,12 +29,13 @@ sync
 
 function Help
 {
+	clear
 	echo "Welcome To Merruk Technology Kernel Tools $KERNEL_MAKE_VERSION !"
 	echo ""
 	echo "  -MT		      			: Standard Compile Option, Automatic Kernel/Modules Installation."
 	echo "  -CF totoro_brcm21553_05_defconfig	: Specefie the defconfig File you Like, PS: Must Be In 'arch/arm/configs'."
 	echo "  -CL					: Make AClean Compilation From Scratch."
-	echo "  -CPU [Number Of Cores]			: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)."
+	echo "  -CPU [Number Of Cores]		: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)."
 	echo "  -Help/-H				: Show This Help Prompt."
 	exit 1
 } # end help

@@ -38,26 +38,26 @@
 
 #define TGT_BL_FW_INFOBLOCK_LENGTH  16   // See documentation
 
-#define TGT_BL_FW_VERSION_LOW    0x00
-#define TGT_BL_FW_VERSION_HIGH   0x01
+#define TGT_BL_FW_VERSION_LOW	0x00
+#define TGT_BL_FW_VERSION_HIGH	0x01
 
-#define KEY_CODE0 0xA5
-#define KEY_CODE1 0xF1
+#define KEY_CODE0				0xA5
+#define KEY_CODE1				0xF1
 
-#define APP_START_ADDR 0x600
-#define APP_END_ADDR_OLD 0x7DFF
-#define APP_END_ADDR_NEW 0x7BFF
+#define APP_START_ADDR			0x600
+#define APP_END_ADDR_OLD		0x7DFF
+#define APP_END_ADDR_NEW		0x7BFF
 
 // Signature Bytes
-#define SIG_BYTE0                0x3D
-#define SIG_BYTE1                0xC2
+#define SIG_BYTE0				0x3D
+#define SIG_BYTE1				0xC2
 
-#define YTE_MODULE_VER   0x02
-#define SMAC_MODULE_VER   0x03
-#define YTE_MODULE_VER_OLD   0x04
-#define SMAC_MODULE_VER_OLD    0x05
-#define SMAC_MODULE_VER_NEW   0x07
-#define YTE_MODULE_VER_NEW   0x0A
+#define YTE_MODULE_VER			0x02
+#define SMAC_MODULE_VER			0x03
+#define YTE_MODULE_VER_OLD		0x04
+#define SMAC_MODULE_VER_OLD		0x05
+#define SMAC_MODULE_VER_NEW		0x07
+#define YTE_MODULE_VER_NEW		0x0A
 
 //-----------------------------------------------------------------------------
 // Function PROTOTYPES

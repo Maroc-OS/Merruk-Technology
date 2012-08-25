@@ -88,7 +88,9 @@ struct locomo_dev_info {
 static struct locomo_dev_info locomo_devices[] = {
 	{
 		.devid 		= LOCOMO_DEVID_KEYBOARD,
-		.irq		= { IRQ_LOCOMO_KEY },
+		.irq = {
+			IRQ_LOCOMO_KEY,
+		},
 		.name		= "locomo-keyboard",
 		.offset		= LOCOMO_KEYBOARD,
 		.length		= 16,

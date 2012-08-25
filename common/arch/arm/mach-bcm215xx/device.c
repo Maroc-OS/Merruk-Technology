@@ -583,16 +583,16 @@ enum {
 static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
 
 	/* NOW WE NEED ONLY TO FIXE VOLTAGES*/
-	FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 1120000),
-	FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 1150000),
-	FTBL_INIT(BCM_CORE_CLK_STARTER / 1000, 1175000),
+	FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 1100000),
+	FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 1120000),
+	FTBL_INIT(BCM_CORE_CLK_STARTER / 1000, 1165000),
 	FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 1180000),
 	FTBL_INIT(BCM_CORE_CLK_UMEDIUM / 1000, 120000),
-	FTBL_INIT(BCM_CORE_CLK_OMEDIUM / 1000, 1220000),
-	FTBL_INIT(BCM_CORE_CLK_HEIGHER / 1000, 12500000),
-	FTBL_INIT(BCM_CORE_CLK_TURBO / 1000, 1280000),
-	FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 1310000),
-	FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 1340000),
+	FTBL_INIT(BCM_CORE_CLK_OMEDIUM / 1000, 1240000),
+	FTBL_INIT(BCM_CORE_CLK_HEIGHER / 1000, 1280000),
+	FTBL_INIT(BCM_CORE_CLK_TURBO / 1000, 1320000),
+	FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 1340000),
+	FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 1360000),
 };
 /* BCM21553 CPU info */
 static struct bcm_cpu_info bcm215xx_cpu_info[] = {
@@ -605,7 +605,7 @@ static struct bcm_cpu_info bcm215xx_cpu_info[] = {
 		.cpu_regulator = "csr_nm2",
 		.index_osuper = BCM_OSUPER_MODE,
 		.index_super = BCM_SUPER_MODE,
-		.index_turbo = BCM_OSUPER_MODE,
+		.index_turbo = BCM_TURBO_MODE,
 		.index_heigher = BCM_HEIGHER_MODE,
 		.index_omedium = BCM_OMEDIUM_MODE,
 		.index_umedium = BCM_UMEDIUM_MODE,
@@ -665,49 +665,49 @@ struct platform_device bcm21553_cpufreq_gov = {
 
 /* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT */
 
-#define NM2_FF_VOLTAGE_ULOWER	1080000
-#define NM2_TT_VOLTAGE_ULOWER	1120000
-#define NM2_SS_VOLTAGE_ULOWER	1180000
+#define NM2_FF_VOLTAGE_ULOWER	1040000
+#define NM2_TT_VOLTAGE_ULOWER	1100000
+#define NM2_SS_VOLTAGE_ULOWER	1140000
 
-#define NM2_FF_VOLTAGE_LOWER	1110000
-#define NM2_TT_VOLTAGE_LOWER	1150000
-#define NM2_SS_VOLTAGE_LOWER	1210000
+#define NM2_FF_VOLTAGE_LOWER	1100000
+#define NM2_TT_VOLTAGE_LOWER	1120000
+#define NM2_SS_VOLTAGE_LOWER	1160000
 
-#define NM2_FF_VOLTAGE_STARTER	1135000
-#define NM2_TT_VOLTAGE_STARTER	1175000
-#define NM2_SS_VOLTAGE_STARTER	1235000
+#define NM2_FF_VOLTAGE_STARTER	1120000
+#define NM2_TT_VOLTAGE_STARTER	1160000
+#define NM2_SS_VOLTAGE_STARTER	1200000
 
 #define NM2_FF_VOLTAGE_NORMAL	1140000
 #define NM2_TT_VOLTAGE_NORMAL	1180000
-#define NM2_SS_VOLTAGE_NORMAL	1240000
+#define NM2_SS_VOLTAGE_NORMAL	1220000
 
-#define NM2_FF_VOLTAGE_UMEDIUM	1160000
+#define NM2_FF_VOLTAGE_UMEDIUM	1180000
 #define NM2_TT_VOLTAGE_UMEDIUM	1200000
-#define NM2_SS_VOLTAGE_UMEDIUM	1260000
+#define NM2_SS_VOLTAGE_UMEDIUM	1240000
 
-#define NM2_FF_VOLTAGE_OMEDIUM	1180000
-#define NM2_TT_VOLTAGE_OMEDIUM	1220000
+#define NM2_FF_VOLTAGE_OMEDIUM	1200000
+#define NM2_TT_VOLTAGE_OMEDIUM	1240000
 #define NM2_SS_VOLTAGE_OMEDIUM	1280000
 
-#define NM2_FF_VOLTAGE_HEIGHER	1210000
-#define NM2_TT_VOLTAGE_HEIGHER	1250000
-#define NM2_SS_VOLTAGE_HEIGHER	1310000
+#define NM2_FF_VOLTAGE_HEIGHER	1220000
+#define NM2_TT_VOLTAGE_HEIGHER	1280000
+#define NM2_SS_VOLTAGE_HEIGHER	1320000
 
-#define NM2_FF_VOLTAGE_TURBO	1270000
+#define NM2_FF_VOLTAGE_TURBO	1220000
 #define NM2_TT_VOLTAGE_TURBO	1300000
 #define NM2_SS_VOLTAGE_TURBO	1340000
 
-#define NM2_FF_VOLTAGE_SUPER	1270000
-#define NM2_TT_VOLTAGE_SUPER	1310000
+#define NM2_FF_VOLTAGE_SUPER	1280000
+#define NM2_TT_VOLTAGE_SUPER	1340000
 #define NM2_SS_VOLTAGE_SUPER	1360000
 
-#define NM2_FF_VOLTAGE_OSUPER	1300000
-#define NM2_TT_VOLTAGE_OSUPER	1340000
+#define NM2_FF_VOLTAGE_OSUPER	1340000
+#define NM2_TT_VOLTAGE_OSUPER	1360000
 #define NM2_SS_VOLTAGE_OSUPER	1360000
 
-#define NM_FF_VOLTAGE		1300000
-#define NM_TT_VOLTAGE		1320000
-#define NM_SS_VOLTAGE		1340000
+#define NM_FF_VOLTAGE		1340000
+#define NM_TT_VOLTAGE		1360000
+#define NM_SS_VOLTAGE		1360000
 
 #define FF_THRESHOLD 445
 #define SS_THRESHOLD 395
@@ -764,7 +764,6 @@ static struct silicon_type_info part_type_ff = {
  */
 static void bcm215xx_avs_notify(int silicon_type)
 {
-/* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT */
 
 	int ulower;
 	int lower;
@@ -838,52 +837,42 @@ static void bcm215xx_avs_notify(int silicon_type)
 	if (ulower >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
 		  (u32)ulower;
-			/* Running under 1120000 mV */
 
 	if (lower >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
 		  (u32)lower;
-			/* Running under 1150000; mV */
 
 	if (starter >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_STARTER_MODE].cpu_voltage =
 		  (u32)starter;
-			/* Running under 1175000; mV */
 
 	if (normal >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
 		  (u32)normal;
-			/* Running under 1180000; mV */
 
 	if (umedium >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_UMEDIUM_MODE].cpu_voltage =
 		  (u32)umedium;
-			/* Running under 1200000; mV */
 
 	if (omedium >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OMEDIUM_MODE].cpu_voltage =
 		  (u32)omedium;
-			/* Running under 1220000; mV */
 
 	if (heigher >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_HEIGHER_MODE].cpu_voltage =
 		  (u32)heigher;
-			/* Running under 1250000; mV */
 
 	if (turbo >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
 		  (u32)turbo;
-			/* Running under 1280000; mV */
 
 	if (super >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_voltage =
 		  (u32)super;
-			/* Running under 1310000; mV */
 
 	if (osuper >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
 		  (u32)osuper;
-			/* Running under 1340000; mV */
 
 }
 #else
@@ -894,7 +883,16 @@ static struct bcm_avs_platform_data_t bcm_avs_pdata = {
 	/* Pass NULL if not supported/need not update */
 	.core_lpm_regl = NULL,
 	.core_nml_regl = "csr_nm1",
+	.core_ulower_regl = "csr_nm1",
+	.core_lower_regl = "csr_nm1",
+	.core_starter_regl = "csr_nm1",
+	.core_normal_regl = "csr_nm1",
+	.core_omedium_regl = "csr_nm2",
+	.core_umedium_regl = "csr_nm2",
+	.core_heigher_regl = "csr_nm2",
 	.core_turbo_regl = "csr_nm2",
+	.core_super_regl = "csr_nm2",
+	.core_osuper_regl = "csr_nm2",
 
 	.otp_bit_lsb = 169,
 	.otp_bit_msb = 188,

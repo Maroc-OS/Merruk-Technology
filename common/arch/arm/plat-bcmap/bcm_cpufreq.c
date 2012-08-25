@@ -26,8 +26,6 @@
 #include <plat/bcm_cpufreq_drv.h>
 #include <mach/reg_clkpwr.h>
 
-#define CPUFREQ_ETHERNAL	10000000
-
 /* Per-CPU private data */
 struct bcm_cpufreq {
 	struct clk *cpu_clk;
@@ -324,7 +322,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	struct bcm_cpufreq *b = &bcm_cpufreq[policy->cpu];
 	struct bcm_cpu_info *info = &b->plat->info[policy->cpu];
 	unsigned int freq_osuper, index_osuper;
-	/*unsigned int freq_super, index_super;
+	unsigned int freq_super, index_super;
 	unsigned int freq_turbo, index_turbo;
 	unsigned int freq_heigher, index_heigher;
 	unsigned int freq_omedium, index_omedium;
@@ -332,7 +330,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	unsigned int freq_normal, index_normal;
 	unsigned int freq_starter, index_starter;
 	unsigned int freq_lower, index_lower;
-	unsigned int freq_ulower, index_ulower;*/
+	unsigned int freq_ulower, index_ulower;
 	int index;
 	int ret;
 

@@ -351,7 +351,7 @@ static ssize_t store_sampling_down_factor(struct kobject *a,
 {
   unsigned int input, j;
   int ret;
-  ret = sscanf(buf, "$u", &input);
+  ret = sscanf(buf, "%u", &input);
 
   if (ret != 1 || input > MAX_SAMPLING_DOWN_FACTOR || input < 1)
     return -EINVAL;

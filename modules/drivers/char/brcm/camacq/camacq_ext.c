@@ -3050,10 +3050,10 @@ S32 CamacqExtDirectlyWriteI2cLists_Sony( struct i2c_client *pClient, const void 
                 break;
             }
         
-        // CamacqTraceDbg_v(":Length[%d] : 0x%02X%02X%02X%02X" , pstRegLists[uiCnt].ucLen, rgucWriteRegs[0] , 
-        //                                rgucWriteRegs[1], rgucWriteRegs[2] , rgucWriteRegs[3]);
-      //  CamacqTraceDbg(":Length[%d] : 0x%02X%02X%02X%02X" , pstRegLists[uiCnt].ucLen, rgucWriteRegs[0] , 
-       //                                    rgucWriteRegs[1], rgucWriteRegs[2] , rgucWriteRegs[3]);
+        /*CamacqTraceDbg_v(":Length[%d] : 0x%02X%02X%02X%02X" , pstRegLists[uiCnt].ucLen, rgucWriteRegs[0] , 
+                                        rgucWriteRegs[1], rgucWriteRegs[2] , rgucWriteRegs[3]);
+        CamacqTraceDbg(":Length[%d] : 0x%02X%02X%02X%02X" , pstRegLists[uiCnt].ucLen, rgucWriteRegs[0] , 
+                                        rgucWriteRegs[1], rgucWriteRegs[2] , rgucWriteRegs[3]);*/
         }
         else // 0x03 is delay
         {
@@ -3242,7 +3242,7 @@ U8* CamacqExtReadFs( const S8 * szFileName, _eCamacqSelLen eLen, int iResType )
     for( uiIdx = 0; uiIdx < uiLen; uiIdx++ )
     {
         pucCurBuffPos = pucBuff + uiIdx;
-        if( CAMACQ_EXT_COMMENT_START(pucCurBuffPos) ) /* Comment Start '/*'  or '//'  */
+        if( CAMACQ_EXT_COMMENT_START(pucCurBuffPos) ) /* Comment Start '/ *'  or '/ /'  */
         {
             CamacqTraceDbg( "pucCurBuffPos[0x%0x]", pucCurBuffPos );
             pucMovBuffPos = (U8*)strstr( (S8*)pucCurBuffPos, CAMACQ_EXT_COMMENT_CLOSE);

@@ -1,8 +1,8 @@
-/* This file is auto generated, version 8 */
+/* This file is auto generated, version 19 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#8 PREEMPT Fri Aug 24 14:46:25 CEST 2012"
-#define LINUX_COMPILE_TIME "14:46:25"
+#define UTS_VERSION "#19 PREEMPT Sat Aug 25 21:58:59 CEST 2012"
+#define LINUX_COMPILE_TIME "21:58:59"
 #define LINUX_COMPILE_BY "MerrukTechnology-2.5"
 #define LINUX_COMPILE_HOST "By-Maroc-OS"
 #define LINUX_COMPILE_DOMAIN "(none)"

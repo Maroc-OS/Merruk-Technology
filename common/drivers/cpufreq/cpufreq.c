@@ -678,7 +678,7 @@ static ssize_t show_bios_limit(struct cpufreq_policy *policy, char *buf)
 	return sprintf(buf, "%u\n", policy->cpuinfo.max_freq);
 }
 
-cpufreq_freq_attr_ro_perm(cpuinfo_cur_freq, 0400);
+cpufreq_freq_attr_ro_perm(cpuinfo_cur_freq, 0644);
 cpufreq_freq_attr_ro(cpuinfo_min_freq);
 cpufreq_freq_attr_ro(cpuinfo_max_freq);
 cpufreq_freq_attr_ro(cpuinfo_transition_latency);
@@ -776,7 +776,7 @@ static void cpufreq_sysfs_release(struct kobject *kobj)
 	complete(&policy->kobj_unregister);
 }
 
-static const struct sysfs_ops sysfs_ops = {
+static struct sysfs_ops sysfs_ops = {
 	.show	= show,
 	.store	= store,
 };
@@ -1015,13 +1015,14 @@ static int cpufreq_add_dev(struct sys_device *sys_dev)
 		goto module_out;
 	}
 
-	ret = -ENOMEM;
 	policy = kzalloc(sizeof(struct cpufreq_policy), GFP_KERNEL);
-	if (!policy)
+	if (!policy) {
+		ret = -ENOMEM;
 		goto nomem_out;
-
-	if (!alloc_cpumask_var(&policy->cpus, GFP_KERNEL))
+	}
+	if (!alloc_cpumask_var(&policy->cpus, GFP_KERNEL)) {
 		goto err_free_policy;
+	}
 
 	if (!zalloc_cpumask_var(&policy->related_cpus, GFP_KERNEL))
 		goto err_free_cpumask;
@@ -1031,8 +1032,7 @@ static int cpufreq_add_dev(struct sys_device *sys_dev)
 
 	/* Initially set CPU itself as the policy_cpu */
 	per_cpu(cpufreq_policy_cpu, cpu) = cpu;
-	ret = (lock_policy_rwsem_write(cpu) < 0);
-	WARN_ON(ret);
+	lock_policy_rwsem_write(cpu);
 
 	init_completion(&policy->kobj_unregister);
 	INIT_WORK(&policy->update, handle_update);
@@ -1104,6 +1104,8 @@ err_free_cpumask:
 	free_cpumask_var(policy->cpus);
 err_free_policy:
 	kfree(policy);
+	ret = -ENOMEM;
+	goto nomem_out;
 nomem_out:
 	module_put(cpufreq_driver->owner);
 module_out:
@@ -1206,12 +1208,13 @@ static int __cpufreq_remove_dev(struct sys_device *sys_dev)
 	spin_unlock_irqrestore(&cpufreq_driver_lock, flags);
 #endif
 
+	unlock_policy_rwsem_write(cpu);
+	kobj = &data->kobj;
+	cmp = &data->kobj_unregister;
+	
 	if (cpufreq_driver->target)
 		__cpufreq_governor(data, CPUFREQ_GOV_STOP);
 
-	kobj = &data->kobj;
-	cmp = &data->kobj_unregister;
-	unlock_policy_rwsem_write(cpu);
 	kobject_put(kobj);
 
 	/* we need to make sure that the underlying kobj is actually
@@ -1367,9 +1370,9 @@ EXPORT_SYMBOL(cpufreq_get);
 
 static int cpufreq_suspend(struct sys_device *sysdev, pm_message_t pmsg)
 {
-	int ret = 0;
-
 	int cpu = sysdev->id;
+	int ret = 0;
+	unsigned int cur_freq = 0;
 	struct cpufreq_policy *cpu_policy;
 
 	dprintk("suspending cpu %u\n", cpu);
@@ -1392,9 +1395,11 @@ static int cpufreq_suspend(struct sys_device *sysdev, pm_message_t pmsg)
 
 	if (cpufreq_driver->suspend) {
 		ret = cpufreq_driver->suspend(cpu_policy, pmsg);
-		if (ret)
+		if (ret) {
 			printk(KERN_ERR "cpufreq: suspend failed in ->suspend "
 					"step on CPU %u\n", cpu_policy->cpu);
+			goto out;
+		}
 	}
 
 out:
@@ -1414,9 +1419,8 @@ out:
  */
 static int cpufreq_resume(struct sys_device *sysdev)
 {
-	int ret = 0;
-
 	int cpu = sysdev->id;
+	int ret = 0;
 	struct cpufreq_policy *cpu_policy;
 
 	dprintk("resuming cpu %u\n", cpu);

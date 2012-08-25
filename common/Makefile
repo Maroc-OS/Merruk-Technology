@@ -189,11 +189,10 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-# /root/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
 export KBUILD_BUILDHOST := $(SUBARCH)
-ARCH ?=arm
-CROSS_COMPILE ?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
-CROSS_COMPILE ?= $(CONFIG_CROSS_COMPILE:"%"=%)
+ARCH		?=arm
+CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
+CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -540,8 +539,9 @@ endif # $(dot-config)
 # command line.
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults vmlinux but it is usually overridden in the arch makefile
+# (-Ofast)
 all: vmlinux
-	# (-Ofast)
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
 else

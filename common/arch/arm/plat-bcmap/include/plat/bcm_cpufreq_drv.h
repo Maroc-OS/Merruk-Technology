@@ -16,6 +16,8 @@
 #ifndef BCM_CPUFREQ_DRV_H
 #define BCM_CPUFREQ_DRV_H
 
+#define CPUFREQ_ETHERNAL	10000000
+
 struct bcm_freq_tbl {
 	u32 cpu_freq;         /* in MHz */
 	u32 cpu_voltage;      /* in uV  */
@@ -42,18 +44,27 @@ struct bcm_cpu_info {
 	char *cpu_clk;
 	/* Name of appspll enable clock */
 	char *appspll_en_clk;
-	/* Index of turbo mode cpu frequency in the DVFS table. Switching
-	 * to turbo mode needs special handling.
+	/* Index of osuper mode cpu frequency in the DVFS table. Switching
+	 * to osuper mode needs special handling.
 	 */
 	int index_osuper;
+	/* Index of super mode cpu frequency in DVFS table. */
 	int index_super;
+	/* Index of turbo mode cpu frequency in DVFS table. */
 	int index_turbo;
+	/* Index of heigher mode cpu frequency in DVFS table. */
 	int index_heigher;
+	/* Index of omedium mode cpu frequency in DVFS table. */
 	int index_omedium;
+	/* Index of umedium mode cpu frequency in DVFS table. */
 	int index_umedium;
+	/* Index of normal mode cpu frequency in DVFS table. */
 	int index_normal;
+	/* Index of starter mode cpu frequency in DVFS table. */
 	int index_starter;
+	/* Index of lower mode cpu frequency in DVFS table. */
 	int index_lower;
+	/* Index of ulower mode cpu frequency in DVFS table. */
 	int index_ulower;
 };
 

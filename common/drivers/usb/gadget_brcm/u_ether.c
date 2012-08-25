@@ -827,7 +827,7 @@ int __init gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
 
  	dev->rx_workqueue = create_singlethread_workqueue("rx_ether_queue");
  	if (dev->rx_workqueue == NULL) {
- 			DBG(dev, "kevent %d rx_ether_queue creation fail once \n",flag);
+ 			DBG(dev, "kevent %d rx_ether_queue creation fail once \n", ethaddr[ETH_ALEN]);
  	}
 
 	/* network device setup */

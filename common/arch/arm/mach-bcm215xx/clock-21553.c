@@ -578,15 +578,15 @@ unsigned long bcm21553_arm11_get_rate(struct clk *clk)
 	/*div are multiplied by 2 to cater for 1.5*/
 	const u8 apps_pll_div[] = {4,4,3};
 
-	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
+	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 
 	/* We assume that APPS PLL is active
 	& mode value less than 7 is not supported*/
-	if(mode <= 0xC)
+	if(mode <= 0x09)
 		return clk_armahb_reg_to_arm11_freq_mapping[mode];
 
 	apps_pll_freq = bcm21553_apps_pll_get_rate();
-	return (apps_pll_freq*2)/apps_pll_div[mode -0xD];
+	return (apps_pll_freq*2)/apps_pll_div[mode -0x0D];
 }
 
 int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
@@ -606,7 +606,7 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 	arm11_freq[8] = (apps_pll_freq*3)/4;
 	arm11_freq[9] = (apps_pll_freq);
 
-	/*we support only two modes  - 0xC & 0xF - thats what she said*/
+	/*we support only two modes - 0x0C/0x0F - thats what he said*/
 	if (val == arm11_freq[0])
 	{
 		mode = 0x09;
@@ -684,7 +684,7 @@ unsigned long bcm21553_ahb_get_rate(struct clk *clk)
 	u32 mode = 0, ahb;
 	u32 apps_pll_freq = 0;
 	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
-	if(mode < 0xC)
+	if(mode < 0x09)
 		ahb = clk_armahb_reg_to_ahb_freq_mapping[mode];
 	else
 	{
@@ -835,8 +835,7 @@ long bcm21553_i2s_int_round_rate(struct clk *clk, unsigned long desired_val)
 /* PDP clk - interface functions */
 unsigned long bcm21553_pdpck_get_rate(struct clk *clk)
 {
-	return pdpck_freq_list[(readl(ADDR_CLKPWR_CLK_PDPCK_DIV) & 0x7)];
-
+	return pdpck_freq_list[(readl(ADDR_CLKPWR_CLK_PDPCK_DIV) & 0x07)];
 }
 
 int bcm21553_pdpck_set_rate(struct clk *clk, unsigned long val)
@@ -1031,10 +1030,10 @@ unsigned long bcm21553_sdram_get_rate(struct clk *clk)
 	if (sdram_mode & CLK_SDRAM_SYC_MODE)
 	{
 		mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
-		if(mode < 0xC)
+		if(mode < 0x09)
 			sdram_clk_speed = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 		else
-			/*STUPID THING AGAIN [ (mode <= 8) ? apps_pll_freq/9 :  ]*/
+			/*STUPID THINGS AGAIN [ (mode <= 8) ? apps_pll_freq/9 :  ]*/
 			sdram_clk_speed = (apps_pll_freq/6);
 	}
 	else
@@ -1091,7 +1090,7 @@ unsigned long bcm21553_spi_get_rate(struct clk *clk)
 	if (regVal & CLK_SPI_DIV_104_EN)
 		return FREQ_MHZ(104);
 	else {
-		regVal &= 0x7;
+		regVal &= 0x07;
 		return spi_freq_list[regVal + 1];
 	}
 
@@ -1255,7 +1254,7 @@ long bcm21553_uart_round_rate(struct clk *clk, unsigned long desired_val)
 /*GP - interface function */
 unsigned long bcm21553_gp_get_rate(struct clk *clk)
 {
-	return gp_freq_list[(readl(ADDR_CLKPWR_CLK_GPCK_DIV) & 0x7)];
+	return gp_freq_list[(readl(ADDR_CLKPWR_CLK_GPCK_DIV) & 0x07)];
 }
 
 int bcm21553_gp_set_rate(struct clk *clk, unsigned long val)
@@ -1286,7 +1285,7 @@ long bcm21553_gp_round_rate(struct clk *clk, unsigned long desired_val)
 /* MSPRO clk - interface functions*/
 unsigned long bcm21553_mspro_get_rate(struct clk *clk)
 {
-	u32 regVal = readl(ADDR_CLKPWR_CLK_MSPRO_DIV) & 0x7;
+	u32 regVal = readl(ADDR_CLKPWR_CLK_MSPRO_DIV) & 0x07;
 
 	return mspro_freq_list[regVal - 1];
 }
@@ -1426,7 +1425,7 @@ void bcm21553_mipidsi_disable(struct clk *clk)
 
 unsigned long bcm21553_mipidsi_get_rate(struct clk *clk)
 {
-	return mipidsi_freq_list[(readl(ADDR_CLKPWR_CLK_MIPI_DSI_CTRL) & 0x7)];
+	return mipidsi_freq_list[(readl(ADDR_CLKPWR_CLK_MIPI_DSI_CTRL) & 0x07)];
 }
 
 int bcm21553_mipidsi_set_rate(struct clk *clk, unsigned long val)
@@ -1457,7 +1456,7 @@ long bcm21553_mipidsi_round_rate(struct clk *clk, unsigned long desired_val)
 /*camrx clk - interface functions*/
 unsigned long bcm21553_camrx_get_rate(struct clk *clk)
 {
-	u32 regVal = readl(ADDR_CLKPWR_CLK_CAMRX_MODE) & 0x7;
+	u32 regVal = readl(ADDR_CLKPWR_CLK_CAMRX_MODE) & 0x07;
 
 	switch (regVal) {
 	case 0x01:
@@ -1527,7 +1526,7 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	unsigned long flags;
 	u32 ahb_mode;
 	int i;
-	/* We need to switch to 312Mhz (mode = 0xc) before enabling
+	/* We need to switch to 312Mhz (mode = 0x0C) before enabling
 	 * V3D - WORKAROUND for V3D bug
 	 */
 	raw_local_irq_save(flags);
@@ -1537,12 +1536,12 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	/*Enable AHB request*/
 	//writel(0x01, ADDR_SYSCFG_V3D_AHB_CLK_EN);
 
-	/*Save ahb mode and set ahb mode to 0xC*/
+	/*Save ahb mode and set ahb mode to 0x0C*/
 	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 	//writel(0x0C, ADDR_CLKPWR_CLK_ARMAHB_MODE);
-	/*I wanna Switch to 0x0E :p*/
-	bcm215xx_set_armahb_mode(0x0E);
-	udelay(50);
+	/*I wanna Switch to 0x0B :P*/
+	bcm215xx_set_armahb_mode(0x0C);
+	udelay(100);
 
 	/* Write 0 bit 0 to POWER ON V3D island */
 	writel(V3D_POWER_ON, clk->enable_reg);
@@ -1947,8 +1946,8 @@ brcm_clk_proc_read(char *page, char **start,
 	/*ps_pll_freq /= FREQ_MHZ(1);*/
 
 	/* We assume that APPS PLL is active
-	& mode value less than 0xC is not supported*/
-	if(mode <= 0xC)
+	& mode value less than 0x09 is not supported*/
+	if(mode <= 0x09)
 	{
 		arm11	 = clk_armahb_reg_to_arm11_freq_mapping[mode];
 		cp_clk	 = clk_armahb_reg_to_cp_freq_mapping[mode];
@@ -1958,14 +1957,14 @@ brcm_clk_proc_read(char *page, char **start,
 	}
 	else
 	{
-		arm11 = (apps_pll_freq*2)/arm11_div[mode -0xD];
-		cp_clk = apps_pll_freq/cp_clk_div[mode -0xD];
+		arm11 = (apps_pll_freq*2)/arm11_div[mode -0x0D];
+		cp_clk = apps_pll_freq/cp_clk_div[mode -0x0D];
 		ahb = apps_pll_freq/9;
 		ahb_fast = apps_pll_freq/6;
 		v3d_clk = apps_pll_freq/4;
 	}
 
-	dsp_mode = readl(ADDR_CLKPWR_CLK_DSP_MODE) & 0x7;
+	dsp_mode = readl(ADDR_CLKPWR_CLK_DSP_MODE) & 0x07;
 	if(dsp_mode == 0)
 		dsp_clk = 52; /*52 Mhz - only on main pll*/
 	/*special case 932 !! nope :) it's 1372 :P ??*/

@@ -28,64 +28,65 @@
 #include <linux/firmware.h>
 #include <plat/syscfg.h>
 
-#define MAX_X	240 
-#define MAX_Y	320
-#define TSP_INT 30
+#define MAX_X			240 
+#define MAX_Y			320
+#define TSP_INT			30
 
 #define F760_MAX_TOUCH		2
-#define ESCAPE_ADDR 	    0xAA
-#define TS_READ_START_ADDR 	    0x10
+#define ESCAPE_ADDR		0xAA
+#define TS_READ_START_ADDR	0x10
 #define TS_READ_VERSION_ADDR	0x1F
 #define TS_READ_ESD_ADDR	0x1E
-#define TS_READ_REGS_LEN 		13
-#define SILABS_MAX_TOUCH		F760_MAX_TOUCH
-#define MTSI_VERSION		    0x05
+#define TS_READ_REGS_LEN	13
+#define SILABS_MAX_TOUCH	F760_MAX_TOUCH
+#define MTSI_VERSION		0x05
 
-//#define __TOUCH_DEBUG__ 1
+/* Activate debug mode */
+/* #define __TOUCH_DEBUG__ 1 */
 
-#define I2C_RETRY_CNT			3
+#define I2C_RETRY_CNT		3
 
-#define TOUCH_ON 1
-#define TOUCH_OFF 0
+#define TOUCH_ON		1
+#define TOUCH_OFF		0
 
-#define PRESS_KEY				1
-#define RELEASE_KEY				0
-#define MAX_KEYS	     2
+#define PRESS_KEY		1
+#define RELEASE_KEY		0
+#define MAX_KEYS		2
 
 #define SET_DOWNLOAD_BY_GPIO	1
 
-#define SILABS_TS_NAME "silabs-f760"
+#define SILABS_TS_NAME		"silabs-f760"
 
-#define YTE_MODULE_VER   0x02
-#define SMAC_MODULE_VER   0x03
-#define YTE_MODULE_VER_OLD   0x04
-#define YTE_MODULE_VER_NEW   0x0A
-#define SMAC_MODULE_VER_OLD    0x05
-#define SMAC_MODULE_VER_NEW   0x07
-#define FW_VER  0x03
-#define FW_VER_OLD  0x0F
-#define FW_VER_OLD_SMAC  0x14
-#define FW_VER_NEW_YTE  0x15
-#define FW_VER_NEW_SMAC 0x14
+#define YTE_MODULE_VER		0x02
+#define SMAC_MODULE_VER		0x03
+#define YTE_MODULE_VER_OLD	0x04
+#define YTE_MODULE_VER_NEW	0x0A
+#define SMAC_MODULE_VER_OLD	0x05
+#define SMAC_MODULE_VER_NEW	0x07
+#define FW_VER			0x03
+#define FW_VER_OLD		0x0F
+#define FW_VER_OLD_SMAC		0x14
+#define FW_VER_NEW_YTE		0x15
+#define FW_VER_NEW_SMAC		0x14
 #if defined(CONFIG_TARGET_LOCALE_AUS_TEL)
-#define T_YTE_MODULE_VER   0x08
-#define T_YTE_MODULE_VER_NEW   0x08
-#define T_FW_VER_YTE  0x0A
-#define T_FW_VER_OLD_YTE  0x0A
-#define T_FW_VER_NEW_YTE  0x0E
+#define T_YTE_MODULE_VER	0x08
+#define T_YTE_MODULE_VER_NEW	0x08
+#define T_FW_VER_YTE		0x0A
+#define T_FW_VER_OLD_YTE	0x0A
+#define T_FW_VER_NEW_YTE	0x0E
 
-#define T_SMAC_MODULE_VER   0x14		//Module_ver = 20
-#define T_SMAC_FW_VER   0x0F			//FW_ver = 15
+#define T_SMAC_MODULE_VER	0x14		/* Module_ver = 20 */
+#define T_SMAC_FW_VER		0x0F		/* FW_ver = 15 */
 #endif
 
-#define NUM_TX_CHANNEL 12
-#define NUM_RX_CHANNEL 9
-#define JIG_MODE_COMMAND 0xA0
-#define RAWDATA_ADDRESS          0x003A
-#define BASELINE_ADDRESS         0x0112
-#define  QUICKSENSE_OVERHEAD     6 
-#define I2CMAP_BUTTON_ADDRESS    (0x0212 + 0x22)
-#define  NUM_MTRBUTTONS             2
+#define NUM_TX_CHANNEL		12
+#define NUM_RX_CHANNEL		9
+#define JIG_MODE_COMMAND	0xA0
+#define RAWDATA_ADDRESS		0x003A
+#define BASELINE_ADDRESS	0x0112
+#define  QUICKSENSE_OVERHEAD	6 
+#define I2CMAP_BUTTON_ADDRESS	(0x0212 + 0x22)
+#define  NUM_MTRBUTTONS		2
 
 static int prev_wdog_val = -1;
 static int check_ic_counter = 3;
@@ -93,8 +94,8 @@ static int check_ic_counter = 3;
 static struct workqueue_struct *check_ic_wq;
 
 static struct regulator *touch_regulator=NULL;
-//add by brcm
 
+/* add by brcm */
 int touch_id[2], posX[2], posY[2], strength[2];
 int Press_Check=0;
 
@@ -347,7 +348,8 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
 
 			if(ret >=0)
 			{
-				break; // i2c success
+				/* i2c success */
+				break;
 			}
 		}
 	}
@@ -504,13 +506,13 @@ EXPORT_SYMBOL(set_tsp_for_ta_detect);
 static void check_ic_work_func(struct work_struct *work_timer)
 {
 	int ret=0;
-      uint8_t buf_esd[2];
+	uint8_t buf_esd[2];
 	uint8_t i2c_addr = 0x1F;
 	uint8_t wdog_val[1];
 
 	struct silabs_ts_data *ts = container_of(work_timer, struct silabs_ts_data, work_timer);
 
-	//printk("[TSP] testmode : %d\n", testmode);
+	/* printk("[TSP] testmode : %d\n", testmode); */
 
     buf_esd[0] = ESCAPE_ADDR;
 	buf_esd[1] = TS_READ_ESD_ADDR;
@@ -635,7 +637,7 @@ static int silabs_ts_probe(struct i2c_client *client, const struct i2c_device_id
 		goto err_input_dev_alloc_failed;
 	}
 	
-	ts->input_dev->name = "sec_touchscreen ";
+	ts->input_dev->name = "sec_touchscreen";
     
 	ts->input_dev->evbit[0] = BIT_MASK(EV_ABS) | BIT_MASK(EV_KEY);
 	
@@ -854,8 +856,8 @@ static int silabs_ts_remove(struct i2c_client *client)
 	unregister_early_suspend(&ts->early_suspend);
 	if (tsp_irq)
 		free_irq(tsp_irq, ts);
-	//else
-	//	hrtimer_cancel(&ts->timer);
+	/*else
+		hrtimer_cancel(&ts->timer);*/
 	input_unregister_device(ts->input_dev);
 	kfree(ts);
 	return 0;
@@ -876,11 +878,11 @@ static int silabs_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	}
         ret = cancel_work_sync(&ts->work_timer);
 
-	    ret = cancel_work_sync(&ts->work);
-        	if (ret && tsp_irq) /* if work was pending disable-count is now 2 */
-	    {
-		    enable_irq(tsp_irq);
-	    }
+	ret = cancel_work_sync(&ts->work);
+	if (ret && tsp_irq) /* if work was pending disable-count is now 2 */
+	{
+		enable_irq(tsp_irq);
+	}
             
         if(tsp_chheck==0)
 	    hrtimer_cancel(&ts->timer);
@@ -909,47 +911,51 @@ static int silabs_ts_resume(struct i2c_client *client)
 
 	printk("[TSP] %s, %d\n", __func__, __LINE__ );
 
-      //enable_irq(client->irq); // scl wave
+	/* scl wave */
+	/* enable_irq(client->irq); */
 
 	printk("[TSP] %s+\n", __func__ );
 	if( touch_present )
 	{       
 		gpio_direction_output(30, 1);
-    	gpio_direction_output(27, 1);
+    		gpio_direction_output(27, 1);
 		gpio_direction_output(26, 1);
 
 		gpio_direction_input(30);
-    	gpio_direction_input(27);
+    		gpio_direction_input(27);
 		gpio_direction_input(26);
 
-    	touch_ctrl_regulator(TOUCH_ON);
-    	msleep(40);
+    		touch_ctrl_regulator(TOUCH_ON);
+    		msleep(40);
 
-	// for TSK
-	for(key = 0; key < MAX_KEYS; key++)
-		touchkey_status[key].key_press = RELEASE_KEY;
+		/* for TSK */
+		for(key = 0; key < MAX_KEYS; key++)
+			touchkey_status[key].key_press = RELEASE_KEY;
     
-	prev_wdog_val = -1;
+		prev_wdog_val = -1;
 
-	if(tsp_charger_type_status == 1)
-	{
-		set_tsp_for_ta_detect(tsp_charger_type_status);
-	}
+		if(tsp_charger_type_status == 1)
+		{
+			set_tsp_for_ta_detect(tsp_charger_type_status);
+		}
     
-    #if 0	
-	if( tsp_proximity_irq_status == 1)
-	{
-		set_tsp_for_prox_enable(tsp_proximity_irq_status);
-	}
-    #endif
+		#if 0	
+			if( tsp_proximity_irq_status == 1)
+			{
+				set_tsp_for_prox_enable(tsp_proximity_irq_status);
+			}
+		#endif
     
-    if(tsp_chheck==0)
-	hrtimer_start(&ts->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
-
-	enable_irq(tsp_irq);
+		if(tsp_chheck==0)
+		{
+			hrtimer_start(&ts->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
+		}
+		enable_irq(tsp_irq);
 	}
 	else
+	{
 		printk("[TSP] TSP isn't present.\n", __func__ );
+	}
 
 	printk("[TSP] %s-\n", __func__ );
         tsp_status=0; 
@@ -1052,8 +1058,8 @@ int silabs_quicksense ( int address, int size, char* buff )
 	uint8_t buf1[7]={0x78, 0x05, 0x00, 0, 0, 0, 0};
       int ret;
       
-	buf1[3] = (address >> 8) & 0xFF; // Address High Byte
-	buf1[4] = address & 0xFF; // Address Low Byte
+	buf1[3] = (address >> 8) & 0xFF; /* Address High Byte */
+	buf1[4] = address & 0xFF; /* Address Low Byte */
 	buf1[5] = size;
 
 	ret = i2c_master_send(ts_global->client, buf1, 7);
@@ -1122,10 +1128,10 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 
 	printk("[TSP][rawdata_pass_fail_silabs] ver tsp=0x%x, HW=0x%x, SW=0x%x\n", buf_firmware_show[1], buf_firmware_show[2], buf_firmware_show[0]);
 
-	if(buf_firmware_show[2] == T_YTE_MODULE_VER_NEW)	//TYE Module
+	if(buf_firmware_show[2] == T_YTE_MODULE_VER_NEW)	/* TYE Module */
 		TSP_MODULE_ID = T_YTE_MODULE_VER_NEW;
 
-	else if(buf_firmware_show[2] == T_SMAC_MODULE_VER)	//TYE Module
+	else if(buf_firmware_show[2] == T_SMAC_MODULE_VER)	/* TYE Module */
 		TSP_MODULE_ID = T_SMAC_MODULE_VER;
 
 	printk("[TSP][rawdata_pass_fail_silabs] TSP_MODULE_ID = 0x%x \n", TSP_MODULE_ID);	
@@ -1150,9 +1156,9 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 		return sprintf(buf, "-1");
 	}
 
-	//
-	//	quicksense format for reading rawdata
-	//
+	/*
+	*	quicksense format for reading rawdata
+	*/
 #if defined(CONFIG_TARGET_LOCALE_AUS_TEL)   
 	ret = silabs_quicksense(RAWDATA_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer2);
 #else
@@ -1177,13 +1183,13 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 				if( TYE_RAWDATA_MAX[i*Rx_Channel+j] < rawdata[i][j])
 				{
 					printk("[TSP] rawdata_pass_fail_silabs MAX rawdata[%d][%d] = %d \n", i,j,rawdata[i][j]);			
-					return sprintf(buf, "0"); // fail
+					return sprintf(buf, "0"); /* fail */
 				}
 
 				if( TYE_RAWDATA_MIN[i*Rx_Channel+j] > rawdata[i][j])
 				{
 					printk("[TSP] rawdata_pass_fail_silabs MIN rawdata[%d][%d] = %d \n", i,j,rawdata[i][j]);			
-					return sprintf(buf, "0"); // fail
+					return sprintf(buf, "0"); /* fail */
 				}
 			}
 			else if(TSP_MODULE_ID == T_SMAC_MODULE_VER)
@@ -1191,13 +1197,13 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 				if( SMAC_RAWDATA_MAX[i*Rx_Channel+j] < rawdata[i][j])
 				{
 					printk("[TSP] rawdata_pass_fail_silabs MAX rawdata[%d][%d] = %d \n", i,j,rawdata[i][j]);			
-					return sprintf(buf, "0"); // fail
+					return sprintf(buf, "0"); /* fail */
 				}
 
 				if( SMAC_RAWDATA_MIN[i*Rx_Channel+j] > rawdata[i][j])
 				{
 					printk("[TSP] rawdata_pass_fail_silabs MIN rawdata[%d][%d] = %d \n", i,j,rawdata[i][j]);			
-					return sprintf(buf, "0"); // fail
+					return sprintf(buf, "0"); /* fail */
 				}
 			}
 		}
@@ -1211,11 +1217,11 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 
 			if( RAWDATA_MAX[i*Rx_Channel+j] < rawdata[i][j])
 			{
-				return sprintf(buf, "0"); // fail
+				return sprintf(buf, "0"); /* fail */
 			}
 			if( RAWDATA_MIN[i*Rx_Channel+j] > rawdata[i][j])
 			{
-				return sprintf(buf, "0"); // fail
+				return sprintf(buf, "0"); /* fail */
 			}
 		}
 	}
@@ -1265,7 +1271,7 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 	if(buf_firmware_show[0]!=PHONE_VER)
 		return sprintf(buf, "0");
 
-    return sprintf(buf, "1"); // success
+    return sprintf(buf, "1"); /* success */
  }
 
 static ssize_t rawdata_show_silabs(struct device *dev, struct device_attribute *attr, char *buf)
@@ -1304,9 +1310,9 @@ static ssize_t rawdata_show_silabs(struct device *dev, struct device_attribute *
 		return -1;
 	}
 
-	//
-	//	quicksense format for reading baseline
-	//
+	/*
+	*	quicksense format for reading baseline
+	*/
 	ret = silabs_quicksense(BASELINE_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer1);
 	if (ret != 0)
 	{
@@ -1321,9 +1327,9 @@ static ssize_t rawdata_show_silabs(struct device *dev, struct device_attribute *
 		}
 	}
 
-	//
-	//	quicksense format for reading rawdata
-	//
+	/*
+	*	quicksense format for reading rawdata
+	*/
 	ret = silabs_quicksense(RAWDATA_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer2);
 	if (ret != 0)
 	{
@@ -1362,9 +1368,9 @@ static ssize_t baseline_show_silabs(struct device *dev, struct device_attribute 
 
    mdelay(300); 
 
-	//
-	//	Entering JIG_MODE
-	//
+	/*
+	*	Entering JIG_MODE
+	*/
 	buffer[0] = ESCAPE_ADDR;
 	buffer[1] = JIG_MODE_COMMAND;
 	ret = i2c_master_send(ts_global->client, buffer, 2);
@@ -1382,9 +1388,9 @@ static ssize_t baseline_show_silabs(struct device *dev, struct device_attribute 
 		return -1;
 	}
 
-	//
-	//	quicksense format for reading baseline
-	//
+	/*
+	*	quicksense format for reading baseline
+	*/
 	ret = silabs_quicksense(BASELINE_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer);
 	if (ret != 0)
 	{
@@ -1393,9 +1399,9 @@ static ssize_t baseline_show_silabs(struct device *dev, struct device_attribute 
 	}	
 
 	for (i = 0; i < Tx_Channel; i++)
-    {
+    	{
 		for(j = 0 ; j < Rx_Channel; j++)
-	{
+		{
 			baseline[i][j] = (buffer[(i*Rx_Channel+j)*2 + QUICKSENSE_OVERHEAD -1] <<8) + buffer[(i*Rx_Channel+j)*2+QUICKSENSE_OVERHEAD];
 			printk(" %5d", baseline[i][j]);
 			
@@ -1415,12 +1421,12 @@ static ssize_t diff_show_silabs(struct device *dev, struct device_attribute *att
 	int Tx_Channel = NUM_TX_CHANNEL;
 	int Rx_Channel = NUM_RX_CHANNEL;
 	uint8_t buffer1[NUM_TX_CHANNEL*NUM_RX_CHANNEL*2+QUICKSENSE_OVERHEAD]={0,};
-    uint8_t buffer2[NUM_TX_CHANNEL*NUM_RX_CHANNEL*2+QUICKSENSE_OVERHEAD]={0,};
+	uint8_t buffer2[NUM_TX_CHANNEL*NUM_RX_CHANNEL*2+QUICKSENSE_OVERHEAD]={0,};
 	uint16_t rawdata[NUM_TX_CHANNEL][NUM_RX_CHANNEL]={{0,},};
 	uint16_t button_rawdata[NUM_MTRBUTTONS]={0,};
 	uint16_t baseline[NUM_TX_CHANNEL][NUM_RX_CHANNEL]={{0,},};
 	uint16_t button_baseline[NUM_MTRBUTTONS]={0,};
-      int i, j, ret;
+	int i, j, ret;
 
       printk("[TSP] %s entered. line : %d, \n", __func__,__LINE__);
 
@@ -1445,9 +1451,9 @@ static ssize_t diff_show_silabs(struct device *dev, struct device_attribute *att
 		return -1;
 	}
 
-	//
-	//	quicksense format for reading baseline
-	//
+	/*
+	*	quicksense format for reading baseline
+	*/
 	ret = silabs_quicksense(BASELINE_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer1);
 	if (ret != 0)
 	{
@@ -1458,15 +1464,15 @@ static ssize_t diff_show_silabs(struct device *dev, struct device_attribute *att
 	for (i = 0; i < Tx_Channel; i++)
     {
 		for(j = 0 ; j < Rx_Channel; j++)
-	{
+		{
 			baseline[i][j] = (buffer1[(i*Rx_Channel+j)*2 + QUICKSENSE_OVERHEAD -1] <<8) + buffer1[(i*Rx_Channel+j)*2+QUICKSENSE_OVERHEAD];
-			//printk(" %5d", baseline[i][j]);
+			/* printk(" %5d", baseline[i][j]); */
 		}
 	}
 
-	//
-	//	quicksense format for reading rawdata
-	//
+	/*
+	*	quicksense format for reading rawdata
+	*/
 	ret = silabs_quicksense(RAWDATA_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer2);
 	if (ret != 0)
 	{
@@ -1617,9 +1623,9 @@ static ssize_t read_node(struct device *dev, struct device_attribute *attr, char
 
        mdelay(300); 
   
-	//
-	//	Entering JIG_MODE
-	//
+	/*
+	*	Entering JIG_MODE
+	*/
 	buffer[0] = ESCAPE_ADDR;
 	buffer[1] = JIG_MODE_COMMAND;
 	ret = i2c_master_send(ts_global->client, buffer, 2);
@@ -1637,9 +1643,9 @@ static ssize_t read_node(struct device *dev, struct device_attribute *attr, char
 		return -1;
 	}
 
-	//
-	//	quicksense format for reading baseline
-	//
+	/*
+	*	quicksense format for reading baseline
+	*/
 	ret = silabs_quicksense(BASELINE_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer);
 	if (ret != 0)
 	{

@@ -1350,38 +1350,38 @@ static int calculate_batt_level(int batt_volt)
 {
 	int scaled_level = 0;
 
-	if(batt_volt >= BATT_FULL_VOLT) {		//100%
+	if(batt_volt >= BATT_FULL_VOLT) {		/* 100% */
 		scaled_level = 99;
 	}
-	else if(batt_volt >=  BATT_LEVEL5_VOLT) {	//99% ~ 80%
+	else if(batt_volt >=  BATT_LEVEL5_VOLT) {	/* 99% ~ 80% */
 		scaled_level = ((batt_volt -BATT_LEVEL5_VOLT+1)*20)/(BATT_FULL_VOLT-BATT_LEVEL5_VOLT);
  		scaled_level = scaled_level+80;
 	}
-	else if(batt_volt >= BATT_LEVEL4_VOLT) { 	//79% ~ 65%
+	else if(batt_volt >= BATT_LEVEL4_VOLT) { 	/* 79% ~ 65% */
 		scaled_level = ((batt_volt -BATT_LEVEL4_VOLT)*15)/(BATT_LEVEL5_VOLT-BATT_LEVEL4_VOLT);
  		scaled_level = scaled_level+65;
 	}
-	else if(batt_volt >= BATT_LEVEL3_VOLT) { 	//64% ~ 50%
+	else if(batt_volt >= BATT_LEVEL3_VOLT) { 	/* 64% ~ 50% */
 		scaled_level = ((batt_volt -BATT_LEVEL3_VOLT)*15)/(BATT_LEVEL4_VOLT-BATT_LEVEL3_VOLT);
  		scaled_level = scaled_level+50;
 	}
-	else if(batt_volt >= BATT_LEVEL2_VOLT) {	//49% ~ 35%
+	else if(batt_volt >= BATT_LEVEL2_VOLT) {	/* 49% ~ 35% */
 		scaled_level = ((batt_volt -BATT_LEVEL2_VOLT)*15)/(BATT_LEVEL3_VOLT-BATT_LEVEL2_VOLT);
 		scaled_level = scaled_level+35;
 	}
-	else if(batt_volt >= BATT_LEVEL1_VOLT) {	//34% ~ 20%
+	else if(batt_volt >= BATT_LEVEL1_VOLT) {	/* 34% ~ 20% */
 		scaled_level = ((batt_volt -BATT_LEVEL1_VOLT)*15)/(BATT_LEVEL2_VOLT-BATT_LEVEL1_VOLT);
  		scaled_level = scaled_level+20;
 	}
-	else if(batt_volt >= BATT_LEVEL0_VOLT) {	//19% ~ 5%
+	else if(batt_volt >= BATT_LEVEL0_VOLT) {	/* 19% ~ 5% */
 		scaled_level = ((batt_volt -BATT_LEVEL0_VOLT)*15)/(BATT_LEVEL1_VOLT-BATT_LEVEL0_VOLT);
  		scaled_level = scaled_level+5;
 	}
-	else if(batt_volt >= BATT_LEVEL0_1_VOLT) {	// 4% ~ 3%
+	else if(batt_volt >= BATT_LEVEL0_1_VOLT) {	/* 4% ~ 3% */
 		scaled_level = ((batt_volt -BATT_LEVEL0_1_VOLT)*2)/(BATT_LEVEL0_VOLT-BATT_LEVEL0_1_VOLT);
  		scaled_level = scaled_level+3;
 	}
-	else if(batt_volt > BATT_LOW_VOLT) {		// 2% ~ 1%
+	else if(batt_volt > BATT_LOW_VOLT) {		/* 2% ~ 1% */
 				scaled_level = ((batt_volt -BATT_LOW_VOLT)*2)/(BATT_LEVEL0_1_VOLT-BATT_LOW_VOLT);
  		scaled_level = scaled_level+1;
 	}
@@ -2955,8 +2955,8 @@ static void __init update_pm_sysparm(void)
 static void totoro_init_gpio(void)
 {
 /* +++ H/W req */
-#define ADDR_GPIO_GPIPUD0 (HW_GPIO_BASE + 0x028) //0x088CE028 GPIO 0 - 31
-#define ADDR_GPIO_GPIPUD1 (HW_GPIO_BASE + 0x02c) //0x088CE02C GPIO 32 - 63
+#define ADDR_GPIO_GPIPUD0 (HW_GPIO_BASE + 0x028) /*0x088CE028 GPIO 0 - 31*/
+#define ADDR_GPIO_GPIPUD1 (HW_GPIO_BASE + 0x02c) /*0x088CE02C GPIO 32 - 63*/
 
 #define IOTR_GPIO(GPIO) (~(3<<((GPIO%16)<<1)))
 #define GPIPEN_PULL_EN(GPIO) (1<<(GPIO%32))
