@@ -331,6 +331,10 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	unsigned int freq_starter, index_starter;
 	unsigned int freq_lower, index_lower;
 	unsigned int freq_ulower, index_ulower;
+	int cpu = policy->cpu;
+	int cur = policy->cur;
+	int min = policy->min;
+	int max = policy->max;
 	int index;
 	int ret;
 
@@ -340,15 +344,8 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		return -EINVAL;
 	}
 
-	freqs.cpu = 0;
-	freqs.old = bcm_cpufreq_get_speed(0);
+	freqs.old = bcm_cpufreq_get_speed(cpu);
 	freqs.new = b->bcm_freqs_table[index].frequency;
-
-	if (freqs.old == freqs.new)
-		return 0;
-
-	pr_info("%s: cpu freq change: %u --> %u\n", __func__, freqs.old,
-		freqs.new);
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 	local_irq_disable();
@@ -356,12 +353,71 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	/* If we are switching to a higher frequency, we may have to increase
 	 * the core voltage first before changing the frequency.
 	 */
-	if (freqs.new > freqs.old) {
+	if (freqs.new == freqs.old) {
+		pr_info("%s: new cpu freq is the same: %u <-> %u\n",
+			 __func__, freqs.old, freqs.new);
+		return 0;
+	}
+	else if (freqs.new > freqs.old || freqs.new < freqs.old) {
+		pr_info("%s: cpu freq change: %u --> %u\n", __func__,
+			freqs.old, freqs.new);
+
+			index_osuper	= info->index_osuper;
+			freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
+			index_super		= info->index_super;
+			freq_super		= info->freq_tbl[index_super].cpu_freq * 1000;
+			index_turbo		= info->index_turbo;
+			freq_turbo		= info->freq_tbl[index_turbo].cpu_freq * 1000;
+			index_heigher	= info->index_heigher;
+			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+			index_heigher	= info->index_heigher;
+			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+			index_heigher	= info->index_heigher;
+			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+			index_heigher	= info->index_heigher;
+			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+			index_omedium	= info->index_omedium;
+			freq_omedium	= info->freq_tbl[index_omedium].cpu_freq * 1000;
+			index_umedium	= info->index_umedium;
+			freq_umedium	= info->freq_tbl[index_umedium].cpu_freq * 1000;
+			index_starter	= info->index_starter;
+			freq_starter	= info->freq_tbl[index_starter].cpu_freq * 1000;
+			index_normal	= info->index_normal;
+			freq_normal		= info->freq_tbl[index_normal].cpu_freq * 1000;
+			index_lower		= info->index_lower;
+			freq_lower		= info->freq_tbl[index_lower].cpu_freq * 1000;
+			index_ulower	= info->index_ulower;
+			freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
+
+			if (freqs.new > max)
+				return freqs.new = freq_osuper;
+			if (freqs.new < min)
+				return freqs.new = freq_ulower;
+
+			/* Height Frequencies Need's special hundling :) */
+			if (freqs.new == freq_osuper || freqs.new == freq_super ||
+				freqs.new == freq_turbo || freqs.new == freq_heigher ||
+				freqs.new == freq_omedium)
+			{
+				clk_enable(b->appspll_en_clk);
+
+				ret = wait_for_pll_on();
+				if (!ret)
+					ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
+			}
+			else if (freqs.new == freq_umedium || freqs.new == freq_starter ||
+				freqs.new == freq_normal || freqs.new == freq_lower ||
+				freqs.new == freq_ulower)
+			{
+				clk_disable(b->appspll_en_clk);
+
+				ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
+			}
+
 		/* bcm_get_cpuvoltage expects frequency in MHz, cpufreq core
 		 * gives the frequency in kHz. Hence the kHz to MHz conversion
 		 * below.
 		 */
-		int cpu = policy->cpu;
 		int volt_new = bcm_get_cpuvoltage(cpu, freqs.new / 1000);
 		int volt_old = bcm_get_cpuvoltage(cpu, freqs.old / 1000);
 
@@ -371,44 +427,9 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 			regulator_set_voltage(b->cpu_regulator, volt_new,
 				volt_new);
 		}
-	}
-
-	/* Get the osuper mode frequency. Switching to and from osuper mode
-	 * needs special handling.
-	 */
-	index_osuper = info->index_osuper;
-	freq_osuper = info->freq_tbl[index_osuper].cpu_freq * 1000;
-
-	/* Set APPS PLL enable bit when entering to osuper mode */
-	if (freqs.new == freq_osuper)
-		clk_enable(b->appspll_en_clk);
-
-	/* freq.new will be in kHz. convert it to Hz for clk_set_rate */
-	ret = wait_for_pll_on();
-	if (!ret)
-		ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
-
-	/* Clear APPS PLL enable bit when entering to normal mode */
-	if (freqs.new < freq_osuper)
-		clk_disable(b->appspll_en_clk);
-
-	/* If we are switching to a lower frequency, we can potentially
-	 * decrease the core voltage after changing the frequency.
-	 */
-	if (!ret && freqs.new < freqs.old) {
-		/* bcm_get_cpuvoltage expects frequency in MHz, cpufreq core
-		 * gives the frequency in kHz. Hence the kHz to MHz conversion
-		 * below.
-		 */
-		int cpu = policy->cpu;
-		int volt_new = bcm_get_cpuvoltage(cpu, freqs.new / 1000);
-		int volt_old = bcm_get_cpuvoltage(cpu, freqs.old / 1000);
-
-		if (volt_new != volt_old) {
-			pr_info("%s: cpu volt change: %d --> %d\n", __func__,
-				volt_old, volt_new);
-			regulator_set_voltage(b->cpu_regulator, volt_new,
-				volt_new);
+		else if (!ret && freqs.new == freqs.old) {
+			pr_info("%s: new cpu volt is the same: %d <-> %d\n",
+			__func__, volt_old, volt_new);
 		}
 	}
 
@@ -421,6 +442,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 
 	return ret;
 }
+
 
 static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 {
@@ -465,7 +487,7 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 
 	/* FIX_ME: Tune this value */
 	/* I think it's alrady done :) */
-	policy->cpuinfo.transition_latency = CPUFREQ_ETHERNAL;
+	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL;
 
 	ret = bcm_create_cpufreqs_table(policy, &(b->bcm_freqs_table));
 	if (ret) {

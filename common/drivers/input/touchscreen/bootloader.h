@@ -74,7 +74,7 @@ int WriteBytes (unsigned int addr, unsigned int num);
 int EnterBootMode (int res);
 //int GetInfo ();
 int EraseFlashPage (unsigned int addr);
-int Firmware_Download ();
+int Firmware_Download (void);
 
 
 //-----------------------------------------------------------------------------

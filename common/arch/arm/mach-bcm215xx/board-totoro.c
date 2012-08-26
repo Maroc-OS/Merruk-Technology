@@ -170,7 +170,7 @@
 #define BATT_LOW_VOLT		3400
 
 
-extern int pmu_is_charger_inserted();
+extern int pmu_is_charger_inserted(void);
 #define KEY_PRESS_THRESHOLD	0x6d00
 #define KEY_3POLE_THRESHOLD	670	// ~ 55 and 57 ~, measured on Totoro
 #define KEY1_THRESHOLD_L	0	// 9 to 83, mesaured on Luisa
@@ -1318,7 +1318,7 @@ EXPORT_SYMBOL(pmu_usb_driver_initialized);
 #define NB_TEMP_TABLE 18
 #define NB_BATT_TABLE 8
 
-static void Bcm_PMU_GpioInit_Setting()
+static void Bcm_PMU_GpioInit_Setting(void)
 {
 	pr_info("%s: PMU: init hardware\n", __func__);
 
@@ -1333,7 +1333,7 @@ static void Bcm_PMU_GpioInit_Setting()
 	}
 }
 
-static void Bcm_HEADSET_GpioInit_Setting()
+static void Bcm_HEADSET_GpioInit_Setting(void)
 {
 	pr_info("%s: HEADSET: init hardware\n", __func__);
 	
@@ -2823,7 +2823,7 @@ int board_sysconfig(uint32_t module, uint32_t op)
            
 		}
 		else if (op == SYSCFG_INIT){
-		/*[TODO:]Interrupt mode config*/
+			/* [TODO:]Interrupt mode config */
 		}
 		break;
 

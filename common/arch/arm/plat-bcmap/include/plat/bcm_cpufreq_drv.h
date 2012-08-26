@@ -16,7 +16,7 @@
 #ifndef BCM_CPUFREQ_DRV_H
 #define BCM_CPUFREQ_DRV_H
 
-#define CPUFREQ_ETHERNAL	10000000
+#define CPUFREQ_ETERNAL		10000000
 
 struct bcm_freq_tbl {
 	u32 cpu_freq;         /* in MHz */

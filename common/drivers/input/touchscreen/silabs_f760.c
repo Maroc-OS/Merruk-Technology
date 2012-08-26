@@ -42,7 +42,7 @@
 #define MTSI_VERSION		0x05
 
 /* Activate debug mode */
-/* #define __TOUCH_DEBUG__ 1 */
+/*#define __TOUCH_DEBUG__ 1*/
 
 #define I2C_RETRY_CNT		3
 

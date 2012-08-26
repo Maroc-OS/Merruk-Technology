@@ -38,7 +38,8 @@ static const char *memory_uevent_name(struct kset *kset, struct kobject *kobj)
 	return MEMORY_CLASS_NAME;
 }
 
-static int memory_uevent(struct kset *kset, struct kobject *obj, struct kobj_uevent_env *env)
+static int memory_uevent(struct kset *kset, struct kobject *obj,
+			struct kobj_uevent_env *env)
 {
 	int retval = 0;
 
@@ -247,7 +248,10 @@ static int memory_block_change_state(struct memory_block *mem,
 	}
 
 	ret = memory_block_action(mem, to_state);
-	if (!ret)
+
+	if (ret)
+		mem->state = from_state_req;
+	else
 		mem->state = to_state;
 
 out:
