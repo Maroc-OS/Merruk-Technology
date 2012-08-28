@@ -66,7 +66,7 @@ static int backlight_mode=1;
 #define DIMMING_VALUE		1
 #endif
 #define MAX_BRIGHTNESS_VALUE	255
-#define MIN_BRIGHTNESS_VALUE	30
+#define MIN_BRIGHTNESS_VALUE	12
 #define BACKLIGHT_DEBUG 0
 #define BACKLIGHT_SUSPEND 0
 #define BACKLIGHT_RESUME 1
@@ -92,33 +92,35 @@ struct brt_value{
 
 #if defined(CONFIG_BACKLIGHT_TOTORO)
 struct brt_value brt_table_ktd[] = {
-	{ MIN_BRIGHTNESS_VALUE,  2 }, // Min pulse 27(33-6) by HW 
-	{ 39,  3 }, 
-	{ 48,  4 }, 
-	{ 57,  5 }, 
-	{ 66,  6 }, 
-	{ 75,  7 }, 
-	{ 84,  8 },  
-	{ 93,  9 }, 
-	{ 102,	10 }, 
-	{ 111,	11 },	
-	{ 120,	12 }, 
-	{ 129,	13 }, 
-	{ 138,  14 },//default value 21 (33-12) 
-	{ 147,	15 }, 
-	{ 155,  16 },
-	{ 163,	17 },  
-	{ 170,	18 },  
-	{ 178,	19 }, 
-	{ 186,  20 },
-	{ 194,  21 }, 
-	{ 202,  22 },
-	{ 210,	23 },  
-	{ 219,	24 }, 
-	{ 228,	25 }, 
-	{ 237,  26 },  
-	{ 246,	27 }, 
-	{ MAX_BRIGHTNESS_VALUE,  28 }, // Max pulse 7(33-26) by HW
+	{ MIN_BRIGHTNESS_VALUE,  2 }, 
+	{ 21,  3 }, 
+	{ 30,  4 }, 
+	{ 39,  5 }, 
+	{ 48,  6 }, 
+	{ 57,  7 }, 
+	{ 66,  8 }, 
+	{ 75,  9 }, 
+	{ 84,  10 }, 
+	{ 93,  11 }, 
+	{ 102,	12 }, 
+	{ 111,	13 },	
+	{ 120,	14 }, 
+	{ 129,	15 }, 
+	{ 138,  16 }, 
+	{ 147,	17 }, 
+	{ 155,  18 },
+	{ 163,	19 },  
+	{ 170,	20 },  
+	{ 178,	21 }, 
+	{ 186,  22 },
+	{ 194,  23 }, 
+	{ 202,  24 },
+	{ 210,	25 },  
+	{ 219,	26 }, 
+	{ 228,	27 }, 
+	{ 237,  28 },  
+	{ 246,	29 }, 
+	{ MAX_BRIGHTNESS_VALUE,  30 }, 
 
 };
 #elif defined(CONFIG_BACKLIGHT_LUISA)
