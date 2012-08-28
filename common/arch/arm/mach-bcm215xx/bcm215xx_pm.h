@@ -18,6 +18,15 @@
 
 #include <asm/sizes.h>
 
+/* Counter value for busy-wait loop delay before WIFI
+ * in the sleep sequence.
+ */
+#ifdef CONFIG_BCM21553_1GHZ
+#define BCM21553_WFI_DELAY            1500
+#else
+#define BCM21553_WFI_DELAY            1200
+#endif
+
 /* Enable/disable dormant mode time profiling code, define this as follows:
  * 1 - to enable profiling code in dormant sequence
  * 0 - to disable profiling code in dormant sequence

@@ -151,6 +151,7 @@
 #include <linux/usb/android.h>
 #endif
 
+#define FREQ_GHZ(mhz)		((ghz)*1000UL*1000UL*1000UL)
 #define FREQ_MHZ(mhz)		((mhz)*1000UL*1000UL)
 #define FREQ_KHZ(khz)		((khz)*1000UL)
 
@@ -1429,7 +1430,7 @@ static int calculate_batt_level(int batt_volt)
 }
 static u32 pmu_event_callback(int event, int param)
 {
-	int i,inx;
+	int inx;
 	u32 ratio=0,ret = 0;
 	u32 gain = 0, offset = 0;
 	
@@ -1445,11 +1446,11 @@ static u32 pmu_event_callback(int event, int param)
 	/* These values are observed on ThunderbirdEDN31 */
 //	static u16 bat_adc[] = {0x2BE, 0x2D3, 0x2E8, 0x2FC, 0x311, 0x32C, 0x364};
 #if defined(CONFIG_TARGET_LOCALE_AUS_TEL)
-	static u32 TempAdcTable[] = {     775,721,664,602,541,479,420,366,315,270,230,196,166,141,119,100,93,88,}; 
+	static u32 TempAdcTable[] = {775,721,664,602,541,479,420,366,315,270,230,196,166,141,119,100,93,88,}; 
 #else
-	static u32 TempAdcTable[] = {     786,732,674,612,550,488,428,373,322,276,236,201,171,145,123,104,97,91,}; 
+	static u32 TempAdcTable[] = {786,732,674,612,550,488,428,373,322,276,236,201,171,145,123,104,97,91,}; 
 #endif
-	static u32 TempDegreeTable[] ={-10,-5,     0,    5,  10,  15,  20, 25,  30,  35,  40, 45,  50,  55,  60, 63,65,67,};
+	static u32 TempDegreeTable[] ={-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,63,65,67,};
 
 	static u16 Default4p2Volt;
 	static u16 BattEmptyThresh;
@@ -1506,27 +1507,27 @@ static u32 pmu_event_callback(int event, int param)
 
 	case PMU_EVENT_BATT_ADC_TO_VOLTAGE:
 #if 0
-		ret = param*bat_adc_volt_mul;
+		ret = param * bat_adc_volt_mul;
 #else
 		ret = calculate_batt_level(param);
 #endif
 		break;
 
 	case PMU_EVENT_CHARGER_INSERT:
-	pr_info("%s: PMU_EVENT_CHARGER_INSERT\n", __func__);
+	pr_info("%s: PMU_EVENT_CHARGER_INSERT (%d)\n", __func__, param);
 
 	/* try to start the usb enumeration process. this may not succeed if
 	 * the usb stack is still not up.
 	 */
-	if (param == PMU_MUIC_CHGTYP_USB) {
+	if ((param == PMU_MUIC_CHGTYP_USB || (param == PMU_MUIC_CHGTYP_DOWNSTREAM_PORT)) ) {
 		usb_charger_detected = true;
 		pmu_usb_start();
 	}
 	break;
 
 	case PMU_EVENT_CHARGER_REMOVE:
-	pr_info("%s: PMU_EVENT_CHARGER_REMOVE\n", __func__);
-	if (param == PMU_MUIC_CHGTYP_USB) {
+	pr_info("%s: PMU_EVENT_CHARGER_REMOVE (%d)\n", __func__, param);
+	if ((param == PMU_MUIC_CHGTYP_USB) || (param == PMU_MUIC_CHGTYP_DOWNSTREAM_PORT)) {
 		usb_charger_detected = false;
 		pmu_usb_stop();
 	}
@@ -1774,10 +1775,10 @@ void check_hs_state (int *headset_state)
     *headset_state = (gpio_get_value(HEADSET_DET_GPIO)) ? 0 : 1;
 }
 static struct brcm_headset_pd headset_pd = {
-	.hsirq		= IRQ_MICIN,
-	.hsbirq		= IRQ_MICON,
+	.hsirq			= IRQ_MICIN,
+	.hsbirq			= IRQ_MICON,
 	.check_hs_state = check_hs_state,
-	.hsgpio= HEADSET_DET_GPIO,	
+	.hsgpio			= HEADSET_DET_GPIO,
 	.debounce_ms    = 60,
 	.key_press_threshold = KEY_PRESS_THRESHOLD,
 	.key_3pole_threshold = KEY_3POLE_THRESHOLD,
@@ -2508,6 +2509,33 @@ int board_sysconfig(uint32_t module, uint32_t op)
 
 		} else if (op == SYSCFG_DISABLE) {
 			/* Offset for IOCR2 = 0x0c */
+
+#if 0		//set no-pull
+			writel(readl(ADDR_SYSCFG_IOCR2) &
+				~(SYSCFG_IOCR2_SD3CMD_PULL_CTRL(SD_PULL_UP | SD_PULL_DOWN) |
+			         SYSCFG_IOCR2_SD3DAT_PULL_CTRL(SD_PULL_UP | SD_PULL_DOWN)),
+			       ADDR_SYSCFG_IOCR2);
+#else		// set pull-down
+			writel(readl(ADDR_SYSCFG_IOCR2)
+				   & ~(SYSCFG_IOCR2_SD3CMD_PULL_CTRL(SD_PULL_UP | SD_PULL_DOWN)),
+				   ADDR_SYSCFG_IOCR2);
+			
+			/* Offset for IOCR2 = 0x0c */
+			writel(readl(ADDR_SYSCFG_IOCR2)
+				   | SYSCFG_IOCR2_SD3CMD_PULL_CTRL(SD_PULL_DOWN),
+				   ADDR_SYSCFG_IOCR2);
+			
+			/* Offset for IOCR2 = 0x0c */
+			writel(readl(ADDR_SYSCFG_IOCR2)
+				   & ~(SYSCFG_IOCR2_SD3DAT_PULL_CTRL(SD_PULL_UP | SD_PULL_DOWN)),
+				   ADDR_SYSCFG_IOCR2);
+			
+			/* Offset for IOCR2 = 0x0c */
+			writel(readl(ADDR_SYSCFG_IOCR2)
+				   | SYSCFG_IOCR2_SD3DAT_PULL_CTRL(SD_PULL_DOWN),
+				   ADDR_SYSCFG_IOCR2);
+#endif
+
 			writel(readl(ADDR_SYSCFG_IOCR2) &
 				~(SYSCFG_IOCR2_SD3CMD_PULL_CTRL(SD_PULL_UP | SD_PULL_DOWN) |
 			         SYSCFG_IOCR2_SD3DAT_PULL_CTRL(SD_PULL_UP | SD_PULL_DOWN)),
@@ -2808,12 +2836,12 @@ int board_sysconfig(uint32_t module, uint32_t op)
 	case SYSCFG_SENSORS:
 		if(op == SYSCFG_ENABLE){
 			writel(readl(IO_ADDRESS(ADDR_SYSCFG_IOCR3_PHYS)) &0x7fffffff  , IO_ADDRESS(ADDR_SYSCFG_IOCR3_PHYS));	//Disable the 3rd BSC on GPIO7, GPIO15
-			writel(readl(HW_GPIO_BASE) & ~(0x3 << (ACC_SDA * 2)) | (0x2 << (ACC_SDA * 2)) , HW_GPIO_BASE);
-			writel(readl(HW_GPIO_BASE) & ~(0x3 << (ACC_SCL * 2)) | (0x2 << (ACC_SCL * 2)) , HW_GPIO_BASE);
-			writel(readl(HW_GPIO_BASE) & ~(0x3 << (GEO_SDA * 2)) | (0x2 << (GEO_SDA * 2)) , HW_GPIO_BASE);
-			writel(readl(HW_GPIO_BASE) & ~(0x3 << (GEO_SCL * 2)) | (0x2 << (GEO_SCL * 2)) , HW_GPIO_BASE);
-			writel(readl(HW_GPIO_BASE+4) & ~(0x3 << (PROXI_SCL-16) * 2) | (0x2 << ( PROXI_SCL-16) * 2) , HW_GPIO_BASE+4);
-			writel(readl(HW_GPIO_BASE+4) & ~(0x3 << (PROXI_SDA-16) * 2) | (0x2 << ( PROXI_SDA-16) * 2) , HW_GPIO_BASE+4);
+			writel(readl(HW_GPIO_BASE) & ~((0x3 << (ACC_SDA * 2)) | (0x2 << (ACC_SDA * 2))) , HW_GPIO_BASE);
+			writel(readl(HW_GPIO_BASE) & ~((0x3 << (ACC_SCL * 2)) | (0x2 << (ACC_SCL * 2))) , HW_GPIO_BASE);
+			writel(readl(HW_GPIO_BASE) & ~((0x3 << (GEO_SDA * 2)) | (0x2 << (GEO_SDA * 2))) , HW_GPIO_BASE);
+			writel(readl(HW_GPIO_BASE) & ~((0x3 << (GEO_SCL * 2)) | (0x2 << (GEO_SCL * 2))) , HW_GPIO_BASE);
+			writel(readl(HW_GPIO_BASE+4) & ~((0x3 << (PROXI_SCL-16)*2) | (0x2 << (PROXI_SCL-16)*2)) , HW_GPIO_BASE+4);
+			writel(readl(HW_GPIO_BASE+4) & ~((0x3 << (PROXI_SDA-16)*2) | (0x2 << (PROXI_SDA-16)*2)) , HW_GPIO_BASE+4);
 
 		        bcm_gpio_pull_up(PROXI_SCL, true);
 		        bcm_gpio_pull_up_down_enable(PROXI_SCL, true);
@@ -2958,7 +2986,7 @@ static void totoro_init_gpio(void)
 #define ADDR_GPIO_GPIPUD0 (HW_GPIO_BASE + 0x028) /*0x088CE028 GPIO 0 - 31*/
 #define ADDR_GPIO_GPIPUD1 (HW_GPIO_BASE + 0x02c) /*0x088CE02C GPIO 32 - 63*/
 
-#define IOTR_GPIO(GPIO) (~(3<<((GPIO%16)<<1)))
+#define IOTR_GPIO(GPIO) ((GPIO%16)<<1)
 #define GPIPEN_PULL_EN(GPIO) (1<<(GPIO%32))
 #define GPIPUD_PULL_DOWN(GPIO) (~(1<<(GPIO%32)))
 
@@ -2969,15 +2997,15 @@ static void totoro_init_gpio(void)
 
 
 				/*Set as input */
-				writel(readl(ADDR_GPIO_IOTR0)&(~(3<<IOTR_GPIO(3))),ADDR_GPIO_IOTR0);
-				writel(readl(ADDR_GPIO_IOTR0)&(~(3<<IOTR_GPIO(9))),ADDR_GPIO_IOTR0);
+				writel(readl(ADDR_GPIO_IOTR0) & ~(3<<IOTR_GPIO(3)),ADDR_GPIO_IOTR0);
+				writel(readl(ADDR_GPIO_IOTR0) & ~(3<<IOTR_GPIO(9)),ADDR_GPIO_IOTR0);
 
-				writel(readl(ADDR_GPIO_IOTR2)&(~(3<<IOTR_GPIO(35))),ADDR_GPIO_IOTR2);
+				writel(readl(ADDR_GPIO_IOTR2) & ~(3<<IOTR_GPIO(35)),ADDR_GPIO_IOTR2);
 				
 				
-				writel(readl(ADDR_GPIO_IOTR3)&(~(3<<IOTR_GPIO(58))),ADDR_GPIO_IOTR3);				
-				writel(readl(ADDR_GPIO_IOTR3)&(~(3<<IOTR_GPIO(59))),ADDR_GPIO_IOTR3);
-				writel(readl(ADDR_GPIO_IOTR3)&(~(3<<IOTR_GPIO(60))),ADDR_GPIO_IOTR3);
+				writel(readl(ADDR_GPIO_IOTR3) & ~(3<<IOTR_GPIO(58)),ADDR_GPIO_IOTR3);				
+				writel(readl(ADDR_GPIO_IOTR3) & ~(3<<IOTR_GPIO(59)),ADDR_GPIO_IOTR3);
+				writel(readl(ADDR_GPIO_IOTR3) & ~(3<<IOTR_GPIO(60)),ADDR_GPIO_IOTR3);
 				
 
 				/*Enable pull up/down*/

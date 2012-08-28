@@ -1327,6 +1327,23 @@ static int bcm215xx_pm_enter(suspend_state_t state)
 
 	pr_debug("%s: state:%d\n", __func__, state);
 
+	/* Workaround to wait until the CS tick increments by 1. Without this
+	 * the system can enter into a infinite wait in the following loop:
+	 * cpu_idle -> timer_interrupt -> timer isr -> cpuidle.
+	 */
+	if (bcm_pm_sleep_buf->pedestal_allowed == true) {
+		struct timeval t;
+		unsigned int old, new;
+
+		do_gettimeofday(&t);
+		old = t.tv_sec * USEC_PER_SEC + t.tv_usec;
+		new = old;
+		while (old == new) {
+			do_gettimeofday(&t);
+			new = t.tv_sec * USEC_PER_SEC + t.tv_usec;
+		}
+	}
+
 	switch (state) {
 	case PM_SUSPEND_MEM:
 	case PM_SUSPEND_STANDBY:
@@ -1626,6 +1643,9 @@ static int __init bcm215xx_pm_init(void)
 	bcm_pm_sleep_buf->dormant_allowed = bcm_dormant_enable;
 	bcm_pm_sleep_buf->verify = true;
 	bcm_pm_sleep_buf->dormant_sequence_dbg = false;
+
+	/* Set the counter value for 12us busy wait delay loop */
+	bcm_pm_sleep_buf->dormant_scratch1 = BCM21553_WFI_DELAY;
 
 	/* Load the physical addresses of the restore function
 	 * and dormant mode exception handlers into the high

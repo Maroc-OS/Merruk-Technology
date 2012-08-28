@@ -89,6 +89,7 @@ static irqreturn_t gpt_interrupt(int irq, void *dev_id)
 				writel(readl(gpt_ptr->base_config.base_addr + GPT_CSR(i)) 
 					& ~GPT_CSR_EN , 
 					gpt_ptr->base_config.base_addr + GPT_CSR(i));
+				writel(-1, gpt.base_config.base_addr + GPT_RELOAD(i));
 			}
 
 			gpt_ptr->gpt_desc[i].gcallback(gpt_ptr->gpt_desc[i].arg);
@@ -365,6 +366,41 @@ err:
 	return counter;
 }
 EXPORT_SYMBOL(gpt_read);
+
+/*
+  * This function will return the current reload count on a give GPT.
+ *
+ * Return:
+ * 	Non-zero counter value : This is the current reload count of the requested timer
+ *	Zero  		       : On any error (if an invalid GPT index is specified,
+ *				 or If the gpt_read is performed with a proper request.
+ */
+unsigned int gpt_reload_read(int index)
+{
+	unsigned long flags;
+	uint32_t counter;
+
+	spin_lock_irqsave(&gpt_lock, flags);
+
+	if ((index < 0) || (index >= BCM_NUM_GPT)) {
+		pr_err("Invalid index\n");
+		counter = 0;
+		goto err;
+	}
+
+	if (!(gpt.gpt_desc[index].flag & GPT_CONFIGURED)) {
+		pr_err("Trying to read the GPT without requesting\n");
+		counter = 0;
+		goto err;
+	}
+
+	counter = readl(gpt.base_config.base_addr + GPT_RELOAD(index));
+
+err:
+	spin_unlock_irqrestore(&gpt_lock, flags);
+	return counter;
+}
+EXPORT_SYMBOL(gpt_reload_read);
 
 /*
  * Set up timer interrupt, and return the current time in seconds.

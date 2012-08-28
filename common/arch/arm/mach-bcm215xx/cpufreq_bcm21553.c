@@ -279,7 +279,7 @@ void cpufreq_bcm_dvfs_disable(struct cpufreq_client_desc *desc)
 
 	if (dvfs_disable == 1) {
 		if (IS_FLOW_DBG_ENABLED)
-		pr_info("%s: switching to OVER_SUPER mode: %s\n",
+		pr_info("%s: Switching to Over_Super mode: %s\n",
 			__func__, desc->name);
 		cpufreq_bcm_turbo_on();
 	}

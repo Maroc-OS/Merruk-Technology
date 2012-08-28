@@ -338,8 +338,10 @@ static int __init cpuidle_drv_init(void)
 	for (i = 0; i < BCM21553_MAX_CPU_STATES; i++) {
 		state = &dev->states[i];
 
-		strncpy(state->name, bcm_cpu_states[i].name, CPUIDLE_NAME_LEN);
-		strncpy(state->desc, bcm_cpu_states[i].desc, CPUIDLE_DESC_LEN);
+		strncpy(state->name, bcm_cpu_states[i].name,
+			CPUIDLE_NAME_LEN - 1);
+		strncpy(state->desc, bcm_cpu_states[i].desc,
+			CPUIDLE_DESC_LEN - 1);
 		cpuidle_set_statedata(state, &bcm_cpu_states[i]);
 		state->flags = bcm_cpu_states[i].flags;
 		state->exit_latency = bcm_cpu_states[i].exit_latency;

@@ -36,3 +36,5 @@ bounds.s
 initramfs_data.cpio
 gen_init_cpio
 initramfs_data.c
+Module.symvers
+Module.order

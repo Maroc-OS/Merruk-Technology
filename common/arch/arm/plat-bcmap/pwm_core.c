@@ -60,7 +60,7 @@ static struct pwm_channel *pwm_find_device(int pwm_id)
 
 struct pwm_device *pwm_request(int pwm_id, const char *label)
 {
-	struct pwm_device *dev = ERR_PTR(-EINVAL);
+	struct pwm_device *dev = NULL;
 	struct pwm_channel *chan;
 	int ret;
 	unsigned long flags;
@@ -79,14 +79,12 @@ struct pwm_device *pwm_request(int pwm_id, const char *label)
 	if (!chan) {
 		pr_debug("%s: pwm device with id %d not found\n",
 			 __func__, pwm_id);
-		dev = ERR_PTR(-ENOENT);
 		goto req_unlock_list;
 	}
 
 	/* Check if the device is already in use */
 	if (chan->in_use != 0) {
 		pr_debug("%s: pwm device already in use\n", __func__);
-		dev = ERR_PTR(-EBUSY);
 		goto req_unlock_list;
 	}
 
@@ -94,7 +92,6 @@ struct pwm_device *pwm_request(int pwm_id, const char *label)
 	dev = kzalloc(sizeof(struct pwm_device), GFP_KERNEL);
 	if (!dev) {
 		pr_debug("%s: could not allocate pwm_device\n", __func__);
-		dev = ERR_PTR(-ENOMEM);
 		goto req_unlock_list;
 	}
 
@@ -104,8 +101,7 @@ struct pwm_device *pwm_request(int pwm_id, const char *label)
 		if (ret != 0) {
 			pr_debug("%s: error from driver request callback :"
 				 " %d\n", __func__, ret);
-			dev = ERR_PTR(ret);
-			goto req_unlock_list;
+			goto req_callback_fail;
 		}
 	}
 
@@ -114,11 +110,16 @@ struct pwm_device *pwm_request(int pwm_id, const char *label)
 	chan->desc->label = (char *)label;
 	dev->handle = chan;
 
-req_unlock_list:
 	spin_unlock_irqrestore(&pwm_device_list_lock, flags);
 
-req_exit:
 	return dev;
+
+req_callback_fail:
+	kfree(dev);
+req_unlock_list:
+	spin_unlock_irqrestore(&pwm_device_list_lock, flags);
+req_exit:
+	return NULL;
 }
 
 EXPORT_SYMBOL(pwm_request);
@@ -308,3 +309,4 @@ module_exit(bcm_pwm_exit);
 MODULE_ALIAS("core:bcm-pwm");
 MODULE_DESCRIPTION("BCM PWM Core Framework");
 MODULE_LICENSE("GPL");
+

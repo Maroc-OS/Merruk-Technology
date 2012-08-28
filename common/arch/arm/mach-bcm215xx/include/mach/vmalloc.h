@@ -13,4 +13,5 @@
 * other than the GPL, without Broadcom's express prior written consent.
 *******************************************************************************/
 
-#define VMALLOC_END	0xf0000000
+#define VMALLOC_END	0xf0000000UL
+

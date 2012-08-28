@@ -26,6 +26,7 @@
 
 #include <asm/atomic.h>
 #include <asm/cacheflush.h>
+#include <asm/outercache.h>
 #include <asm/system.h>
 #include <asm/unistd.h>
 #include <asm/traps.h>
@@ -468,6 +469,9 @@ do_cache_op(unsigned long start, unsigned long end, int flags)
 
 		up_read(&mm->mmap_sem);
 		flush_cache_user_range(start, end);
+		/* Dont know the phys address to clean, hence clean
+		 * everything */
+		outer_clean_range(0, (130 * 1024));
 		return;
 	}
 	up_read(&mm->mmap_sem);

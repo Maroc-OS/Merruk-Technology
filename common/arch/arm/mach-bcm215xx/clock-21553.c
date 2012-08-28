@@ -586,7 +586,7 @@ unsigned long bcm21553_arm11_get_rate(struct clk *clk)
 		return clk_armahb_reg_to_arm11_freq_mapping[mode];
 
 	apps_pll_freq = bcm21553_apps_pll_get_rate();
-	return (apps_pll_freq*2)/apps_pll_div[mode -0x0D];
+	return (apps_pll_freq*2)/apps_pll_div[mode -0xD];
 }
 
 int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
@@ -1539,9 +1539,9 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	/*Save ahb mode and set ahb mode to 0x0C*/
 	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x12;
 	//writel(0x0C, ADDR_CLKPWR_CLK_ARMAHB_MODE);
-	/*I wanna Switch to 0x0B :P*/
-	bcm215xx_set_armahb_mode(0x0B);
-	udelay(100);
+	/*I wanna Switch to 0x0D :P*/
+	bcm215xx_set_armahb_mode(0x0D);
+	udelay(50);
 
 	/* Write 0 bit 0 to POWER ON V3D island */
 	writel(V3D_POWER_ON, clk->enable_reg);
@@ -2095,7 +2095,7 @@ static int __init clk_init(void)
 	writel(0x00, ADDR_CLKPWR_CLK_POWERSWITCH_CTRL);	
 
 	/*To avoid panic in V3D disable call...*/
-	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x12)
+	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x0F)
 		bcm215xx_set_appll_enable(1);
 		//writel(0x01,ADDR_CLKPWR_CLK_APPSPLL_ENABLE);
 
@@ -2125,7 +2125,7 @@ static int __init clk_init(void)
 	}
 
 	/* In turbo mode CLK_APPSPLL_ENABLE should be high (as per ASIC team) */
-	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x12)
+	if(readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) == 0x0F)
 	{
 		clk = clk_get(NULL,BCM_CLK_APPSPLL_EN_STR_ID);
 		if(IS_ERR(clk))

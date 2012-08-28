@@ -41,10 +41,9 @@ extern u32 l2_evt_virt_buf;
 
 static int l2_flushall_after_boot = 0;
 static int ways;
-int __init l2x0_late_init (void)
+void __init l2x0_late_init (void)
 {
        l2_flushall_after_boot = 1;
-	   return 0;
 }
 late_initcall(l2x0_late_init);
 

@@ -200,7 +200,7 @@ static int param_get_debug(char *buffer, struct kernel_param *kp)
 #else /* CONFIG_BCM215XX_PM_DEBUG */
 
 /* Helpers */
-#define IS_FLOW_DBG_ENABLED (true)
+#define IS_FLOW_DBG_ENABLED (false)
 
 #endif /* CONFIG_BCM215XX_PM_DEBUG */
 
@@ -331,12 +331,14 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	unsigned int freq_starter, index_starter;
 	unsigned int freq_lower, index_lower;
 	unsigned int freq_ulower, index_ulower;
+	int volt_new;
+	int volt_old;
 	int cpu = policy->cpu;
 	int cur = policy->cur;
 	int min = policy->min;
 	int max = policy->max;
 	int index;
-	int ret;
+	int ret = 0;
 
 	/* Lookup the next frequency */
 	if (cpufreq_frequency_table_target(policy, b->bcm_freqs_table,
@@ -344,7 +346,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		return -EINVAL;
 	}
 
-	freqs.old = bcm_cpufreq_get_speed(cpu);
+	freqs.old = bcm_cpufreq_get_speed(0);
 	freqs.new = b->bcm_freqs_table[index].frequency;
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
@@ -354,13 +356,13 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	 * the core voltage first before changing the frequency.
 	 */
 	if (freqs.new == freqs.old) {
-		pr_info("%s: new cpu freq is the same: %u <-> %u\n",
-			 __func__, freqs.old, freqs.new);
+		pr_info("%s: new cpu freq is the same: %u <-> %u current freq: %u\n",
+			 __func__, freqs.old, freqs.new, cur);
 		return 0;
 	}
 	else if (freqs.new > freqs.old || freqs.new < freqs.old) {
-		pr_info("%s: cpu freq change: %u --> %u\n", __func__,
-			freqs.old, freqs.new);
+		pr_info("%s: cpu freq change: %u --> %u current freq: %u\n", __func__,
+			freqs.old, freqs.new, cur);
 
 			index_osuper	= info->index_osuper;
 			freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
@@ -390,14 +392,13 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 			freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
 
 			if (freqs.new > max)
-				return freqs.new = freq_osuper;
+				return freqs.new = freq_turbo;
 			if (freqs.new < min)
-				return freqs.new = freq_ulower;
+				return freqs.new = freq_normal;
 
 			/* Height Frequencies Need's special hundling :) */
-			if (freqs.new == freq_osuper || freqs.new == freq_super ||
-				freqs.new == freq_turbo || freqs.new == freq_heigher ||
-				freqs.new == freq_omedium)
+			if ((freqs.new == freq_osuper) || (freqs.new == freq_super) ||
+				(freqs.new == freq_turbo) || (freqs.new == freq_heigher))
 			{
 				clk_enable(b->appspll_en_clk);
 
@@ -405,9 +406,9 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 				if (!ret)
 					ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
 			}
-			else if (freqs.new == freq_umedium || freqs.new == freq_starter ||
-				freqs.new == freq_normal || freqs.new == freq_lower ||
-				freqs.new == freq_ulower)
+			else if ((!ret && (freqs.new == freq_omedium)) || (!ret && (freqs.new == freq_umedium)) ||
+				(!ret && (freqs.new == freq_starter)) || (!ret && (freqs.new == freq_normal)) ||
+				(!ret && (freqs.new == freq_lower)) || (!ret && (freqs.new == freq_ulower)))
 			{
 				clk_disable(b->appspll_en_clk);
 
@@ -418,8 +419,8 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		 * gives the frequency in kHz. Hence the kHz to MHz conversion
 		 * below.
 		 */
-		int volt_new = bcm_get_cpuvoltage(cpu, freqs.new / 1000);
-		int volt_old = bcm_get_cpuvoltage(cpu, freqs.old / 1000);
+		volt_new = bcm_get_cpuvoltage(cpu, freqs.new / 1000);
+		volt_old = bcm_get_cpuvoltage(cpu, freqs.old / 1000);
 
 		if (volt_new != volt_old) {
 			pr_info("%s: cpu volt change: %d --> %d\n", __func__,
@@ -427,7 +428,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 			regulator_set_voltage(b->cpu_regulator, volt_new,
 				volt_new);
 		}
-		else if (!ret && freqs.new == freqs.old) {
+		else if (freqs.new == freqs.old) {
 			pr_info("%s: new cpu volt is the same: %d <-> %d\n",
 			__func__, volt_old, volt_new);
 		}
@@ -448,15 +449,15 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 {
 	struct bcm_cpufreq *b = NULL;
 	struct bcm_cpu_info *info = NULL;
-	int ret;
 	int cpu = policy->cpu;
 	int cur = policy->cur;
+	int ret;
 
-	pr_info("%s\n", __func__);
+	pr_info("%s: current frequency: %u\n", __func__, cur);
 
 	/* Get handle to cpu private data */
-	b = &bcm_cpufreq[policy->cpu];
-	info = &b->plat->info[policy->cpu];
+	b = &bcm_cpufreq[cpu];
+	info = &b->plat->info[cpu];
 
 	/* Get cpu clock handle */
 	b->cpu_clk = clk_get(NULL, info->cpu_clk);
@@ -483,11 +484,11 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 	}
 
 	/* Set default policy and cpuinfo */
-	policy->cur = bcm_cpufreq_get_speed(0);
+	cur = bcm_cpufreq_get_speed(0);
 
 	/* FIX_ME: Tune this value */
 	/* I think it's alrady done :) */
-	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL;
+	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL_LATENCY;
 
 	ret = bcm_create_cpufreqs_table(policy, &(b->bcm_freqs_table));
 	if (ret) {
@@ -503,13 +504,7 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 		goto err_cpuinfo;
 	}
 
-	cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cpu);
-	//ret = int cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cpu);
-	//if (!ret) {
-		//pr_info("%s: cpufreq_frequency_table_get_attr failed\n",
-		//	__func__);
-		//goto err_get_attr;
-	//}
+	cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cur);
 
 	b->policy = policy;
 
@@ -517,8 +512,6 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 
 err_cpuinfo:
 	kfree(b->bcm_freqs_table);
-//err_get_attr:
-//	kfree(b->bcm_freqs_table);
 err_cpufreqs_table:
 	regulator_put(b->cpu_regulator);
 err_regulator_get:
@@ -531,31 +524,16 @@ err_clk_get_cpu_clk:
 
 static int bcm_cpufreq_exit(struct cpufreq_policy *policy)
 {
-	//int ret;
 	int cpu = policy->cpu;
 
-	struct bcm_cpufreq *b = &bcm_cpufreq[policy->cpu];
+	struct bcm_cpufreq *b = &bcm_cpufreq[cpu];
 	pr_info("%s\n", __func__);
 
 	cpufreq_frequency_table_put_attr(cpu);
-	//ret = int cpufreq_frequency_table_put_attr(cpu);
-	//if (!ret) {
-	//	pr_info("%s: cpufreq_frequency_table_put_attr failed\n",
-	//		__func__);
-	//	goto err_put_attr;
-	//}
-
-	//cpufreq_frequency_table_put_attr(policy->cpu);
-
-	kfree(b->bcm_freqs_table);
 	regulator_put(b->cpu_regulator);
 	clk_put(b->cpu_clk);
 
 	return 0;
-
-//err_put_attr:
-//	kfree(cpu);
-
 }
 
 /*********************************************************************

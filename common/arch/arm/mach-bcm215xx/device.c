@@ -581,7 +581,6 @@ enum {
 
 /* Voltage-Frequency mapping for BCM21553 CPU0 */
 static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
-
 	/* NOW WE NEED ONLY TO FIXE VOLTAGES*/
 	FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 1100000),
 	FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 1120000),
@@ -636,7 +635,6 @@ struct platform_device bcm21553_cpufreq_drv = {
  *********************************************************************/
 
 static struct bcm21553_cpufreq_gov_plat bcm21553_cpufreq_gov_plat = {
-
 	.freq_osuper	= BCM_CORE_CLK_OSUPER,
 	.freq_super		= BCM_CORE_CLK_SUPER,
 	.freq_turbo		= BCM_CORE_CLK_TURBO,
@@ -764,7 +762,6 @@ static struct silicon_type_info part_type_ff = {
  */
 static void bcm215xx_avs_notify(int silicon_type)
 {
-
 	int ulower;
 	int lower;
 	int starter;
@@ -834,43 +831,43 @@ static void bcm215xx_avs_notify(int silicon_type)
 
 	}
 
-	if (ulower >= 0)
+	if (ulower > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
 		  (u32)ulower;
 
-	if (lower >= 0)
+	if (lower > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
 		  (u32)lower;
 
-	if (starter >= 0)
+	if (starter > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_STARTER_MODE].cpu_voltage =
 		  (u32)starter;
 
-	if (normal >= 0)
+	if (normal > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
 		  (u32)normal;
 
-	if (umedium >= 0)
+	if (umedium > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_UMEDIUM_MODE].cpu_voltage =
 		  (u32)umedium;
 
-	if (omedium >= 0)
+	if (omedium > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OMEDIUM_MODE].cpu_voltage =
 		  (u32)omedium;
 
-	if (heigher >= 0)
+	if (heigher > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_HEIGHER_MODE].cpu_voltage =
 		  (u32)heigher;
 
-	if (turbo >= 0)
+	if (turbo > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
 		  (u32)turbo;
 
-	if (super >= 0)
+	if (super > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_voltage =
 		  (u32)super;
 
-	if (osuper >= 0)
+	if (osuper > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
 		  (u32)osuper;
 
@@ -883,10 +880,10 @@ static struct bcm_avs_platform_data_t bcm_avs_pdata = {
 	/* Pass NULL if not supported/need not update */
 	.core_lpm_regl = NULL,
 	.core_nml_regl = "csr_nm1",
-	.core_ulower_regl = "csr_nm1",
-	.core_lower_regl = "csr_nm1",
-	.core_starter_regl = "csr_nm1",
-	.core_normal_regl = "csr_nm1",
+	.core_ulower_regl = "csr_nm2",
+	.core_lower_regl = "csr_nm2",
+	.core_starter_regl = "csr_nm2",
+	.core_normal_regl = "csr_nm2",
 	.core_omedium_regl = "csr_nm2",
 	.core_umedium_regl = "csr_nm2",
 	.core_heigher_regl = "csr_nm2",

@@ -33,6 +33,8 @@
 #endif
 #include <plat/rdb/brcm_rdb_util.h>
 
+#include <linux/time.h>
+
 //===========================================================================
 // local macro declarations
 //
@@ -3163,6 +3165,16 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
 			}
 			for(count=0;count<1000;count++)
 			{
+				/* The following is an SW workaround for ASIC issue. It might happen that the pixel clock
+				 * and AHB clock are in sync due to which the ENB bit might never get reset. We are introducing
+				 * a random delay which will put them out of sync and reset would happen.
+				 * THIS IS AGAIN A PROBABILITY AND NOT ACTUAL FIX
+				*/
+				struct timeval time_val;
+				do_gettimeofday(&time_val);
+				int delay_cnt = time_val.tv_usec % 5;
+				ndelay(delay_cnt + 7);
+						
 				BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ENB,0);
 				if(BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,CAPT)==0)
 					break;
@@ -3240,6 +3252,3 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_bytes_written(CHAL_HANDLE handle, CHAL_CAM_PAR
     param->param = reg;
     return chal_status;
 }    
-
-
-

@@ -901,6 +901,7 @@
 0x00000000	fb_firmware_edid	vmlinux	EXPORT_SYMBOL
 0x00000000	key_negate_and_link	vmlinux	EXPORT_SYMBOL
 0x00000000	jbd2_journal_blocks_per_page	vmlinux	EXPORT_SYMBOL
+0x00000000	gpt_reload_read	vmlinux	EXPORT_SYMBOL
 0x00000000	usb_kill_anchored_urbs	drivers/usb/core/usbcore	EXPORT_SYMBOL_GPL
 0x00000000	ata_scsi_unlock_native_capacity	drivers/ata/libata	EXPORT_SYMBOL_GPL
 0x00000000	kref_get	vmlinux	EXPORT_SYMBOL
