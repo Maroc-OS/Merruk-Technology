@@ -1681,7 +1681,7 @@ dhd_bus_clearcounts(dhd_pub_t *dhdp)
 	dhd_bus_t *bus = (dhd_bus_t *)dhdp->bus;
 
 	bus->intrcount = bus->lastintrs = bus->spurious = bus->regfails = 0;
-	bus->rxrtx = bus->rx_toolong = bus->rx_toolong = bus->rxc_errors = 0;
+	bus->rxrtx = bus->rx_toolong = bus->rxc_errors = 0;
 	bus->rx_hdrfail = bus->rx_badhdr = bus->rx_badseq = 0;
 	bus->tx_sderrs = bus->fc_rcvd = bus->fc_xoff = bus->fc_xon = 0;
 	bus->rxglomfail = bus->rxglomframes = bus->rxglompkts = 0;

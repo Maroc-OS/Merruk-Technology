@@ -268,6 +268,9 @@ static unsigned int bcm_cpufreq_get_speed(unsigned int cpu)
 	struct bcm_cpufreq *b = &bcm_cpufreq[cpu];
 	unsigned int rate;
 
+	if (cpu)
+		return 0;
+
 	/* cpufreq core expects clock frequency in kHz */
 	rate = clk_get_rate(b->cpu_clk) / 1000;
 
@@ -281,6 +284,13 @@ static int bcm_cpufreq_verify_speed(struct cpufreq_policy *policy)
 {
 	struct bcm_cpufreq *b = &bcm_cpufreq[policy->cpu];
 	int ret = -EINVAL;
+
+	if (b->bcm_freqs_table)
+		ret = cpufreq_frequency_table_verify(policy,
+			b->bcm_freqs_table);
+
+	policy->max = clk_round_rate(b->cpu_clk, policy->max * 1000) / 1000;
+	policy->max = clk_round_rate(b->cpu_clk, policy->max * 1000) / 1000;
 
 	if (b->bcm_freqs_table)
 		ret = cpufreq_frequency_table_verify(policy,
@@ -346,6 +356,11 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		return -EINVAL;
 	}
 
+	if (freqs.new > max)
+		freqs.new = max;
+	if (freqs.new < min)
+		freqs.new = min;
+	
 	freqs.old = bcm_cpufreq_get_speed(0);
 	freqs.new = b->bcm_freqs_table[index].frequency;
 
@@ -356,64 +371,65 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	 * the core voltage first before changing the frequency.
 	 */
 	if (freqs.new == freqs.old) {
-		pr_info("%s: new cpu freq is the same: %u <-> %u current freq: %u\n",
-			 __func__, freqs.old, freqs.new, cur);
-		return 0;
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq is same: %u <-> %u current freq: %u\n",
+			freqs.old, freqs.new, cur);
+#endif
+		return ret;
 	}
 	else if (freqs.new > freqs.old || freqs.new < freqs.old) {
-		pr_info("%s: cpu freq change: %u --> %u current freq: %u\n", __func__,
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq transiotion: %u --> %u current freq: %u\n",
 			freqs.old, freqs.new, cur);
+#endif
+		index_osuper	= info->index_osuper;
+		freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
+		index_super		= info->index_super;
+		freq_super		= info->freq_tbl[index_super].cpu_freq * 1000;
+		index_turbo		= info->index_turbo;
+		freq_turbo		= info->freq_tbl[index_turbo].cpu_freq * 1000;
+		index_heigher	= info->index_heigher;
+		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+		index_heigher	= info->index_heigher;
+		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+		index_heigher	= info->index_heigher;
+		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+		index_heigher	= info->index_heigher;
+		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+		index_omedium	= info->index_omedium;
+		freq_omedium	= info->freq_tbl[index_omedium].cpu_freq * 1000;
+		index_umedium	= info->index_umedium;
+		freq_umedium	= info->freq_tbl[index_umedium].cpu_freq * 1000;
+		index_starter	= info->index_starter;
+		freq_starter	= info->freq_tbl[index_starter].cpu_freq * 1000;
+		index_normal	= info->index_normal;
+		freq_normal		= info->freq_tbl[index_normal].cpu_freq * 1000;
+		index_lower		= info->index_lower;
+		freq_lower		= info->freq_tbl[index_lower].cpu_freq * 1000;
+		index_ulower	= info->index_ulower;
+		freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
 
-			index_osuper	= info->index_osuper;
-			freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
-			index_super		= info->index_super;
-			freq_super		= info->freq_tbl[index_super].cpu_freq * 1000;
-			index_turbo		= info->index_turbo;
-			freq_turbo		= info->freq_tbl[index_turbo].cpu_freq * 1000;
-			index_heigher	= info->index_heigher;
-			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-			index_heigher	= info->index_heigher;
-			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-			index_heigher	= info->index_heigher;
-			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-			index_heigher	= info->index_heigher;
-			freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-			index_omedium	= info->index_omedium;
-			freq_omedium	= info->freq_tbl[index_omedium].cpu_freq * 1000;
-			index_umedium	= info->index_umedium;
-			freq_umedium	= info->freq_tbl[index_umedium].cpu_freq * 1000;
-			index_starter	= info->index_starter;
-			freq_starter	= info->freq_tbl[index_starter].cpu_freq * 1000;
-			index_normal	= info->index_normal;
-			freq_normal		= info->freq_tbl[index_normal].cpu_freq * 1000;
-			index_lower		= info->index_lower;
-			freq_lower		= info->freq_tbl[index_lower].cpu_freq * 1000;
-			index_ulower	= info->index_ulower;
-			freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
-
-			if (freqs.new > max)
-				return freqs.new = freq_turbo;
-			if (freqs.new < min)
-				return freqs.new = freq_normal;
-
-			/* Height Frequencies Need's special hundling :) */
-			if ((freqs.new == freq_osuper) || (freqs.new == freq_super) ||
-				(freqs.new == freq_turbo) || (freqs.new == freq_heigher))
-			{
-				clk_enable(b->appspll_en_clk);
-
-				ret = wait_for_pll_on();
-				if (!ret)
-					ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
-			}
-			else if ((!ret && (freqs.new == freq_omedium)) || (!ret && (freqs.new == freq_umedium)) ||
-				(!ret && (freqs.new == freq_starter)) || (!ret && (freqs.new == freq_normal)) ||
-				(!ret && (freqs.new == freq_lower)) || (!ret && (freqs.new == freq_ulower)))
-			{
-				clk_disable(b->appspll_en_clk);
-
+		/* Height Frequencies Need's special hundling :) */
+		if ((freqs.new == freq_osuper)	||
+			(freqs.new == freq_super)	||
+			(freqs.new == freq_turbo)	||
+			(freqs.new == freq_heigher))
+		{
+			clk_enable(b->appspll_en_clk);
+			ret = wait_for_pll_on();
+			if (!ret)
 				ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
-			}
+		}
+		else if ((!ret && (freqs.new == freq_omedium))	||
+				 (!ret && (freqs.new == freq_umedium))	||
+				 (!ret && (freqs.new == freq_starter))	||
+				 (!ret && (freqs.new == freq_normal))	||
+				 (!ret && (freqs.new == freq_lower))	||
+				 (!ret && (freqs.new == freq_ulower)))
+		{
+			clk_disable(b->appspll_en_clk);
+			ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
+		}
 
 		/* bcm_get_cpuvoltage expects frequency in MHz, cpufreq core
 		 * gives the frequency in kHz. Hence the kHz to MHz conversion
@@ -422,28 +438,33 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		volt_new = bcm_get_cpuvoltage(cpu, freqs.new / 1000);
 		volt_old = bcm_get_cpuvoltage(cpu, freqs.old / 1000);
 
-		if (volt_new != volt_old) {
-			pr_info("%s: cpu volt change: %d --> %d\n", __func__,
+		if (volt_new == volt_old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+			printk(KERN_DEBUG "cpu_volt is same: %d <-> %d\n",
 				volt_old, volt_new);
+#endif
+		}
+		else if (volt_new != volt_old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+			printk(KERN_DEBUG "cpu_volt change: %d --> %d\n",
+				volt_old, volt_new);
+#endif
 			regulator_set_voltage(b->cpu_regulator, volt_new,
 				volt_new);
 		}
-		else if (freqs.new == freqs.old) {
-			pr_info("%s: new cpu volt is the same: %d <-> %d\n",
-			__func__, volt_old, volt_new);
-		}
+		return ret;
 	}
 
 	local_irq_enable();
-
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 
 	if (unlikely(ret))
-		pr_info("%s: setting cpu clock failed : %d\n", __func__, ret);
-
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "setting cpu clock failed : %d\n",
+			ret);
+#endif
 	return ret;
 }
-
 
 static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 {

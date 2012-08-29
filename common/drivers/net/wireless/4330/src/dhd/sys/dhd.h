@@ -52,12 +52,15 @@
 /* The kernel threading is sdio-specific */
 
 #include <wlioctl.h>
+/* For struct pktq */
+#include <bcmutils.h>
 
 /* Forward decls */
 struct dhd_bus;
 struct dhd_prot;
 struct dhd_info;
 struct dhd_cmn;
+struct pktq;
 #if defined(WLBTAMP_HIGH_ONLY)
 struct bta_info;
 #endif

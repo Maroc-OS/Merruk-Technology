@@ -115,6 +115,9 @@ static const int aldo6_vol[][2] = {
 	_DEFINE_REGL_VOLT(3.0, 0xD),		/*1101: 3.0V */
 	_DEFINE_REGL_VOLT(3.3, 0xE),		/*1110: 3.3V */
 	_DEFINE_REGL_VOLT(1.3, 0xF),		/*1111: 1.3V */
+	_DEFINE_REGL_VOLT(3.4, 0x10),		/*1101: 3.0V */
+	_DEFINE_REGL_VOLT(3.5, 0x11),		/*1110: 3.3V */
+	_DEFINE_REGL_VOLT(3.6, 0x12),		/*1111: 1.3V */
 };
 
 

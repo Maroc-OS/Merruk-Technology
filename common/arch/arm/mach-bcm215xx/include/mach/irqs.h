@@ -19,10 +19,13 @@
 #ifndef ASM_ARCH_IRQS_H
 #define ASM_ARCH_IRQS_H
 
+#ifndef ARCH_NR_GPIOS
+#define ARCH_NR_GPIOS		64
+#endif
+
 #include <linux/version.h>
 #include <mach/hardware.h>
 
-#define ARCH_NR_GPIOS		64
 #define NUM_INTERNAL_IRQS	96
 #define NR_IRQS 		(NUM_INTERNAL_IRQS + ARCH_NR_GPIOS)
 

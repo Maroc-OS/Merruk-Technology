@@ -10,6 +10,7 @@
 #define __LINUX_USB_OTG_H
 
 #include <linux/notifier.h>
+#include <linux/phy.h>
 
 /* OTG defines lots of enumeration states before device reset */
 enum usb_otg_state {
