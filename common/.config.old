@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.35.7
-# Wed Aug 29 20:35:53 2012
+# Fri Aug 31 18:47:54 2012
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -388,8 +388,8 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0
 CONFIG_ZBOOT_ROM_BSS=0
-CONFIG_CMDLINE="console=ttyS0,115200n8 mem=362M kmemleak=on root=/dev/ram0 rw mtdparts=bcm_umi-nand:256K@0K(bcm_boot),1536K@256K(bootloader)ro,1536K@1792K(loke)ro,512K@3328K(systemdata),512K@3840K(sysparm_dep),512K@4352K(umts_cal),15104K@4864K(modem),5M@19968K(param_lfs),2M@25088K(kpanic),6M@27136K(boot)ro,6M@33280K(boot_backup)rw,4M@39424K(recovery)rw,200M@43520K(system),70M@248320K(cache),192000K@320000K(userdata)rw,1M@500M(cal) androidboot.console=ttyS0 jtag"
-# CONFIG_CMDLINE_FORCE is not set
+CONFIG_CMDLINE="fbcon=font:VGA8x8,rotate:1 console=ttyS0,115200n8 mem=362M kmemleak=on root=/dev/ram0 rw mtdparts=bcm_umi-nand:256K@0K(bcm_boot),1536K@256K(bootloader)ro,1536K@1792K(loke)ro,512K@3328K(systemdata),512K@3840K(sysparm_dep),512K@4352K(umts_cal),15104K@4864K(modem),5M@19968K(param_lfs),2M@25088K(kpanic),6M@27136K(boot)ro,6M@33280K(boot_backup)rw,4M@39424K(recovery)rw,200M@43520K(system),70M@248320K(cache),192000K@320000K(userdata)rw,1M@500M(cal) androidboot.console=ttyS0 jtag loglevel=7"
+CONFIG_CMDLINE_FORCE=y
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
 CONFIG_ATAGS_PROC=y
@@ -1490,7 +1490,7 @@ CONFIG_REGULATOR_MAX8986=y
 # Graphics support
 #
 # CONFIG_VGASTATE is not set
-# CONFIG_VIDEO_OUTPUT_CONTROL is not set
+CONFIG_VIDEO_OUTPUT_CONTROL=y
 CONFIG_FB=y
 # CONFIG_FIRMWARE_EDID is not set
 # CONFIG_FB_DDC is not set
@@ -1499,11 +1499,11 @@ CONFIG_FB_CFB_FILLRECT=y
 CONFIG_FB_CFB_COPYAREA=y
 CONFIG_FB_CFB_IMAGEBLIT=y
 # CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
-# CONFIG_FB_SYS_FILLRECT is not set
-# CONFIG_FB_SYS_COPYAREA is not set
-# CONFIG_FB_SYS_IMAGEBLIT is not set
+CONFIG_FB_SYS_FILLRECT=y
+CONFIG_FB_SYS_COPYAREA=y
+CONFIG_FB_SYS_IMAGEBLIT=y
 # CONFIG_FB_FOREIGN_ENDIAN is not set
-# CONFIG_FB_SYS_FOPS is not set
+CONFIG_FB_SYS_FOPS=y
 # CONFIG_FB_SVGALIB is not set
 # CONFIG_FB_MACMODES is not set
 # CONFIG_FB_BACKLIGHT is not set
@@ -1518,7 +1518,7 @@ CONFIG_FB_CFB_IMAGEBLIT=y
 # CONFIG_FB_TMIO is not set
 # CONFIG_FB_SM501 is not set
 CONFIG_FB_BCM=y
-# CONFIG_FB_VIRTUAL is not set
+CONFIG_FB_VIRTUAL=y
 # CONFIG_FB_METRONOME is not set
 # CONFIG_FB_MB862XX is not set
 # CONFIG_FB_BROADSHEET is not set
@@ -1550,11 +1550,19 @@ CONFIG_BACKLIGHT_TOTORO=y
 # CONFIG_VGA_CONSOLE is not set
 CONFIG_DUMMY_CONSOLE=y
 CONFIG_FRAMEBUFFER_CONSOLE=y
-# CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY is not set
-# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
-# CONFIG_FONTS is not set
+CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
+CONFIG_FONTS=y
 CONFIG_FONT_8x8=y
 CONFIG_FONT_8x16=y
+# CONFIG_FONT_6x11 is not set
+# CONFIG_FONT_7x14 is not set
+# CONFIG_FONT_PEARL_8x8 is not set
+# CONFIG_FONT_ACORN_8x8 is not set
+# CONFIG_FONT_MINI_4x6 is not set
+# CONFIG_FONT_SUN8x16 is not set
+# CONFIG_FONT_SUN12x22 is not set
+# CONFIG_FONT_10x18 is not set
 # CONFIG_LOGO is not set
 CONFIG_FB_BCM_215XX=y
 CONFIG_BMEM_WRAP=y
@@ -2179,7 +2187,7 @@ CONFIG_NLS_UTF8=m
 #
 # Kernel hacking
 #
-CONFIG_PRINTK_TIME=y
+# CONFIG_PRINTK_TIME is not set
 CONFIG_ENABLE_WARN_DEPRECATED=y
 CONFIG_ENABLE_MUST_CHECK=y
 CONFIG_FRAME_WARN=1024

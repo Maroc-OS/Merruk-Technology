@@ -428,9 +428,9 @@ static int __devinit bcm_keypad_probe(struct platform_device *pdev)
 
 	reg_value = readl(bcm_keypad_base_addr + REG_KEYPAD_KPCR);
 	reg_value &= (REG_KEYPAD_KPCR_ENABLE) ; 
-	reg_value |= ( REG_KEYPAD_KPCR_PULL_UP |\
-			REG_KEYPAD_COLFILTER_EN | \ 
-			REG_KEYPAD_STATFILTER_EN | KPD_ROWFLT(KPDCR_FLT_32ms) | \ 
+	reg_value |= ( REG_KEYPAD_KPCR_PULL_UP | \
+			REG_KEYPAD_COLFILTER_EN | \
+			REG_KEYPAD_STATFILTER_EN | KPD_ROWFLT(KPDCR_FLT_32ms) | \
 			KPD_COLFLT(KPDCR_FLT_32ms) | KPD_ROWS(bcm_kb->row_num) | \
 			KPD_COLS(bcm_kb->col_num) );
 	

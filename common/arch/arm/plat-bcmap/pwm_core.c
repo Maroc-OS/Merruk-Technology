@@ -309,4 +309,3 @@ module_exit(bcm_pwm_exit);
 MODULE_ALIAS("core:bcm-pwm");
 MODULE_DESCRIPTION("BCM PWM Core Framework");
 MODULE_LICENSE("GPL");
-

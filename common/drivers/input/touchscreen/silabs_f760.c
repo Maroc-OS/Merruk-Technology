@@ -28,65 +28,65 @@
 #include <linux/firmware.h>
 #include <plat/syscfg.h>
 
-#define MAX_X			240 
-#define MAX_Y			320
-#define TSP_INT			30
+#define MAX_X					240 
+#define MAX_Y					320
+#define TSP_INT					30
 
-#define F760_MAX_TOUCH		2
-#define ESCAPE_ADDR		0xAA
-#define TS_READ_START_ADDR	0x10
+#define F760_MAX_TOUCH			2
+#define ESCAPE_ADDR				0xAA
+#define TS_READ_START_ADDR		0x10
 #define TS_READ_VERSION_ADDR	0x1F
-#define TS_READ_ESD_ADDR	0x1E
-#define TS_READ_REGS_LEN	13
-#define SILABS_MAX_TOUCH	F760_MAX_TOUCH
-#define MTSI_VERSION		0x05
+#define TS_READ_ESD_ADDR		0x1E
+#define TS_READ_REGS_LEN		13
+#define SILABS_MAX_TOUCH		F760_MAX_TOUCH
+#define MTSI_VERSION			0x05
 
 /* Activate debug mode */
 /*#define __TOUCH_DEBUG__ 1*/
 
-#define I2C_RETRY_CNT		3
+#define I2C_RETRY_CNT			3
 
-#define TOUCH_ON		1
-#define TOUCH_OFF		0
+#define TOUCH_ON				1
+#define TOUCH_OFF				0
 
-#define PRESS_KEY		1
-#define RELEASE_KEY		0
-#define MAX_KEYS		2
+#define PRESS_KEY				1
+#define RELEASE_KEY				0
+#define MAX_KEYS				2
 
 #define SET_DOWNLOAD_BY_GPIO	1
 
-#define SILABS_TS_NAME		"silabs-f760"
+#define SILABS_TS_NAME			"silabs-f760"
 
-#define YTE_MODULE_VER		0x02
-#define SMAC_MODULE_VER		0x03
-#define YTE_MODULE_VER_OLD	0x04
-#define YTE_MODULE_VER_NEW	0x0A
-#define SMAC_MODULE_VER_OLD	0x05
-#define SMAC_MODULE_VER_NEW	0x07
-#define FW_VER			0x03
-#define FW_VER_OLD		0x0F
-#define FW_VER_OLD_SMAC		0x14
-#define FW_VER_NEW_YTE		0x15
-#define FW_VER_NEW_SMAC		0x14
+#define YTE_MODULE_VER			0x02
+#define SMAC_MODULE_VER			0x03
+#define YTE_MODULE_VER_OLD		0x04
+#define YTE_MODULE_VER_NEW		0x0A
+#define SMAC_MODULE_VER_OLD		0x05
+#define SMAC_MODULE_VER_NEW		0x07
+#define FW_VER					0x03
+#define FW_VER_OLD				0x0F
+#define FW_VER_OLD_SMAC			0x14
+#define FW_VER_NEW_YTE			0x15
+#define FW_VER_NEW_SMAC			0x14
 #if defined(CONFIG_TARGET_LOCALE_AUS_TEL)
-#define T_YTE_MODULE_VER	0x08
+#define T_YTE_MODULE_VER		0x08
 #define T_YTE_MODULE_VER_NEW	0x08
-#define T_FW_VER_YTE		0x0A
-#define T_FW_VER_OLD_YTE	0x0A
-#define T_FW_VER_NEW_YTE	0x0E
+#define T_FW_VER_YTE			0x0A
+#define T_FW_VER_OLD_YTE		0x0A
+#define T_FW_VER_NEW_YTE		0x0E
 
-#define T_SMAC_MODULE_VER	0x14		/* Module_ver = 20 */
-#define T_SMAC_FW_VER		0x0F		/* FW_ver = 15 */
+#define T_SMAC_MODULE_VER		0x14		/* Module_ver = 20 */
+#define T_SMAC_FW_VER			0x0F		/* FW_ver = 15 */
 #endif
 
-#define NUM_TX_CHANNEL		12
-#define NUM_RX_CHANNEL		9
-#define JIG_MODE_COMMAND	0xA0
-#define RAWDATA_ADDRESS		0x003A
-#define BASELINE_ADDRESS	0x0112
-#define  QUICKSENSE_OVERHEAD	6 
+#define NUM_TX_CHANNEL			12
+#define NUM_RX_CHANNEL			9
+#define JIG_MODE_COMMAND		0xA0
+#define RAWDATA_ADDRESS			0x003A
+#define BASELINE_ADDRESS		0x0112
+#define QUICKSENSE_OVERHEAD		6 
 #define I2CMAP_BUTTON_ADDRESS	(0x0212 + 0x22)
-#define  NUM_MTRBUTTONS		2
+#define NUM_MTRBUTTONS			2
 
 static int prev_wdog_val = -1;
 static int check_ic_counter = 3;
@@ -101,9 +101,9 @@ int Press_Check=0;
 
 static int firmware_ret_val = -1;
 static int pre_ta_stat = 0;
-int touch_check=0;
+int touch_check = 0;
 int tsp_irq;
-int tsp_chheck=0;
+int tsp_chheck = 0;
 int TSP_MODULE_ID;
 EXPORT_SYMBOL(TSP_MODULE_ID);
 int FW_VERSION;
@@ -114,7 +114,7 @@ int firm_update( void );
 void set_tsp_for_ta_detect(int);
 static int testmode = 1;
 int PHONE_VER;
-int tsp_status=0;
+int tsp_status = 0;
 unsigned long check_node;
 
 int Tx_Channel = NUM_TX_CHANNEL;
@@ -127,7 +127,7 @@ uint16_t baseline_node[NUM_TX_CHANNEL][NUM_RX_CHANNEL]={{0,},};
 
 enum
 {
-	TOUCH_SCREEN=0,
+	TOUCH_SCREEN = 0,
 	TOUCH_KEY
 };
 
@@ -225,22 +225,20 @@ int tsp_reset( void )
 	touch_ctrl_regulator(0);
 
 	gpio_direction_output(30, 0);
-      	gpio_direction_output(27, 0);
+    gpio_direction_output(27, 0);
 	gpio_direction_output(26, 0);
-            
+
 	msleep(200);
 
-
 	// for TSK
-
-      TSP_forced_release_forkey();
+    TSP_forced_release_forkey();
 
 	gpio_direction_output(30, 1);
-      	gpio_direction_output(27, 1);
+    gpio_direction_output(27, 1);
 	gpio_direction_output(26, 1);
 
 	gpio_direction_input(30);
-      	gpio_direction_input(27);
+    gpio_direction_input(27);
 	gpio_direction_input(26);
 
 	touch_ctrl_regulator(1);
@@ -284,11 +282,10 @@ void TSP_forced_release_forkey(void)
 	int i, key;
 	int temp_value=0;
     
-	for(i=0; i<SILABS_MAX_TOUCH; i++)
+	for(i=0; i < SILABS_MAX_TOUCH; i++)
 		{
-			if(g_Mtouch_info[i].strength== -1)
+			if(g_Mtouch_info[i].strength == -1)
 				continue;
-
 			input_report_abs(ts_global->input_dev, ABS_MT_TRACKING_ID, i);
 			input_report_abs(ts_global->input_dev, ABS_MT_POSITION_X, g_Mtouch_info[i].posX);
 		    input_report_abs(ts_global->input_dev, ABS_MT_POSITION_Y, g_Mtouch_info[i].posY);
@@ -310,7 +307,7 @@ void TSP_forced_release_forkey(void)
     
 	for(key = 0; key < MAX_KEYS ; key++)
 	{
-          touchkey_status[key].key_press = RELEASE_KEY;
+    	touchkey_status[key].key_press = RELEASE_KEY;
 	    input_report_key(ts_global->input_dev, touchkey_status[key].key_value, touchkey_status[key].key_press);	
 	}
 	
@@ -329,7 +326,7 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
 	  printk("[TSP] %s, %d\n", __func__, __LINE__ );
       #endif
 
-	if(ts ==NULL)
+	if(ts == NULL)
 	{
        printk("[TSP] silabs_ts_work_func : TS NULL\n");
 	   return IRQ_HANDLED;
@@ -369,7 +366,8 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
             button_check=buf[1]&0x0F;
 
             #ifdef __TOUCH_DEBUG__
-            printk("[TSP] button_num : %d, touch_num : %d, button_check:%d, buf[1] : %d\n", button_num, touch_num, button_check, buf[1]);
+            printk("[TSP] button_num : %d, touch_num : %d, button_check:%d, buf[1] : %d\n",
+					button_num, touch_num, button_check, buf[1]);
             #endif
         
         	if(button_check == 0)
@@ -397,7 +395,7 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
                      strength[1]=0;
                     }
 
-			for(i=0; i<2; i++)
+			for(i = 0; i < 2; i++)
 			{
 				if(touch_id[i] >=1)
 				{
@@ -416,7 +414,7 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
 
 				input_report_abs(ts->input_dev, ABS_MT_POSITION_X, posX[i]);
 			    input_report_abs(ts->input_dev, ABS_MT_POSITION_Y,  posY[i]);
-				input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, touch_id[i] );
+				input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, touch_id[i]);
 				input_report_abs(ts->input_dev, ABS_MT_WIDTH_MAJOR, strength[i]);      				
 				input_mt_sync(ts->input_dev); 
                 
@@ -426,7 +424,8 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
                 g_Mtouch_info[i].strength = strength[i];
       
             #ifdef __TOUCH_DEBUG__
-             printk("[TSP] i : %d, x: %d, y: %d\n, 3:%d, 4:%d", touch_id[i], posX[i], posY[i], strength[i], strength[i]);
+             printk("[TSP] i : %d, x: %d, y: %d\n, 3:%d, 4:%d",
+			 		touch_id[i], posX[i], posY[i], strength[i], strength[i]);
 			#endif			
 			}
 		}
@@ -445,7 +444,8 @@ static irqreturn_t  silabs_ts_work_func(int irq, void *dev_id)
             		input_report_key(ts->input_dev, touchkey_status[key].key_value, touchkey_status[key].key_press);
                     
             #ifdef __TOUCH_DEBUG__
-            	printk(KERN_ERR "[TSP] silabs_ts_work_func: buf[%d] : %d, button_status: %d\n", key, touchkey_status[key].key_value, touchkey_status[key].key_press);
+            	printk(KERN_ERR "[TSP] silabs_ts_work_func: buf[%d] : %d, button_status: %d\n",
+						key, touchkey_status[key].key_value, touchkey_status[key].key_press);
 		#endif		
 		}
    	input_sync(ts->input_dev);              
@@ -865,11 +865,12 @@ static int silabs_ts_remove(struct i2c_client *client)
 
 static int silabs_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 {
-    	int ret;
+	int ret;
+    int tsp_status = 1;
 	struct silabs_ts_data *ts = i2c_get_clientdata(client);
 
 	printk("[TSP] %s, %d\n", __func__, __LINE__ );
-        tsp_status=1;
+
 	if( touch_present )
 	{
 	if (tsp_irq)
@@ -918,15 +919,15 @@ static int silabs_ts_resume(struct i2c_client *client)
 	if( touch_present )
 	{       
 		gpio_direction_output(30, 1);
-    		gpio_direction_output(27, 1);
+    	gpio_direction_output(27, 1);
 		gpio_direction_output(26, 1);
 
 		gpio_direction_input(30);
-    		gpio_direction_input(27);
+    	gpio_direction_input(27);
 		gpio_direction_input(26);
 
-    		touch_ctrl_regulator(TOUCH_ON);
-    		msleep(40);
+    	touch_ctrl_regulator(TOUCH_ON);
+    	msleep(40);
 
 		/* for TSK */
 		for(key = 0; key < MAX_KEYS; key++)
@@ -958,7 +959,9 @@ static int silabs_ts_resume(struct i2c_client *client)
 	}
 
 	printk("[TSP] %s-\n", __func__ );
-        tsp_status=0; 
+
+    tsp_status=0;
+
 	return 0;
 }
 
@@ -1157,8 +1160,8 @@ static ssize_t rawdata_pass_fail_silabs(struct device *dev, struct device_attrib
 	}
 
 	/*
-	*	quicksense format for reading rawdata
-	*/
+	 *	quicksense format for reading rawdata
+	 */
 #if defined(CONFIG_TARGET_LOCALE_AUS_TEL)   
 	ret = silabs_quicksense(RAWDATA_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer2);
 #else
@@ -1311,8 +1314,8 @@ static ssize_t rawdata_show_silabs(struct device *dev, struct device_attribute *
 	}
 
 	/*
-	*	quicksense format for reading baseline
-	*/
+	 *	quicksense format for reading baseline
+	 */
 	ret = silabs_quicksense(BASELINE_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer1);
 	if (ret != 0)
 	{
@@ -1328,8 +1331,8 @@ static ssize_t rawdata_show_silabs(struct device *dev, struct device_attribute *
 	}
 
 	/*
-	*	quicksense format for reading rawdata
-	*/
+	 *	quicksense format for reading rawdata
+	 */
 	ret = silabs_quicksense(RAWDATA_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer2);
 	if (ret != 0)
 	{
@@ -1369,8 +1372,8 @@ static ssize_t baseline_show_silabs(struct device *dev, struct device_attribute 
    mdelay(300); 
 
 	/*
-	*	Entering JIG_MODE
-	*/
+	 *	Entering JIG_MODE
+	 */
 	buffer[0] = ESCAPE_ADDR;
 	buffer[1] = JIG_MODE_COMMAND;
 	ret = i2c_master_send(ts_global->client, buffer, 2);
@@ -1421,7 +1424,7 @@ static ssize_t diff_show_silabs(struct device *dev, struct device_attribute *att
 	int Tx_Channel = NUM_TX_CHANNEL;
 	int Rx_Channel = NUM_RX_CHANNEL;
 	uint8_t buffer1[NUM_TX_CHANNEL*NUM_RX_CHANNEL*2+QUICKSENSE_OVERHEAD]={0,};
-	uint8_t buffer2[NUM_TX_CHANNEL*NUM_RX_CHANNEL*2+QUICKSENSE_OVERHEAD]={0,};
+    uint8_t buffer2[NUM_TX_CHANNEL*NUM_RX_CHANNEL*2+QUICKSENSE_OVERHEAD]={0,};
 	uint16_t rawdata[NUM_TX_CHANNEL][NUM_RX_CHANNEL]={{0,},};
 	uint16_t button_rawdata[NUM_MTRBUTTONS]={0,};
 	uint16_t baseline[NUM_TX_CHANNEL][NUM_RX_CHANNEL]={{0,},};
@@ -1452,8 +1455,8 @@ static ssize_t diff_show_silabs(struct device *dev, struct device_attribute *att
 	}
 
 	/*
-	*	quicksense format for reading baseline
-	*/
+	 *	quicksense format for reading baseline
+	 */
 	ret = silabs_quicksense(BASELINE_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer1);
 	if (ret != 0)
 	{
@@ -1471,8 +1474,8 @@ static ssize_t diff_show_silabs(struct device *dev, struct device_attribute *att
 	}
 
 	/*
-	*	quicksense format for reading rawdata
-	*/
+	 *	quicksense format for reading rawdata
+	 */
 	ret = silabs_quicksense(RAWDATA_ADDRESS,NUM_TX_CHANNEL*NUM_RX_CHANNEL*2, buffer2);
 	if (ret != 0)
 	{
@@ -1624,8 +1627,8 @@ static ssize_t read_node(struct device *dev, struct device_attribute *attr, char
        mdelay(300); 
   
 	/*
-	*	Entering JIG_MODE
-	*/
+	 *	Entering JIG_MODE
+	 */
 	buffer[0] = ESCAPE_ADDR;
 	buffer[1] = JIG_MODE_COMMAND;
 	ret = i2c_master_send(ts_global->client, buffer, 2);
@@ -1672,7 +1675,7 @@ static ssize_t read_node(struct device *dev, struct device_attribute *attr, char
     	}
 	}
 
-	 printk("[TSP] %s\n", buf);
+	printk("[TSP] %s\n", buf);
 	
 	touch_ctrl_regulator(0);  
 	mdelay(2);

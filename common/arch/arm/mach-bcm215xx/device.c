@@ -434,17 +434,17 @@ struct platform_device bcm_pwm_device = {
 
 static struct resource bcm_auxadc_resource[] = {
         {
-                .start  = IO_ADDRESS(BCM21553_AUXADC_BASE),
-                .end    = IO_ADDRESS(BCM21553_AUXADC_BASE) + SZ_16 - 1,
-                .flags  = IORESOURCE_MEM,
+			.start  = IO_ADDRESS(BCM21553_AUXADC_BASE),
+			.end    = IO_ADDRESS(BCM21553_AUXADC_BASE) + SZ_16 - 1,
+			.flags  = IORESOURCE_MEM,
         },
 };
 
 struct platform_device auxadc_device={
-        .name = "bcm_auxadc",
-        .id   = -1,
-	.resource       = bcm_auxadc_resource,
-        .num_resources  = ARRAY_SIZE(bcm_auxadc_resource),
+    .name = "bcm_auxadc",
+    .id   = -1,
+	.resource	= bcm_auxadc_resource,
+	.num_resources  = ARRAY_SIZE(bcm_auxadc_resource),
 };
 #endif
 
@@ -831,43 +831,43 @@ static void bcm215xx_avs_notify(int silicon_type)
 
 	}
 
-	if (ulower > 0)
+	if (ulower >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
 		  (u32)ulower;
 
-	if (lower > 0)
+	if (lower >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
 		  (u32)lower;
 
-	if (starter > 0)
+	if (starter >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_STARTER_MODE].cpu_voltage =
 		  (u32)starter;
 
-	if (normal > 0)
+	if (normal >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
 		  (u32)normal;
 
-	if (umedium > 0)
+	if (umedium >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_UMEDIUM_MODE].cpu_voltage =
 		  (u32)umedium;
 
-	if (omedium > 0)
+	if (omedium >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OMEDIUM_MODE].cpu_voltage =
 		  (u32)omedium;
 
-	if (heigher > 0)
+	if (heigher >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_HEIGHER_MODE].cpu_voltage =
 		  (u32)heigher;
 
-	if (turbo > 0)
+	if (turbo >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
 		  (u32)turbo;
 
-	if (super > 0)
+	if (super >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_voltage =
 		  (u32)super;
 
-	if (osuper > 0)
+	if (osuper >= 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
 		  (u32)osuper;
 

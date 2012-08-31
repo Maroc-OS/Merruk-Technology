@@ -25,6 +25,7 @@ zImage
 .settings/*
 .initramfs*
 .missing-syscalls.d
+*System.map
 *generated*
 *boot*
 *compressed*
@@ -35,6 +36,8 @@ asm-offsets.s
 bounds.s
 initramfs_data.cpio
 gen_init_cpio
+gen_crc32table
 initramfs_data.c
 Module.symvers
 Module.order
+modules.order

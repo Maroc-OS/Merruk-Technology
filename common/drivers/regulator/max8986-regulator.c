@@ -115,9 +115,7 @@ static const int aldo6_vol[][2] = {
 	_DEFINE_REGL_VOLT(3.0, 0xD),		/*1101: 3.0V */
 	_DEFINE_REGL_VOLT(3.3, 0xE),		/*1110: 3.3V */
 	_DEFINE_REGL_VOLT(1.3, 0xF),		/*1111: 1.3V */
-	_DEFINE_REGL_VOLT(3.4, 0x10),		/*1101: 3.0V */
-	_DEFINE_REGL_VOLT(3.5, 0x11),		/*1110: 3.3V */
-	_DEFINE_REGL_VOLT(3.6, 0x12),		/*1111: 1.3V */
+	/* This One Was Not Nedded & it's not in the right place. */
 };
 
 
@@ -429,7 +427,8 @@ static int _max8986_regulator_enable(struct max8986_regl_priv *regl_priv,
 	struct max8986 *max8986 = regl_priv->max8986;
 	int ret;
 	u8 regVal;
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (id < 0)
 		return -EINVAL;
 	ret = max8986->read_dev(max8986, max8986_regls[id].pm_reg, &regVal);
 	/*00: ON (normal) 01: Low power mode 10: OFF */
@@ -475,7 +474,8 @@ static int _max8986_regulator_disable(struct max8986_regl_priv *regl_priv,
 	int ret;
 	u8 regVal = 0;
 
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (id < 0)
 		return -EINVAL;
 	/*00: ON (normal) 01: Low power mode 10: OFF*/
 	/*Normal mode : PC1 = 1*/
@@ -503,7 +503,8 @@ static int _max8986_regulator_is_enabled(struct max8986_regl_priv *regl_priv,
 	int ret;
 	u8 regVal;
 
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (id < 0)
 		return -EINVAL;
 	ret = max8986->read_dev(max8986, max8986_regls[id].pm_reg, &regVal);
 
@@ -533,7 +534,8 @@ static int max8986_get_best_voltage_inx(int reg_id, int min_uV, int max_uV)
 	* in strict falling order so we need to check them
 	* all for the best match.
 	*/
-	if ((reg_id < 0) || (reg_id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((reg_id < 0) || (reg_id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (reg_id < 0)
 		return -EINVAL;
 
 	bestmatch = INT_MAX;
@@ -563,7 +565,8 @@ static int _max8986_regulator_set_voltage(struct max8986_regl_priv *pri_dev,
 	int bitPos, ret;
 	u8 mask, regVal;
 
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+		if (id < 0)
 		return -EINVAL;
 	mask = max8986_regulator_ctrl_reg_mask(id, &bitPos);
 	if (!mask)
@@ -587,7 +590,8 @@ static int max8986_regulator_set_voltage(struct regulator_dev *rdev,
 	/* Find the best index */
 	inx = max8986_get_best_voltage_inx(id, min_uV, max_uV);
 
-	if (inx < 0 || inx >= max8986_regls[id].num_vol)
+	/*if (inx < 0 || inx >= max8986_regls[id].num_vol)*/
+	if (inx < 0)
 		return inx;
 	value = max8986_regls[id].vol_list[inx][1];
 
@@ -603,7 +607,8 @@ static int _max8986_regulator_get_voltage(struct max8986_regl_priv *pri_dev,
 	struct max8986_regl_priv *regl_priv = pri_dev;
 	struct max8986 *max8986 = regl_priv->max8986;
 
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (id < 0)
 		return -EINVAL;
 
 	ret = max8986->read_dev(max8986, max8986_regls[id].ctrl_reg, &regVal);
@@ -637,7 +642,8 @@ static int _max8986_regulator_set_mode(struct max8986_regl_priv *pri_dev,
 	u8 regVal;
 	int ret;
 
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (id < 0)
 		return -EINVAL;
 	if (mode < 0 || mode >= PMU_REGL_MASK)
 		return -EINVAL;
@@ -694,7 +700,8 @@ static int _max8986_regulator_get_mode(struct max8986_regl_priv *pri_dev,
 	u8 regVal = 0;
 	int ret;
 
-	if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))
+	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
+	if (id < 0)
 		return -EINVAL;
 
 	ret = max8986->read_dev(max8986, max8986_regls[id].pm_reg, &regVal);
@@ -757,8 +764,9 @@ static int max8986_regulator_ioctl_handler(u32 cmd, u32 arg, void *pri_data)
 			return -EFAULT;
 		}
 
-		if ((regulator.regl_id < 0) ||
-			(regulator.regl_id >= MAX8986_REGL_NUM_REGULATOR))
+		/*if ((regulator.regl_id < 0) ||
+			(regulator.regl_id >= MAX8986_REGL_NUM_REGULATOR))*/
+		if(regulator.regl_id < 0)
 			return -EINVAL;
 
 		/* Validate the input voltage */

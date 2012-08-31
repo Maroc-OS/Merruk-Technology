@@ -37,7 +37,7 @@
 // J4FS for moviNAND merged from ROSSI
 #elif defined(J4FS_USE_MOVI)
 /* j4fs device node name */
-#define J4FS_DEVNAME			"/dev/block/mmcblk0p4"
+#define J4FS_DEVNAME			"/dev/block/stl6"
 static struct file *j4fs_filp;
 // J4FS for moviNAND merged from ROSSI
 

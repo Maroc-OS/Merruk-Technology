@@ -290,7 +290,7 @@ static int bcm_cpufreq_verify_speed(struct cpufreq_policy *policy)
 			b->bcm_freqs_table);
 
 	policy->max = clk_round_rate(b->cpu_clk, policy->max * 1000) / 1000;
-	policy->max = clk_round_rate(b->cpu_clk, policy->max * 1000) / 1000;
+	policy->min = clk_round_rate(b->cpu_clk, policy->min * 1000) / 1000;
 
 	if (b->bcm_freqs_table)
 		ret = cpufreq_frequency_table_verify(policy,
@@ -375,12 +375,11 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		printk(KERN_DEBUG "cpufreq is same: %u <-> %u current freq: %u\n",
 			freqs.old, freqs.new, cur);
 #endif
-		return ret;
 	}
 	else if (freqs.new > freqs.old || freqs.new < freqs.old) {
 #ifdef CONFIG_CPU_FREQ_DEBUG
-		printk(KERN_DEBUG "cpufreq transiotion: %u --> %u current freq: %u\n",
-			freqs.old, freqs.new, cur);
+		printk(KERN_DEBUG "cpufreq transiotion: %u --> %u\n",
+			freqs.old, freqs.new);
 #endif
 		index_osuper	= info->index_osuper;
 		freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
@@ -452,7 +451,6 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 			regulator_set_voltage(b->cpu_regulator, volt_new,
 				volt_new);
 		}
-		return ret;
 	}
 
 	local_irq_enable();
@@ -460,8 +458,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 
 	if (unlikely(ret))
 #ifdef CONFIG_CPU_FREQ_DEBUG
-		printk(KERN_DEBUG "setting cpu clock failed : %d\n",
-			ret);
+		printk(KERN_DEBUG "setting cpu clock failed : %d\n", ret);
 #endif
 	return ret;
 }
@@ -474,7 +471,7 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 	int cur = policy->cur;
 	int ret;
 
-	pr_info("%s: current frequency: %u\n", __func__, cur);
+	pr_info("%s: current frequency: %u\n", __func__, cpu);
 
 	/* Get handle to cpu private data */
 	b = &bcm_cpufreq[cpu];
@@ -550,10 +547,11 @@ static int bcm_cpufreq_exit(struct cpufreq_policy *policy)
 	struct bcm_cpufreq *b = &bcm_cpufreq[cpu];
 	pr_info("%s\n", __func__);
 
+	kfree(b->bcm_freqs_table);
 	cpufreq_frequency_table_put_attr(cpu);
 	regulator_put(b->cpu_regulator);
 	clk_put(b->cpu_clk);
-
+	b->policy = policy;
 	return 0;
 }
 
