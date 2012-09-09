@@ -356,13 +356,14 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 		return -EINVAL;
 	}
 
+	
+	freqs.old = bcm_cpufreq_get_speed(0);
+	freqs.new = b->bcm_freqs_table[index].frequency;
+
 	if (freqs.new > max)
 		freqs.new = max;
 	if (freqs.new < min)
 		freqs.new = min;
-	
-	freqs.old = bcm_cpufreq_get_speed(0);
-	freqs.new = b->bcm_freqs_table[index].frequency;
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 	local_irq_disable();
