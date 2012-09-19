@@ -47,6 +47,9 @@ enum syscfg_mod {
 #if defined(CONFIG_BOARD_ACAR)	
 	SYSCFG_SERIAL,
 #endif	
+#if defined(CONFIG_BCMI2CNFC)
+	SYSCFG_NFC_GPIO,
+#endif
 };
 
 enum syscfg_op {

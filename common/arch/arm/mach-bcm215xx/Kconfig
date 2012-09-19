@@ -107,7 +107,7 @@ config BOARD_LUISA
 	  for development is a BCM21553 Luisa board.
 
 config BOARD_TASSVE
-	bool "Samsung BCM2155x TASSVE board"
+	bool "Samsung BCM2155x TassVE board"
 	help
 	  Configure this option to specify the whether the used
 	  for development is a BCM21553 TassVE board.
@@ -116,7 +116,7 @@ config BOARD_COOPERVE
 	bool "Samsung BCM2155x COOPERVE board"
 	help
 	  Configure this option to specify the whether the used
-	  for development is a BCM21553 TassVE board.
+	  for development is a BCM21553 COOPERVE board.
 	    	    
 endchoice
 
@@ -174,5 +174,9 @@ config HEADSET_DET_GPIO
 	bool "Samsung BCM2155x LUISA 0_2 board Headset"
 
 
+config BCM21553_1GHZ
+	bool "Enable support for 1GHz BCM21553 part"
+	depends on ARCH_BCM215XX
+	default y
 
 endmenu

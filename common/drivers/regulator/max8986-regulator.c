@@ -115,7 +115,6 @@ static const int aldo6_vol[][2] = {
 	_DEFINE_REGL_VOLT(3.0, 0xD),		/*1101: 3.0V */
 	_DEFINE_REGL_VOLT(3.3, 0xE),		/*1110: 3.3V */
 	_DEFINE_REGL_VOLT(1.3, 0xF),		/*1111: 1.3V */
-	/* This One Was Not Nedded & it's not in the right place. */
 };
 
 
@@ -230,6 +229,52 @@ static const int tsrldo_vol[][2] = {
 	_DEFINE_REGL_VOLT(2.7, 0x14),		/*10100: 2.7V */
 	_DEFINE_REGL_VOLT(2.8, 0x15),		/*10101: 2.8V */
 	_DEFINE_REGL_VOLT(2.9, 0x16),		/*10110: 2.9V */
+};
+
+static const int csr_dvs_vol_max8999r0[][2] = {
+	_DEFINE_REGL_VOLT(0.84, 0),
+	_DEFINE_REGL_VOLT(0.86, 1),
+	_DEFINE_REGL_VOLT(1.46, 2),
+	_DEFINE_REGL_VOLT(1.44, 3),
+	_DEFINE_REGL_VOLT(1.42, 4),
+	_DEFINE_REGL_VOLT(1.40, 5),
+	_DEFINE_REGL_VOLT(1.38, 6),
+	_DEFINE_REGL_VOLT(1.36, 7),
+	_DEFINE_REGL_VOLT(1.34, 8),
+	_DEFINE_REGL_VOLT(1.32, 9),
+	_DEFINE_REGL_VOLT(1.30, 0xA),
+	_DEFINE_REGL_VOLT(1.28, 0xB),
+	_DEFINE_REGL_VOLT(1.26, 0xC),
+	_DEFINE_REGL_VOLT(1.24, 0xD),
+	_DEFINE_REGL_VOLT(1.22, 0xE),
+	_DEFINE_REGL_VOLT(1.20, 0xF),
+	_DEFINE_REGL_VOLT(1.18, 0x10),
+	_DEFINE_REGL_VOLT(1.16, 0x11),
+	_DEFINE_REGL_VOLT(1.14, 0x12),
+	_DEFINE_REGL_VOLT(1.12, 0x13),
+	_DEFINE_REGL_VOLT(1.10, 0x14),
+	_DEFINE_REGL_VOLT(1.08, 0x15),
+	_DEFINE_REGL_VOLT(1.06, 0x16),
+	_DEFINE_REGL_VOLT(1.04, 0x17),
+	_DEFINE_REGL_VOLT(1.02, 0x18),
+	_DEFINE_REGL_VOLT(1.00, 0x19),
+	_DEFINE_REGL_VOLT(0.98, 0x1A),
+	_DEFINE_REGL_VOLT(0.96, 0x1B),
+	_DEFINE_REGL_VOLT(0.94, 0x1C),
+	_DEFINE_REGL_VOLT(0.92, 0x1D),
+	_DEFINE_REGL_VOLT(0.90, 0x1E),
+	_DEFINE_REGL_VOLT(0.88, 0x1F)
+};
+
+static const int iosr_vol_max8999r0[][2] = {
+	_DEFINE_REGL_VOLT(1.70, 0),
+	_DEFINE_REGL_VOLT(1.75, 1),
+	_DEFINE_REGL_VOLT(1.80, 2),
+	_DEFINE_REGL_VOLT(1.85, 3),
+	_DEFINE_REGL_VOLT(1.90, 4),
+	_DEFINE_REGL_VOLT(1.95, 5),
+	_DEFINE_REGL_VOLT(2.00, 6),
+	_DEFINE_REGL_VOLT(2.05, 7),
 };
 
 static const int csr_dvs_vol[][2] = {
@@ -505,11 +550,11 @@ static int _max8986_regulator_is_enabled(struct max8986_regl_priv *regl_priv,
 
 	/*if ((id < 0) || (id >= MAX8986_REGL_NUM_REGULATOR))*/
 	if (id < 0)
-		return -EINVAL;
+		return 0;
 	ret = max8986->read_dev(max8986, max8986_regls[id].pm_reg, &regVal);
 
-	if (ret)
-		return ret;
+	if (ret < 0)
+		return 0;
 	/*00: ON (normal) 01: Low power mode 10: OFF*/
 	return ((regVal & (PMU_REGL_MASK << PC2PC1_01)) == 0);
 }
@@ -576,6 +621,8 @@ static int _max8986_regulator_set_voltage(struct max8986_regl_priv *pri_dev,
 	volt <<= bitPos;
 	regVal |= (volt & mask);
 	ret |= max8986->write_dev(max8986, max8986_regls[id].ctrl_reg, regVal);
+	/*Dummy read to account for regualtor voltage ramp up/down delay*/
+	max8986->read_dev(max8986, max8986_regls[id].ctrl_reg, &regVal);
 	return ret;
 }
 
@@ -654,7 +701,7 @@ static int _max8986_regulator_set_mode(struct max8986_regl_priv *pri_dev,
 	regVal &= ~((PMU_REGL_MASK << PC2PC1_00) |
 					(PMU_REGL_MASK << PC2PC1_10));
 	regVal |= ((mode << PC2PC1_00) | (mode << PC2PC1_10));
-	printk(KERN_INFO "%s: rgVal = %x\n",__func__,regVal);
+	pr_info("%s: rgVal = %x\n", __func__, regVal);
 	ret = max8986->write_dev(max8986, max8986_regls[id].pm_reg, regVal);
 	return ret;
 }
@@ -665,14 +712,13 @@ static int max8986_regulator_set_mode(struct regulator_dev *rdev,
 	u8 opmode;
 	struct max8986_regl_priv *regl_priv = rdev_get_drvdata(rdev);
 	int id = rdev_get_id(rdev);
-	printk(KERN_INFO "%s:mode = %d\n",__func__,mode);
+	pr_info("%s:mode = %d\n", __func__, mode);
 
 	switch(mode)
 	{
 	case REGULATOR_MODE_FAST:
 		opmode = PMU_REGL_TURBO;
 		break;
-
 	case REGULATOR_MODE_NORMAL:
 		opmode = PMU_REGL_ON;
 		break;
@@ -720,7 +766,7 @@ static unsigned int max8986_regulator_get_mode(struct regulator_dev *rdev)
 	int id = rdev_get_id(rdev);
 
 	mode = _max8986_regulator_get_mode(regl_priv, id);
-	printk(KERN_INFO "%s:opmode = %d\n",__func__,mode);
+	pr_info("%s:opmode = %d\n", __func__, mode);
 	switch(mode)
 	{
 	case PMU_REGL_ON:

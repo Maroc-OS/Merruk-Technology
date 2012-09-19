@@ -39,11 +39,6 @@
 #define WL_ERROR(x) printf x
 #define WL_TRACE(x)
 
-#ifdef CUSTOMER_HW
-extern  void bcm_wlan_power_off(int);
-extern  void bcm_wlan_power_on(int);
-#endif /* CUSTOMER_HW */
-
 #if defined(OOB_INTR_ONLY)
 
 #if defined(BCMLXSDMMC)
@@ -101,15 +96,15 @@ int dhd_customer_oob_irq_map(unsigned long *irq_flags_ptr)
 #endif /* defined(OOB_INTR_ONLY) */
 
 /* Customer function to control hw specific wlan gpios */
-void
-dhd_customer_gpio_wlan_ctrl(int onoff)
+void dhd_customer_gpio_wlan_ctrl(int onoff)
 {
+	int ret = 0;
 	switch (onoff) {
 		case WLAN_RESET_OFF:
 			WL_TRACE(("%s: call customer specific GPIO to insert WLAN RESET\n",
 				__FUNCTION__));
 #ifdef CUSTOMER_HW
-			bcm_wlan_power_off(2);
+			ret = 2;
 #endif /* CUSTOMER_HW */
 			WL_ERROR(("=========== WLAN placed in RESET ========\n"));
 		break;
@@ -118,7 +113,7 @@ dhd_customer_gpio_wlan_ctrl(int onoff)
 			WL_TRACE(("%s: callc customer specific GPIO to remove WLAN RESET\n",
 				__FUNCTION__));
 #ifdef CUSTOMER_HW
-			bcm_wlan_power_on(2);
+			ret = 2;
 #endif /* CUSTOMER_HW */
 			WL_ERROR(("=========== WLAN going back to live  ========\n"));
 		break;
@@ -127,7 +122,7 @@ dhd_customer_gpio_wlan_ctrl(int onoff)
 			WL_TRACE(("%s: call customer specific GPIO to turn off WL_REG_ON\n",
 				__FUNCTION__));
 #ifdef CUSTOMER_HW
-			bcm_wlan_power_off(1);
+			ret = 1;
 #endif /* CUSTOMER_HW */
 		break;
 
@@ -135,7 +130,7 @@ dhd_customer_gpio_wlan_ctrl(int onoff)
 			WL_TRACE(("%s: call customer specific GPIO to turn on WL_REG_ON\n",
 				__FUNCTION__));
 #ifdef CUSTOMER_HW
-			bcm_wlan_power_on(1);
+			ret = 1;
 #endif /* CUSTOMER_HW */
 			/* Lets customer power to get stable */
 #if defined(CUSTOMER_HW_BCM2155X)
@@ -144,5 +139,7 @@ dhd_customer_gpio_wlan_ctrl(int onoff)
 			OSL_DELAY(200);
 #endif
 		break;
+		
+	return ret;
 	}
 }

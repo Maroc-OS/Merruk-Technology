@@ -1,4 +1,4 @@
-/******************************************************************************************* 
+/*******************************************************************************************
 Copyright 2010 Broadcom Corporation.  All rights reserved.
 
 Unless you and Broadcom execute a separate written software license agreement 
@@ -70,10 +70,10 @@ extern UInt8 CAPI2_SYS_RegisterClient(RPC_RequestCallbackFunc_t reqCb,
                                       RPC_ResponseCallbackFunc_t respCb,
                                       RPC_AckCallbackFunc_t ackCb,
                                       RPC_FlowControlCallbackFunc_t flowControlCb);
-extern int bcm_gpio_pull_up(unsigned int gpio, bool up);
-extern int bcm_gpio_pull_up_down_enable(unsigned int gpio, bool enable);
 
 static UInt8 gKagpsClientID = INVALID_CLIENT_ID;
+extern int bcm_gpio_pull_up(unsigned int gpio, bool up);
+extern int bcm_gpio_pull_up_down_enable(unsigned int gpio, bool enable);
 
 #define BCM_KAGPS_TID_INIT   0X01
 #define BCM_KAGPS_TID_MAX    0XFFFFF
@@ -366,7 +366,7 @@ static int CNTIN_KERNEL_Release(struct inode *inode, struct file *filp)
 	gpio_set_value(HW_GPIO_GPS_CNTIN, 0);
     gpio_direction_input(HW_GPIO_GPS_CNTIN);
     bcm_gpio_pull_up(HW_GPIO_GPS_CNTIN, false);
-    bcm_gpio_pull_up_down_enable(HW_GPIO_GPS_CNTIN, true);  //these 3 lines save 600uA leakage^M
+    bcm_gpio_pull_up_down_enable(HW_GPIO_GPS_CNTIN, true);  //these 3 lines save 600uA leakage
 	gpio_free(HW_GPIO_GPS_CNTIN);
 	return 0;
 }

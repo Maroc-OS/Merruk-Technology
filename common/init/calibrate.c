@@ -76,8 +76,6 @@ static unsigned long __cpuinit calibrate_delay_direct(void)
 		end = post_start;
 		while (time_before_eq(jiffies, start_jiffies + 1 +
 			DELAY_CALIBRATION_TICKS)) {
-		/*while (jiffies <=
-		       (start_jiffies + 1 + DELAY_CALIBRATION_TICKS)) {*/
 			pre_end = end;
 			read_current_timer(&end);
 		}

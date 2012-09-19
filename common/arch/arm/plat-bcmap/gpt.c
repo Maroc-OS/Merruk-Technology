@@ -368,7 +368,7 @@ err:
 EXPORT_SYMBOL(gpt_read);
 
 /*
-  * This function will return the current reload count on a give GPT.
+ * This function will return the current reload count on a give GPT.
  *
  * Return:
  * 	Non-zero counter value : This is the current reload count of the requested timer

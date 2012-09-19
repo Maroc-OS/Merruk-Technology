@@ -1062,8 +1062,8 @@ static void bcm215xx_enter_sleep(struct bcm_pm_sleep *bcm_pm_sleep)
 
 #if defined(CONFIG_BRCM_FUSE_RPC_CIB)
 	if (bcm_pm_sleep->deepsleep_allowed == true) {
-	BcmRpc_SetApSleep(1);
-	mb();
+		BcmRpc_SetApSleep(1);
+		mb();
 	}
 #endif
 	bcm215xx_sleep(bcm_pm_sleep);
@@ -1071,7 +1071,7 @@ static void bcm215xx_enter_sleep(struct bcm_pm_sleep *bcm_pm_sleep)
 
 #if defined(CONFIG_BRCM_FUSE_RPC_CIB)
 	if (bcm_pm_sleep->deepsleep_allowed == true)
-	BcmRpc_SetApSleep(0);
+		BcmRpc_SetApSleep(0);
 #endif
 
 #if (BCM_PM_DORMANT_PROFILING == 1)
@@ -1087,6 +1087,10 @@ static void bcm215xx_enter_sleep(struct bcm_pm_sleep *bcm_pm_sleep)
 
 	bcm215xx_disable_deepsleep();
 	bcm215xx_disable_dormant();
+
+	/* This is required for MobC00156895. Without this CP pedestal
+	 * bit in CLK_POWER_MODES register is getting reset. Reason unknown.
+	 */
 	bcm215xx_enable_pedestal();
 }
 
@@ -1156,6 +1160,23 @@ inline void bcm215xx_enter_idle(int cpu_state)
 	}
 
 	bcm215xx_enter_sleep(bcm_pm_sleep_buf);
+
+	/* Workaround to wait until the CS tick increments by 1. Without this
+	 * the system can enter into a infinite wait in the following loop:
+	 * cpu_idle -> timer_interrupt -> timer isr -> cpuidle.
+	 */
+	if (bcm_pm_sleep_buf->pedestal_allowed == true) {
+		struct timeval t;
+		unsigned int old, new;
+
+		do_gettimeofday(&t);
+		old = t.tv_sec * USEC_PER_SEC + t.tv_usec;
+		new = old;
+		while (old == new) {
+			do_gettimeofday(&t);
+			new = t.tv_sec * USEC_PER_SEC + t.tv_usec;
+		}
+	}
 
 	if (allow_pedestal) {
 		/* Restore UART[A,B,C]_UCR registers */
@@ -1327,21 +1348,10 @@ static int bcm215xx_pm_enter(suspend_state_t state)
 
 	pr_debug("%s: state:%d\n", __func__, state);
 
-	/* Workaround to wait until the CS tick increments by 1. Without this
-	 * the system can enter into a infinite wait in the following loop:
-	 * cpu_idle -> timer_interrupt -> timer isr -> cpuidle.
-	 */
-	if (bcm_pm_sleep_buf->pedestal_allowed == true) {
-		struct timeval t;
-		unsigned int old, new;
-
-		do_gettimeofday(&t);
-		old = t.tv_sec * USEC_PER_SEC + t.tv_usec;
-		new = old;
-		while (old == new) {
-			do_gettimeofday(&t);
-			new = t.tv_sec * USEC_PER_SEC + t.tv_usec;
-		}
+	if (has_wake_lock(WAKE_LOCK_SUSPEND)) {
+		pr_info("%s: pending WAKE_LOCK_SUSPEND, aborting suspend\n",
+			__func__);
+		return 0;
 	}
 
 	switch (state) {

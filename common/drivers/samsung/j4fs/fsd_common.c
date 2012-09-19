@@ -96,7 +96,7 @@ int fsd_read(j4fs_ctrl *ctl)
 			continue;
 		}
 
-		// File ID(inode number) is matched
+		// File ID(inode number) is matched.
 		#ifdef __KERNEL__
 		if( ((ctl->index + ctl->count + PAGE_SIZE-1)/PAGE_SIZE*PAGE_SIZE)
 			<= ((header->length + PAGE_SIZE-1)/PAGE_SIZE*PAGE_SIZE) )

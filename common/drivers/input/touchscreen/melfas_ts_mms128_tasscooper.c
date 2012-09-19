@@ -131,7 +131,11 @@ int Is_MMS128_Connected(void)
 #endif
 
  //TODO : touch_ctrl_regulator() 敗呪澗 陥献 督析拭辞 識情吉及, export 鞠嬢 責製. //synaptics_i2c_rmi_tma340_cooperve.c synaptics_i2c_rmi_tma340_tassveve.c
-void touch_ctrl_regulator_mms128(int on_off) /*i think touch screen can be undervolted here :P */
+/* i think touch screen can be undervolted here :P
+ * Yes Here We Can Undervolt it :)
+ * But We Need to be Carefull :)
+ */
+void touch_ctrl_regulator_mms128(int on_off)
 {
     if (on_off == TOUCH_ON)
     {
@@ -494,7 +498,8 @@ void melfas_upgrade(INT32 hw_ver)
 }
 
 #if defined (CONFIG_TOUCHSCREEN_TMA340) || defined (CONFIG_TOUCHSCREEN_TMA340_COOPERVE) || defined (CONFIG_TOUCHSCREEN_F760)
-int melfas_ts_check(struct melfas_ts_data *ts) /*i think that by adding more buf_tmp we can get more touches*/
+/* i think that by adding more buf_tmp we can get more touches */
+int melfas_ts_check(struct melfas_ts_data *ts)
 {
     int ret, i;
     uint8_t buf_tmp[3]={0,0,0};

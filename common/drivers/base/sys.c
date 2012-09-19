@@ -166,36 +166,6 @@ EXPORT_SYMBOL_GPL(sysdev_class_unregister);
 
 static DEFINE_MUTEX(sysdev_drivers_lock);
 
-/*
- * @dev != NULL means that we're unwinding because some drv->add()
- * failed for some reason. You need to grab sysdev_drivers_lock before
- * calling this.
- */
-static void __sysdev_driver_remove(struct sysdev_class *cls,
-				   struct sysdev_driver *drv,
-				   struct sys_device *from_dev)
-{
-	struct sys_device *dev = from_dev;
-
-	list_del_init(&drv->entry);
-	if (!cls)
-		return;
-
-	if (!drv->remove)
-		goto kset_put;
-
-	if (dev)
-		list_for_each_entry_continue_reverse(dev, &cls->kset.list,
-						     kobj.entry)
-			drv->remove(dev);
-	else
-		list_for_each_entry(dev, &cls->kset.list, kobj.entry)
-			drv->remove(dev);
-
-kset_put:
-	kset_put(&cls->kset);
-}
-
 /**
  *	sysdev_driver_register - Register auxiliary driver
  *	@cls:	Device class driver belongs to.
@@ -207,12 +177,11 @@ kset_put:
  */
 int sysdev_driver_register(struct sysdev_class *cls, struct sysdev_driver *drv)
 {
-	struct sys_device *dev = NULL;
 	int err = 0;
 
 	if (!cls) {
-		WARN(1, KERN_WARNING "sysdev: invalid class passed to %s!\n",
-			__func__);
+		WARN(1, KERN_WARNING "sysdev: invalid class passed to "
+			"sysdev_driver_register!\n");
 		return -EINVAL;
 	}
 
@@ -228,23 +197,14 @@ int sysdev_driver_register(struct sysdev_class *cls, struct sysdev_driver *drv)
 
 		/* If devices of this class already exist, tell the driver */
 		if (drv->add) {
-			list_for_each_entry(dev, &cls->kset.list, kobj.entry) {
-				err = drv->add(dev);
-				if (err)
-					goto unwind;
-			}
+			struct sys_device *dev;
+			list_for_each_entry(dev, &cls->kset.list, kobj.entry)
+				drv->add(dev);
 		}
 	} else {
 		err = -EINVAL;
 		WARN(1, KERN_ERR "%s: invalid device class\n", __func__);
 	}
-
-	goto unlock;
-
-unwind:
-	__sysdev_driver_remove(cls, drv, dev);
-
-unlock:
 	mutex_unlock(&sysdev_drivers_lock);
 	return err;
 }
@@ -258,9 +218,18 @@ void sysdev_driver_unregister(struct sysdev_class *cls,
 			      struct sysdev_driver *drv)
 {
 	mutex_lock(&sysdev_drivers_lock);
-	__sysdev_driver_remove(cls, drv, NULL);
+	list_del_init(&drv->entry);
+	if (cls) {
+		if (drv->remove) {
+			struct sys_device *dev;
+			list_for_each_entry(dev, &cls->kset.list, kobj.entry)
+				drv->remove(dev);
+		}
+		kset_put(&cls->kset);
+	}
 	mutex_unlock(&sysdev_drivers_lock);
 }
+
 EXPORT_SYMBOL_GPL(sysdev_driver_register);
 EXPORT_SYMBOL_GPL(sysdev_driver_unregister);
 

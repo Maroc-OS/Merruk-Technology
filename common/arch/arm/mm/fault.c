@@ -124,7 +124,6 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
 { }
 #endif					/* CONFIG_MMU */
 
-
 /*
  * Oops.  The kernel tried to access some page that wasn't present.
  */
@@ -132,7 +131,6 @@ static void
 __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
 		  struct pt_regs *regs)
 {
-
 	/*
 	 * Are we prepared to handle this kernel fault?
 	 */

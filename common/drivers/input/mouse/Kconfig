@@ -321,4 +321,15 @@ config MOUSE_SYNAPTICS_I2C
 	  To compile this driver as a module, choose M here: the
 	  module will be called synaptics_i2c.
 
+config OFM_DRIVER
+        tristate "OFM based optical mouse"
+        depends on I2C
+        help
+          Say Y here if you have a OFM  based mouse.
+
+          If unsure, say N.
+
+          To compile this driver as a module, choose M here: the
+          module will be called OFM.
+
 endif

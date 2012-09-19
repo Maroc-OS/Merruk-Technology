@@ -64,6 +64,28 @@ typedef struct
 	uint32_t data_phase_addr;
 } nvsram_cmd;
 
+/* Global enum */
+enum {
+	disabled = 0,
+	enabled
+};
+
+#define MICRON_ON_DIE_ECC_ENABLED	0x80	/* Bit map for Micron on-die ECC */
+
+/**
+ * struct nand_special_dev - Special NAND Flash Device ID Structure
+ *
+ * @maf_id:		NAND Manufacture ID
+ * @features:	Bit map that defines the special feature
+ * @id_byte:	The correct byte of the ID string that defines the
+ *				special feature. id_byte starts from 0.
+ */
+struct nand_special_dev {
+	int maf_id;
+	unsigned int features;
+	unsigned int id_byte;
+};
+
 
 /* Register Definitions */
 #define NVSRAM_REG_BASE                      IO_ADDRESS(BCM21553_NVSRAM_BASE)

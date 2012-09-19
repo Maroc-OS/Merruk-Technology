@@ -1,7 +1,7 @@
 /*******************************************************************************
 * Copyright 2010 Broadcom Corporation.  All rights reserved.
 *
-*       @file   arch/arm/plat-bcmap/include/plat/csl/csl_lcd.h
+* 	@file	arch/arm/plat-bcmap/include/plat/csl/csl_lcd.h
 *
 * Unless you and Broadcom execute a separate written software license agreement
 * governing use of this software, this software is licensed to you under the

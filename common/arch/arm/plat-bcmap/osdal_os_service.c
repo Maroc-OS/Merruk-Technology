@@ -159,7 +159,7 @@ static DMA_BSIZE _translate_dma_bsize(OSDAL_DMA_BSIZE bsize)
 	switch(bsize) {
 	case OSDAL_DMA_BURST_SIZE_1:
 		drv_bsize = DMA_BURST_SIZE_1;
-        	break;
+        break;
 #if defined (_HERA_)
 	case OSDAL_DMA_BURST_SIZE_2:
 		drv_bsize = DMA_BURST_SIZE_2;
@@ -201,7 +201,7 @@ OSDAL_Status OSDAL_DMA_Config_Channel(UInt32 chanNum,
 	chanInfo.dstBstSize = _translate_dma_bsize(pChanInfo->dstBstSize);
 	chanInfo.srcDataWidth = (DMA_DWIDTH)pChanInfo->srcDataWidth;
 	chanInfo.dstDataWidth = (DMA_DWIDTH)pChanInfo->dstDataWidth;
-	chanInfo.srcMaster = pChanInfo->dstMaster;
+	chanInfo.srcMaster = pChanInfo->srcMaster;
 	chanInfo.dstMaster = pChanInfo->dstMaster;
 	chanInfo.priority = pChanInfo->priority;
 	chanInfo.incMode = pChanInfo->incMode;

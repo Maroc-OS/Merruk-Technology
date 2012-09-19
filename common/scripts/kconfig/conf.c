@@ -625,5 +625,5 @@ void xfgets(str, size, in)
 	FILE *in;
 {
 	if (fgets(str, size, in) == NULL)
-		fprintf(stderr, "\nError in reading or end of file.\n");
+		fprintf(stderr, "\n*** Error during reading or in end of file.\n\n");
 }

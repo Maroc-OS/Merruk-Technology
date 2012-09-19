@@ -1,5 +1,7 @@
 /* Header file for HEASET DRIVER */
 
+#ifndef __BCM_HEADSET_PD__
+#define __BCM_HEADSET_PD__
 
 struct brcm_headset_pd {
 	int hsirq;
@@ -19,3 +21,4 @@ struct brcm_headset_pd {
 	short key3_threshold_u;	
 };
 
+#endif /*  __BCM_HEADSET_PD__ */

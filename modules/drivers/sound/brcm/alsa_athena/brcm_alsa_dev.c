@@ -502,7 +502,7 @@ UInt32		amrMode		// AMR codec mode of speech data
         {
             if( voip_driver_handle->voip_data_ul_buf_ptr )
             {
-                //DEBUG(" VOIP_DumpUL_CB : VOIP_buf_ul_index 0x%x, \r\n", voip_driver_handle->voip_data_ul_wr_index);
+//                DEBUG(" VOIP_DumpUL_CB : VOIP_buf_ul_index 0x%x, \r\n", voip_driver_handle->voip_data_ul_wr_index);
                 memcpy(voip_driver_handle->voip_data_ul_buf_ptr + voip_driver_handle->voip_data_ul_wr_index, pSrc, VOIP_FRAME_SIZE);
                 voip_driver_handle->voip_ul_framecount++;
                 voip_driver_handle->voip_data_ul_wr_index += VOIP_FRAME_SIZE;
@@ -536,7 +536,7 @@ static Boolean VOIP_FillDL_CB(AUDIO_DRIVER_HANDLE_t drv_handle, UInt8 *pDst, UIn
             }
             if( voip_driver_handle->voip_data_dl_buf_ptr )
             {
-                //DEBUG(" VOIP_FillDL_CB : VOIP_buf_dl_index 0x%x, \r\n", voip_driver_handle->voip_data_dl_rd_index);
+//                DEBUG(" VOIP_FillDL_CB : VOIP_buf_dl_index 0x%x, \r\n", voip_driver_handle->voip_data_dl_rd_index);
                 memcpy(pDst, voip_driver_handle->voip_data_dl_buf_ptr + voip_driver_handle->voip_data_dl_rd_index, VOIP_FRAME_SIZE);
                 voip_driver_handle->voip_dl_framecount--;
                 voip_driver_handle->voip_data_dl_rd_index += VOIP_FRAME_SIZE;
@@ -797,8 +797,6 @@ static UInt32 VOIP_buf_ul_index = 0;
 static UInt32 VOIP_buf_dl_index = 0;
 static UInt32 lp_voip_mic;
 static UInt32 lp_voip_speaker;
-
-//UInt32 lp_voip_start = 0; /* 20110715 for loopback check */
 
 static Boolean LB_VOIP_DumpUL_CB(
 AUDIO_DRIVER_HANDLE_t drv_handle,

@@ -1506,13 +1506,13 @@ const struct file_operations j4fs_dir_operations = {
 };
 
 const struct inode_operations j4fs_file_inode_operations = {
-	.permission = NULL,
+	/*.permission = NULL,*/
 };
 
 const struct inode_operations j4fs_dir_inode_operations = {
 	.create		= j4fs_create,
 	.lookup		= j4fs_lookup,
-	.permission	= NULL,
+	/*.permission	= NULL,*/
 };
 
 const struct super_operations j4fs_sops = {

@@ -32,6 +32,7 @@
 #include <linux/proc_fs.h>
 #include <linux/mfd/max8986/max8986.h>
 #include <mach/gpio.h>
+
 #define MAX8986_INT_BASE                MAX8986_PM_REG_INT1
 #define MAX8986_INT_MASK_BASE           MAX8986_PM_REG_INTMSK1
 #define MAX8986_MUIC_INT_MASK_BASE      MAX8986_MUIC_REG_INTMSK1
@@ -156,7 +157,7 @@ int max8986_disable_irq(struct max8986 *max8986, int irq)
 	/* If no other MUIC sub-interrupt is enable the disable main MUIC int */
 	if (max8986->muic_int_enable == 0)
 	{
-		printk(KERN_INFO "Disabling MUIC.....\n");
+		pr_info("Disabling MUIC.....\n");
 		st = max8986->read_dev(max8986, MAX8986_PM_REG_INTMSK3, &reg_val);
 		reg_val |= (1 << IRQ_TO_REG_BIT(
 				MAX8986_IRQID_INT3_MUIC));
@@ -203,7 +204,7 @@ int max8986_enable_irq(struct max8986 *max8986, int irq)
 		mask |= (1 << IRQ_TO_REG_BIT(irq));
 		if(max8986->muic_int_enable == 0)
 		{
-			printk(KERN_INFO "Enabling MUIC.....\n");
+			pr_info("Enabling MUIC.....\n");
 			st = max8986->read_dev(max8986, MAX8986_PM_REG_INTMSK3,
 				&reg_val);
 			reg_val &= ~(1 << IRQ_TO_REG_BIT(MAX8986_IRQID_INT3_MUIC));
@@ -283,66 +284,66 @@ static void max8986_irq_workq(struct work_struct *work)
 	u8 intStatus[MAX8986_NUM_INT_REG + MAX8986_NUM_MUIC_INT_REG];
 	struct max_pmu_irq  *handler;
 	int int_state;
+
 	pr_debug("%s\n", __func__);
 
 	do {
-	/* Read all interrupt status registers.
-	 * All interrupt status registers are R&C
-	 */
-	if (max8986->read_mul_dev(max8986, MAX8986_INT_BASE,
-		MAX8986_NUM_INT_REG, intStatus)) {
-		pr_err("%s: pmu int reg read error\n", __func__);
-		return;
-	}
-	if (max8986->read_mul_dev(max8986, MAX8986_MUIC_INT_BASE,
-		MAX8986_NUM_MUIC_INT_REG,
-		(intStatus+MAX8986_NUM_INT_REG))) {
-		pr_err("%s: pmu int reg read error\n", __func__);
-		return;
-	}
-
-	mutex_lock(&max8986->list_lock);
-	list_for_each_entry(handler, &max8986->irq_handlers, node)
-	{
-		if (handler->irq_enabled &&
-			(intStatus[IRQ_TO_REG_INX(handler->irq)] &
-				(1 << IRQ_TO_REG_BIT(handler->irq)))) {
-			handler->handler(handler->irq, handler->data);
+		/* Read all interrupt status registers.
+		 * All interrupt status registers are R&C
+		 */
+		if (max8986->read_mul_dev(max8986, MAX8986_INT_BASE,
+			MAX8986_NUM_INT_REG, intStatus)) {
+			pr_err("%s: pmu int reg read error\n", __func__);
+			return;
 		}
-	}
-		
-	mutex_unlock(&max8986->list_lock);
-		/*
-		* PMU interrupt is GPIO based and is edge trigerred interrupt
-		* (GPIO lib supports only edge triggerred interrupt for now).
-		* Since there are three interrupt status regs in the PMU,
-		* following scenario can occur and lock out the PMU from
-		* generating any more interrupts:
-		* 1. One interrupt bit in INT1 and INT2 regs. PMU asserts
-		* the interrupt line low.
-		* 2. ISR schedules workqueue to handle the interrupt.
-		* 3. Worker thread reads INT1, which clears INT1 bits.
-		* 4. Worker thread begins read of INT2. At the same time,
-		* another interrupt bit in INT1 gets set.
-		* 5. Worker thread completes reading INT2 and INT3 and
-		* completes interrupt handling and returns.
-		* 6. But the PMU INT line is still asserted because of the
-		* interrupt bit that got set in step 3 above.
-		* Since no interrupt was recognized by Linux, this bit never
-		* gets cleared and no more interrutps are recevied from the
-		* PMU.
-		*
-		* So to fix the issue, after processing all the interrrupts,
-		* the interrupt line status is read. If the line is still
-		* asserted, we again read all the three status regs and handle
-		* the interrupts. This is repeated until the INT line is no
-		* longer asserted.
-		*/
-		int_state = gpio_get_value(IRQ_TO_GPIO(max8986->irq));
-		if( int_state==0 )
-			pr_debug("%s: PMU INT line is still asserted\n", __func__);
+		if (max8986->read_mul_dev(max8986, MAX8986_MUIC_INT_BASE,
+			MAX8986_NUM_MUIC_INT_REG,
+			(intStatus+MAX8986_NUM_INT_REG))) {
+			pr_err("%s: pmu int reg read error\n", __func__);
+			return;
+		}
 
-	}while (int_state == 0); 
+		mutex_lock(&max8986->list_lock);
+		list_for_each_entry(handler, &max8986->irq_handlers, node)
+		{
+			if (handler->irq_enabled &&
+				(intStatus[IRQ_TO_REG_INX(handler->irq)] &
+					(1 << IRQ_TO_REG_BIT(handler->irq)))) {
+				handler->handler(handler->irq, handler->data);
+			}
+		}
+		mutex_unlock(&max8986->list_lock);
+
+		/*
+		 * PMU interrupt is GPIO based and is edge trigerred interrupt
+		 * (GPIO lib supports only edge triggerred interrupt for now).
+		 * Since there are three interrupt status regs in the PMU,
+		 * following scenario can occur and lock out the PMU from
+		 * generating any more interrupts:
+		 * 1. One interrupt bit in INT1 and INT2 regs. PMU asserts
+		 *    the interrupt line low.
+		 * 2. ISR schedules workqueue to handle the interrupt.
+		 * 3. Worker thread reads INT1, which clears INT1 bits.
+		 * 4. Worker thread begins read of INT2. At the same time,
+		 *    another interrupt bit in INT1 gets set.
+		 * 5. Worker thread completes reading INT2 and INT3 and
+		 *    completes interrupt handling and returns.
+		 * 6. But the PMU INT line is still asserted because of the
+		 * interrupt bit that got set in step 3 above.
+		 * Since no interrupt was recognized by Linux, this bit never
+		 * gets cleared and no more interrutps are recevied from the
+		 * PMU.
+		 *
+		 * So to fix the issue, after processing all the interrrupts,
+		 * the interrupt line status is read. If the line is still
+		 * asserted, we again read all the three status regs and handle
+		 * the interrupts. This is repeated until the INT line is no
+		 * longer asserted.
+		 */
+		int_state = gpio_get_value(IRQ_TO_GPIO(max8986->irq));
+
+	} while (int_state == 0);
+
 	pr_debug("%s: end\n", __func__);
 }
 
@@ -501,7 +502,6 @@ static void max8986_init_chip(struct max8986 *max8986)
 	{
 		reg_val &= ~MAX8986_CSRCTRL1_CSR_DVS_EN;
 	}
-	reg_val &= ~MAX8986_CSRCTRL1_CSROKACT;
 	max8986->write_dev(max8986, MAX8986_PM_REG_CSRCTRL1, reg_val);
 
 	/* mask all interrupts */
@@ -517,9 +517,6 @@ static void max8986_init_chip(struct max8986 *max8986)
 
 	for (i = 0; i < MAX8986_NUM_MUIC_INT_REG; i++)
 		max8986->read_dev(max8986, MAX8986_MUIC_REG_INT1 + i, &reg_val);
-
-	max8986->write_dev(max8986, MAX8986_PM_REG_A8_A2_LDOCTRL,0x73);
-	
 }
 
 static int max8986_open(struct inode *inode, struct file *file)
@@ -637,18 +634,15 @@ struct pmu_debug {
 
 static void max8986_dbg_usage(void)
 {
-	printk(KERN_INFO "Usage:\n");
-	printk(KERN_INFO "Read a register: echo 0x0800 > /proc/pmu0\n");
-	printk(KERN_INFO
-		"Read multiple regs: echo 0x0800 -c 10 > /proc/pmu0\n");
-	printk(KERN_INFO
-		"Write multiple regs: echo 0x0800 0xFF 0xFF > /proc/pmu0\n");
-	printk(KERN_INFO
-		"Write single reg: echo 0x0800 0xFF > /proc/pmu0\n");
-	printk(KERN_INFO "Max number of regs in single write is :%d\n",
+	pr_info("Usage:\n");
+	pr_info("Read a register: echo 0x0800 > /proc/pmu0\n");
+	pr_info("Read multiple regs: echo 0x0800 -c 10 > /proc/pmu0\n");
+	pr_info("Write multiple regs: echo 0x0800 0xFF 0xFF > /proc/pmu0\n");
+	pr_info("Write single reg: echo 0x0800 0xFF > /proc/pmu0\n");
+	pr_info("Max number of regs in single write is :%d\n",
 		MAX_REGS_READ_WRITE);
-	printk(KERN_INFO "Register address is encoded as follows:\n");
-	printk(KERN_INFO "0xSSRR, SS: i2c slave addr, RR: register addr\n");
+	pr_info("Register address is encoded as follows:\n");
+	pr_info("0xSSRR, SS: i2c slave addr, RR: register addr\n");
 }
 
 static int max8986_dbg_parse_args(char *cmd, struct pmu_debug *dbg)
@@ -765,7 +759,7 @@ static ssize_t max8986_write(struct file *file, const char __user *buffer,
 		}
 
 		for (i = 0; i < dbg.len; i++, dbg.addr++)
-			printk(KERN_INFO "[%x] = 0x%02x\n", dbg.addr,
+			pr_info("[%x] = 0x%02x\n", dbg.addr,
 				dbg.val[i]);
 	} else {
 		ret = max8986->write_mul_dev(max8986, dbg.addr, dbg.len,

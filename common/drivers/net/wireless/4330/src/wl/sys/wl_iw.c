@@ -9098,16 +9098,13 @@ wl_iw_attach(struct net_device *dev, void * dhdp)
 	return 0;
 }
 
-void
-wl_iw_detach(void)
+void wl_iw_detach(void)
 {
-
-	WL_ERROR(("\n%s Enter\n", __FUNCTION__));
-
-#if defined(WL_IW_USE_ISCAN)
-	iscan_buf_t  *buf;
 	iscan_info_t *iscan = g_iscan;
+	iscan_buf_t  *buf;
 
+
+#ifdef WL_IW_USE_ISCAN
 	if (!iscan)
 		return;
 	if (iscan->sysioc_pid >= 0) {
@@ -9126,11 +9123,13 @@ wl_iw_detach(void)
 	DHD_OS_MUTEX_UNLOCK(&wl_cache_lock);
 #endif /* WL_IW_USE_ISCAN */
 
+	WL_ERROR(("\n%s Enter\n", __FUNCTION__));
+
 	if (g_scan)
 		kfree(g_scan);
 
 	g_scan = NULL;
-#if !defined(CSCAN)
+#ifndef CSCAN
 	wl_iw_release_ss_cache_ctrl();
 #endif /* !defined(CSCAN) */
 #ifdef COEX_DHCP

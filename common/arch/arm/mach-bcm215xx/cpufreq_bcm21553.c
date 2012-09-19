@@ -30,9 +30,8 @@
 
 /* BCM21553 governor private data */
 struct bcm_cpufreq_gov_info {
-	struct cpufreq_policy *cur_policy;
+	struct cpufreq_policy *policy;
 	struct cpufreq_client_desc *sysfs_client;
-	struct bcm21553_cpufreq_gov_plat *plat;
 };
 static struct bcm_cpufreq_gov_info bcm_cpufreq_gov_info;
 
@@ -171,20 +170,20 @@ static struct mutex dvfs_lock;
 
 static inline void cpufreq_bcm_turbo_off(void)
 {
-	struct bcm21553_cpufreq_gov_plat *plat = bcm_cpufreq_gov_info.plat;
+	struct cpufreq_policy *policy = bcm_cpufreq_gov_info.policy;
 
-	if (bcm_cpufreq_gov_info.cur_policy)
-		cpufreq_driver_target(bcm_cpufreq_gov_info.cur_policy,
-				      plat->freq_ulower, CPUFREQ_RELATION_H);
+	if (policy)
+		cpufreq_driver_target(policy, policy->min,
+				      CPUFREQ_RELATION_L);
 }
 
 static inline void cpufreq_bcm_turbo_on(void)
 {
-	struct bcm21553_cpufreq_gov_plat *plat = bcm_cpufreq_gov_info.plat;
+	struct cpufreq_policy *policy = bcm_cpufreq_gov_info.policy;
 
-	if (bcm_cpufreq_gov_info.cur_policy)
-		cpufreq_driver_target(bcm_cpufreq_gov_info.cur_policy,
-				      plat->freq_osuper, CPUFREQ_RELATION_H);
+	if (policy)
+		cpufreq_driver_target(policy, policy->max,
+				      CPUFREQ_RELATION_H);
 }
 
 static void cpufreq_bcm_list_states(void)
@@ -226,7 +225,7 @@ EXPORT_SYMBOL(_cpufreq_bcm_client_get);
 void cpufreq_bcm_client_put(struct cpufreq_client_desc *desc)
 {
 	if (desc) {
-		BUG_ON(desc->cnt > 0);	
+		BUG_ON(desc->cnt > 0);
 #ifdef CPUFREQ_ENABLE_MODULE_REF_CNTS
 		module_put(desc->owner);
 #endif
@@ -255,8 +254,8 @@ void cpufreq_bcm_dvfs_enable(struct cpufreq_client_desc *desc)
 		dvfs_disable--;
 		if (dvfs_disable == 0) {
 			if (IS_FLOW_DBG_ENABLED)
-			pr_info("%s: switching to normal mode: %s\n",
-				 __func__, desc->name);
+				pr_info("%s: switching to normal mode: %s\n",
+					 __func__, desc->name);
 			cpufreq_bcm_turbo_off();
 		}
 	} else {
@@ -358,7 +357,6 @@ static struct attribute_group bcm_cpufreq_attr_group = {
 static int cpufreq_governor_bcm(struct cpufreq_policy *policy,
 	unsigned int event)
 {
-	struct bcm21553_cpufreq_gov_plat *plat = bcm_cpufreq_gov_info.plat;
 	int ret = 0;
 
 	switch (event) {
@@ -371,17 +369,19 @@ static int cpufreq_governor_bcm(struct cpufreq_policy *policy,
 			break;
 		}
 
-		bcm_cpufreq_gov_info.cur_policy = policy;
+		bcm_cpufreq_gov_info.policy = policy;
+		pr_info("%s: min freq: %d; max freq: %d\n", __func__,
+			policy->min, policy->max);
 
 		/* This governor may be started after bootup at runtime. In
 		 * such a scenario, evaluate the status of current client
 		 * requests and set the core voltage appropriately.
 		 */
 		if (dvfs_disable == 0)
-			__cpufreq_driver_target(policy, plat->freq_ulower,
-						CPUFREQ_RELATION_H);
+			__cpufreq_driver_target(policy, policy->min,
+						CPUFREQ_RELATION_L);
 		else
-			__cpufreq_driver_target(policy, plat->freq_osuper,
+			__cpufreq_driver_target(policy, policy->max,
 						CPUFREQ_RELATION_H);
 		break;
 
@@ -393,7 +393,7 @@ static int cpufreq_governor_bcm(struct cpufreq_policy *policy,
 		dprintk("%s: CPUFREQ_GOV_STOP\n", __func__);
 		sysfs_remove_group(cpufreq_global_kobject,
 			&bcm_cpufreq_attr_group);
-		bcm_cpufreq_gov_info.cur_policy = NULL;
+		bcm_cpufreq_gov_info.policy = NULL;
 		break;
 
 	default:
@@ -418,10 +418,7 @@ struct cpufreq_governor cpufreq_gov_bcm = {
 
 static int cpufreq_gov_probe(struct platform_device *pdev)
 {
-	struct bcm21553_cpufreq_gov_plat *plat = pdev->dev.platform_data;
 	pr_info("%s\n", __func__);
-
-	bcm_cpufreq_gov_info.plat = plat;
 
 	dvfs_disable = 0;
 	mutex_init(&dvfs_lock);

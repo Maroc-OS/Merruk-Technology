@@ -167,9 +167,9 @@ static void l2x0_flush_all(void)
 	asm("mcr p15, 0, %0, c7, c10, 4"::"r"(0));
 	for (i = 0; i < ways; ++i) {
 		l2x0_flush_way(1 << i);
-	asm("mcr p15, 0, %0, c7, c10, 4"::"r"(0));
-	cache_sync();
-	cache_l2_evct();
+		asm("mcr p15, 0, %0, c7, c10, 4"::"r"(0));
+		cache_sync();
+		cache_l2_evct();
 	}
 #else
 	writel_relaxed(l2x0_way_mask, l2x0_base + L2X0_CLEAN_INV_WAY);
@@ -193,9 +193,9 @@ static void l2x0_clean_all(void)
 	asm("mcr p15, 0, %0, c7, c10, 4"::"r"(0));
 	for (i = 0; i < ways; ++i) {
 		l2x0_clean_way(1 << i);
-	asm("mcr p15, 0, %0, c7, c10, 4"::"r"(0));
-	cache_sync();
-	cache_l2_evct();
+		asm("mcr p15, 0, %0, c7, c10, 4"::"r"(0));
+		cache_sync();
+		cache_l2_evct();
 	}
 #else
 	writel_relaxed(l2x0_way_mask, l2x0_base + L2X0_CLEAN_WAY);
@@ -277,7 +277,7 @@ static void l2x0_inv_range(unsigned long start, unsigned long end)
 	cache_sync();
 #ifdef CONFIG_BCM21553_L2_EVCT
 	if (flush_required)
-	cache_l2_evct();
+		cache_l2_evct();
 #endif
 	spin_unlock_irqrestore(&l2x0_lock, flags);
 }

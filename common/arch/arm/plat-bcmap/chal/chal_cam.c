@@ -34,7 +34,6 @@
 #include <plat/rdb/brcm_rdb_util.h>
 
 #include <linux/time.h>
-
 //===========================================================================
 // local macro declarations
 //
@@ -90,7 +89,7 @@ u32 chal_rbc_disp(CHAL_HANDLE handle)
 	chal_cam_t *pCamDevice = (chal_cam_t *)handle;
 	u32 rbcx = 0;
 	rbcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RBC0 );
-	//printk("RBC0 0x%x\n",rbcx);
+	//pr_debug("RBC0 0x%x\n",rbcx);
 	return rbcx;
 }
 EXPORT_SYMBOL(chal_rbc_disp);
@@ -129,7 +128,7 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
         rs = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RS );
     // CSI2 Receiver status
         rdls = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDLS );
-        printk(KERN_INFO "chal_cam_status(): CSI2RC=0x%x CSI2RS=0x%x CSI2RDLS=0x%x \r\n", rc, rs, rdls);
+        pr_debug( "chal_cam_status(): CSI2RC=0x%x CSI2RS=0x%x CSI2RDLS=0x%x \r\n", rc, rs, rdls);
 
     // CSI2 Receiver control
         rgsp = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RGSP );
@@ -139,7 +138,7 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
         lpds = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2LPDS );
     // CSI2 Channel 0 control
         pcp = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2PCP );
-        printk(KERN_INFO "chal_cam_status(): CSI2RGSPC=0x%x CSI2TREN=0x%x CSI2LPDS=0x%x CSI2PCP=0x%x \r\n", rgsp, tren, lpds, pcp);
+        pr_debug( "chal_cam_status(): CSI2RGSPC=0x%x CSI2TREN=0x%x CSI2LPDS=0x%x CSI2PCP=0x%x \r\n", rgsp, tren, lpds, pcp);
 
     // CSI2 Receiver Sync Timeout
         thssto = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2THSSTO );
@@ -149,34 +148,34 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
         thsckto = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2THSCKTO );
     // CSI2 Receiver Analog Reset
         srst = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2SRST );
-        printk(KERN_INFO "chal_cam_status(): CSI2THSSTO=0x%x CSI2THSSET=0x%x CSI2THSCKTO=0x%x CSI2SRST=0x%x \r\n", thssto, thsset, thsckto, srst);
+        pr_debug( "chal_cam_status(): CSI2THSSTO=0x%x CSI2THSSET=0x%x CSI2THSCKTO=0x%x CSI2SRST=0x%x \r\n", thssto, thsset, thsckto, srst);
     
         if (param->chan & CHAL_CAM_CHAN_0)
         {
        // CSI2 Channel 0 control
             rcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RC0 );
             rsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RS0 );
-            printk(KERN_INFO "chal_cam_status(): CSI2RC0=0x%x CSI2RS0=0x%x \r\n", rcx, rsx);
+            pr_debug( "chal_cam_status(): CSI2RC0=0x%x CSI2RS0=0x%x \r\n", rcx, rsx);
     
             rsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RSA0 );
             reax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2REA0 );
             rwpx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RWP0 );
             rbcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RBC0 );
             rlsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RLS0 );
-            printk(KERN_INFO "chal_cam_status(): CSI2RSA0=0x%x CSI2REA0=0x%x CSI2RWP0=0x%x CSI2RBC0=0x%x CSI2RLS0=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx);
+            pr_debug( "chal_cam_status(): CSI2RSA0=0x%x CSI2REA0=0x%x CSI2RWP0=0x%x CSI2RBC0=0x%x CSI2RLS0=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx);
     
             rdsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDSA0 );
             rdeax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDEA0 );
             rdsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDS0 );
             dtovx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2DTOV0 );
-            printk(KERN_INFO "chal_cam_status(): CSI2RDSA0=0x%x CSI2RDEA0=0x%x CSI2RDS0=0x%x CSI2DTOV0=0x%x \r\n", rdsax, rdeax, rdsx, dtovx);
+            pr_debug( "chal_cam_status(): CSI2RDSA0=0x%x CSI2RDEA0=0x%x CSI2RDS0=0x%x CSI2DTOV0=0x%x \r\n", rdsax, rdeax, rdsx, dtovx);
         }
         if (param->chan & CHAL_CAM_CHAN_1)
         {
         // CSI2 Channel control
             rcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RC1 );
             rsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RS1 );
-            printk(KERN_INFO "chal_cam_status(): CSI2RC1=0x%x CSI2RS1=0x%x \r\n", rcx, rsx);
+            pr_debug( "chal_cam_status(): CSI2RC1=0x%x CSI2RS1=0x%x \r\n", rcx, rsx);
     
             rsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RSA1 );
             reax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2REA1 );
@@ -184,7 +183,7 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
             rbcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RBC1 );
             rlsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RLS1 );
             dtovx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2DTOV1 );
-            printk(KERN_INFO "chal_cam_status(): CSI2RSA1=0x%x CSI2REA1=0x%x CSI2RWP1=0x%x CSI2RBC1=0x%x CSI2RLS1=0x%x CSI2DTOV1=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx, dtovx);
+            pr_debug( "chal_cam_status(): CSI2RSA1=0x%x CSI2REA1=0x%x CSI2RWP1=0x%x CSI2RBC1=0x%x CSI2RLS1=0x%x CSI2DTOV1=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx, dtovx);
     
         // CSI2 Channel 0 status
             rdsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDSA1 );
@@ -192,7 +191,7 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
             rdeax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDEA1 );
         // CSI2 Channel 0 status
             rdsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CSI2RDS1 );
-            printk(KERN_INFO "chal_cam_status(): CSI2RDSA1=0x%x CSI2RDEA1=0x%x CSI2RDS1=0x%x \r\n", rdsax, rdeax, rdsx);
+            pr_debug( "chal_cam_status(): CSI2RDSA1=0x%x CSI2RDEA1=0x%x CSI2RDS1=0x%x \r\n", rdsax, rdeax, rdsx);
         }
 
     }
@@ -204,7 +203,7 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
         rs = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RS );
     // CCP2 Receiver Panic
         rp = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RP );
-        printk(KERN_INFO "CCP2RC=0x%x CCP2RS=0x%x CCP2RP=0x%x  \r\n", rc, rs, rp);
+        pr_debug( "CCP2RC=0x%x CCP2RS=0x%x CCP2RP=0x%x  \r\n", rc, rs, rp);
 
         if (param->chan & CHAL_CAM_CHAN_0)
         {
@@ -214,19 +213,19 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
             rsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RS0 );
         // CCP2 Pipeline Control status
             rpcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RPC0 );
-            printk(KERN_INFO "CCP Rx0: CCP2RC0=0x%x CCP2RS0=0x%x CCP2RPC0=0x%x \r\n", rcx, rsx, rpcx);
+            pr_debug( "CCP Rx0: CCP2RC0=0x%x CCP2RS0=0x%x CCP2RPC0=0x%x \r\n", rcx, rsx, rpcx);
 
             rsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RSA0 );
             reax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2REA0 );
             rwpx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RWP0 );
             rbcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RBC0 );
             rlsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RLS0 );
-            printk(KERN_INFO "CCP Rx0: CCP2RSA0=0x%x CCP2REA0=0x%x CCP2RWP0=0x%x CCP2RBC0=0x%x CCP2RLS0=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx);
+            pr_debug( "CCP Rx0: CCP2RSA0=0x%x CCP2REA0=0x%x CCP2RWP0=0x%x CCP2RBC0=0x%x CCP2RLS0=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx);
     
             rdsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDSA0 );
             rdeax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDEA0 );
             rdsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDS0 );
-            printk(KERN_INFO "CCP Rx0: CCP2RDSA0=0x%x CCP2RDEA0=0x%x CCP2RDS0=0x%x \r\n", rdsax, rdeax, rdsx);
+            pr_debug( "CCP Rx0: CCP2RDSA0=0x%x CCP2RDEA0=0x%x CCP2RDS0=0x%x \r\n", rdsax, rdeax, rdsx);
         }
         if (param->chan & CHAL_CAM_CHAN_1)
         {
@@ -236,19 +235,19 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
             rsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RS1 );
         // CCP2 Pipeline Control status
             rpcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RPC1 );
-            printk(KERN_INFO "CCP Rx1: CCP2RC1=0x%x CCP2RS1=0x%x CCP2RPC1=0x%x \r\n", rcx, rsx, rpcx);
+            pr_debug( "CCP Rx1: CCP2RC1=0x%x CCP2RS1=0x%x CCP2RPC1=0x%x \r\n", rcx, rsx, rpcx);
 
             rsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RSA1 );
             reax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2REA1 );
             rwpx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RWP1 );
             rbcx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RBC1 );
             rlsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RLS1 );
-            printk(KERN_INFO "CCP Rx1: CCP2RSA1=0x%x CCP2REA1=0x%x CCP2RWP1=0x%x CCP2RBC1=0x%x CCP2RLS1=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx);
+            pr_debug( "CCP Rx1: CCP2RSA1=0x%x CCP2REA1=0x%x CCP2RWP1=0x%x CCP2RBC1=0x%x CCP2RLS1=0x%x \r\n", rsax, reax, rwpx, rbcx, rlsx);
     
             rdsax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDSA1 );
             rdeax = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDEA1 );
             rdsx = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDS1 );
-            printk(KERN_INFO "CCP Rx1: CCP2RDSA1=0x%x CCP2RDEA1=0x%x CCP2RDS1=0x%x \r\n", rdsax, rdeax, rdsx);
+            pr_debug( "CCP Rx1: CCP2RDSA1=0x%x CCP2RDEA1=0x%x CCP2RDS1=0x%x \r\n", rdsax, rdeax, rdsx);
         }
         if (param->intf == CHAL_CAM_INTF_CPI)  
         {
@@ -260,13 +259,13 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
             cpif = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CPIF );
         // CPI Windowing status
             cpiw = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CPIW );
-            printk(KERN_INFO "\nCPI Status: CPIS=0x%x CPIR=0x%x CPIF=0x%x CPIW=0x%x \r\n\n", cpis, cpir, cpif, cpiw);
+            pr_debug( "\nCPI Status: CPIS=0x%x CPIR=0x%x CPIF=0x%x CPIW=0x%x \r\n\n", cpis, cpir, cpif, cpiw);
         // CPI Windowing status
             cpiwvc = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CPIWVC );
             cpiwvs = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CPIWVS );
             cpiwhc = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CPIWHC );
             cpiwhs = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CPIWHS );
-            printk(KERN_INFO "CPI Window: CPIWVC=0x%x CPIWVS=0x%x CPIWHC=0x%x CPIWHS=0x%x \r\n", cpiwvc, cpiwvs, cpiwhc, cpiwhs);
+            pr_debug( "CPI Window: CPIWVC=0x%x CPIWVS=0x%x CPIWHC=0x%x CPIWHS=0x%x \r\n", cpiwvc, cpiwvs, cpiwhc, cpiwhs);
         }
 
     // CCP2 Debug 1 status
@@ -277,7 +276,7 @@ CHAL_CAM_STATUS_CODES chal_cam_register_display(CHAL_HANDLE handle, CHAL_CAM_PAR
         rdr3 = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDR3 );
     // CCP2 Debug 4 status
         rdr4 = BRCM_READ_REG ( pCamDevice->baseAddr, CAMINTF_CCP2RDR4 );
-        printk(KERN_INFO "CAM_CCP2RDR1=0x%x CAM_CCP2RDR2=0x%x CAM_CCP2RDR3=0x%x CAM_CCP2RDR4=0x%x \r\n", rdr1, rdr2, rdr3, rdr4);
+        pr_debug( "CAM_CCP2RDR1=0x%x CAM_CCP2RDR2=0x%x CAM_CCP2RDR3=0x%x CAM_CCP2RDR4=0x%x \r\n", rdr1, rdr2, rdr3, rdr4);
         
     }
     return chal_status;
@@ -325,7 +324,7 @@ CHAL_HANDLE chal_cam_init(cUInt32 baseAddr)
 {
 	chal_cam_t *pCamDevice=NULL;
 
-    printk(KERN_INFO "chal_cam_init\n");
+    pr_debug( "chal_cam_init\n");
 
 // Check for Null handle
 #if 0
@@ -352,7 +351,7 @@ CHAL_HANDLE chal_cam_init(cUInt32 baseAddr)
     }         
     
     DBG_OUT( chal_dprintf(CDBG_INFO, "chal_cam_init: Register base=0x%x \n", pCamDevice->baseAddr) );
-	printk(KERN_INFO"Returning correct CHAL device\n");
+	pr_debug("Returning correct CHAL device\n");
 	return (CHAL_HANDLE)pCamDevice;
 }
 
@@ -401,16 +400,16 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
     CHAL_CAM_CPI_CNTRL_CFG_st_t*    p_cpi_cfg;
 
 // Set CPI Configuration Pointer
-    printk(KERN_INFO"CHAL handle 0x%x\n",pCamDevice);
+    pr_debug("CHAL handle 0x%x\n",pCamDevice);
     p_cpi_cfg = (CHAL_CAM_CPI_CNTRL_CFG_st_t*)cfg->p_cpi_cfg_st; 
 
     if (cfg->intf == CHAL_CAM_INTF_CSI)
     {
-        printk(KERN_INFO "chal_cam_cfg_intf: CHAL_CAM_INTF_CSI \n");	
+        pr_debug( "chal_cam_cfg_intf: CHAL_CAM_INTF_CSI \n");	
     // Reset Cam 
-    printk(KERN_INFO"CHAL Cam base addr 0x%x offset 0x%x\n",pCamDevice->baseAddr, CAMINTF_CSI2RC0_OFFSET);
+    pr_debug("CHAL Cam base addr 0x%x offset 0x%x\n",pCamDevice->baseAddr, CAMINTF_CSI2RC0_OFFSET);
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC0,0x00000000);
-    printk(KERN_INFO"CHAL Cam base addr 0x%x offset 0x%x\n",pCamDevice->baseAddr, CAMINTF_CSI2RC0_OFFSET);
+    pr_debug("CHAL Cam base addr 0x%x offset 0x%x\n",pCamDevice->baseAddr, CAMINTF_CSI2RC0_OFFSET);
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RPC0,0x00000000);
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2DTOV0,0x00000000);
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC1,0x00000000);
@@ -451,7 +450,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
     }
     else
     {
-        printk(KERN_INFO "chal_cam_cfg_intf: CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI \n");	
+        pr_debug( "chal_cam_cfg_intf: CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI \n");	
     // Reset Cam 
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC0,0x00000000);
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RPC0,0x00000000);
@@ -464,8 +463,8 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC,reg);
 
 		//Add a little bit delay for protection
-		udelay(1000);
-		BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
+		/*udelay(1000);
+		BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);*/
     // Init Rx
         reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC);
         // Disable Analog Power
@@ -482,7 +481,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
         // CCP Mode
             if (cfg->intf == CHAL_CAM_INTF_CCP)
             {
-                printk(KERN_INFO "chal_cam_cfg_intf:  CCP Mode\n");	
+                pr_debug( "chal_cam_cfg_intf:  CCP Mode\n");	
             // Clk Mode
                 if (cfg->clk_mode == CHAL_CAM_DATA_CLOCK)
                 {
@@ -495,7 +494,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
         // CPI Mode
             {
                 reg |= CAM_REG_FIELD_SET(CAMINTF_CCP2RC,INMP,1);
-                printk(KERN_INFO "chal_cam_cfg_intf:  CPI Mode\n");	
+                pr_debug( "chal_cam_cfg_intf:  CPI Mode\n");	
             }
     // Update Cam Control Register
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC,reg);
@@ -694,13 +693,13 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_cntrl(CHAL_HANDLE handle, CHAL_CAM_CFG_CNTRL_
 
     if (cfg->intf == CHAL_CAM_INTF_CSI)
     {
-        printk(KERN_INFO "chal_cam_cfg_cntrl: CHAL_CAM_INTF_CSI \n");	
+        pr_debug( "chal_cam_cfg_cntrl: CHAL_CAM_INTF_CSI \n");	
     // Sync Timeout
         BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2THSSTO,THSSTO,cfg->packet_timeout);
     }
     else if (cfg->intf == CHAL_CAM_INTF_CCP)
     {
-        printk(KERN_INFO "chal_cam_cfg_cntrl: CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI \n" );	
+        pr_debug( "chal_cam_cfg_cntrl: CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI \n" );	
     // Panic Priority
         BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RP,RRP,cfg->panic_pr);
     // Normal Priority
@@ -735,19 +734,19 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_pipeline(CHAL_HANDLE handle, CHAL_CAM_PIPELIN
     cUInt32 reg;
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     
-    printk(KERN_INFO "chal_cam_cfg_pipeline\n");	
+    pr_debug( "chal_cam_cfg_pipeline\n");	
 
     if (cfg->intf == CHAL_CAM_INTF_CSI)
     {
     // Set CSI2RPCx
         if (cfg->chan == CHAL_CAM_CHAN_0)
         {
-            printk(KERN_INFO "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0\n");
+            pr_debug( "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0\n");
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RPC0);
         }
         else
         {
-            printk(KERN_INFO "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1\n" );
+            pr_debug( "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1\n" );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RPC1);
         }
         // Encode Block Length
@@ -845,12 +844,12 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_pipeline(CHAL_HANDLE handle, CHAL_CAM_PIPELIN
     // Set CCP2RPCx
         if (cfg->chan == CHAL_CAM_CHAN_0)
         {
-            printk(KERN_INFO "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0\n");
+            pr_debug( "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0\n");
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RPC0);
         }
         else
         {
-            printk(KERN_INFO "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_1\n");
+            pr_debug( "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_1\n");
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RPC1);
         }
         // Encode Block Length
@@ -945,9 +944,9 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_pipeline(CHAL_HANDLE handle, CHAL_CAM_PIPELIN
     }
     else if (cfg->intf == CHAL_CAM_INTF_CPI)
     {
-        printk(KERN_INFO "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CPI\n");	
+        pr_debug( "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CPI\n");	
     // Set CCP2RPC0
-        printk(KERN_INFO "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0\n");
+        pr_debug( "chal_cam_cfg_pipeline:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0\n");
         reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RPC0);
         // Encode Block Length = 0
             reg &= ~(CAMINTF_CCP2RPC0_EBL_MASK);
@@ -967,6 +966,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_pipeline(CHAL_HANDLE handle, CHAL_CAM_PIPELIN
         chal_dprintf( CDBG_ERRO, "ERROR:  chal_cam_cfg_pipeline:  Interface Undefined\n");	
         chal_status = CHAL_OP_INVALID;
     }
+	//pr_debug(" ******* Value of RPC0 is 0x%x.... ********* \n\n\n", BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RPC0));
     return chal_status;
 }        
 
@@ -995,7 +995,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_buffer(CHAL_HANDLE handle, CHAL_CAM_BUFFER_CF
         // Image Update
             if (cfg->buffers.image0Buff != NULL)
             {
-                printk(KERN_INFO "chal_cam_cfg_buffer:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0: CHAL_CAM_IMAGE\n");
+                pr_debug( "chal_cam_cfg_buffer:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0: CHAL_CAM_IMAGE\n");
             // Image Start Addr
                 BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RSA0,RSA,cfg->buffers.image0Buff->start_addr);
             // Image End Addr
@@ -1021,7 +1021,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_buffer(CHAL_HANDLE handle, CHAL_CAM_BUFFER_CF
         // Image Update
             if (cfg->buffers.image0Buff != NULL)
             {
-                printk(KERN_INFO "chal_cam_cfg_buffer:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1: CHAL_CAM_IMAGE\n");
+                pr_debug( "chal_cam_cfg_buffer:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1: CHAL_CAM_IMAGE\n");
             // Image Start Addr
                 BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RSA1,RSA,cfg->buffers.image0Buff->start_addr);
             // Image End Addr
@@ -1096,7 +1096,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_buffer(CHAL_HANDLE handle, CHAL_CAM_BUFFER_CF
     }
     else
     {
-        printk( "ERROR:  chal_cam_cfg_buffer:  Interface Undefined\n");	
+        pr_debug( "ERROR:  chal_cam_cfg_buffer:  Interface Undefined\n");	
         chal_status |= CHAL_OP_INVALID;
     }
 // No Buffer Wrap
@@ -1104,62 +1104,59 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_buffer(CHAL_HANDLE handle, CHAL_CAM_BUFFER_CF
     {
         if (cfg->buffers.image0Buff->buf_wrap_enable)
         {
-            printk("ERROR:  chal_cam_cfg_buffer:  buf_wrap_enable Undefined\n");	
+            pr_debug("ERROR:  chal_cam_cfg_buffer:  buf_wrap_enable Undefined\n");	
             chal_status |= CHAL_OP_INVALID;
         }
     }
-    else {
-        return CHAL_OP_INVALID_PARAMETER;
-    }
     
 #if (CHIP_REVISION >= 20)
-    if (cfg->buffers.image1Buff != NULL )
+    if ((cfg->buffers.image1Buff != NULL ) && (cfg->buffers.image0Buff != NULL))
     {
         UInt32 offsetAddr = cfg->buffers.image1Buff->start_addr - cfg->buffers.image0Buff->start_addr;
-        printk(KERN_INFO "chal_cam_cfg_buffer:  PingPong buffer configuration offsetaddr 0x%x chal status %d\n",offsetAddr,chal_status);
+        pr_debug( "chal_cam_cfg_buffer:  PingPong buffer configuration offsetaddr 0x%x chal status %d\n",offsetAddr,chal_status);
         
         if (cfg->buffers.image1Buff->start_addr < cfg->buffers.image0Buff->start_addr)
         {
-            printk("ERROR:  chal_cam_cfg_buffer: image1.start_addr(0x%x) is less than image0.start_addr(0x%x)\n", cfg->buffers.image1Buff->start_addr, cfg->buffers.image0Buff->start_addr);
+            pr_debug("ERROR:  chal_cam_cfg_buffer: image1.start_addr(0x%x) is less than image0.start_addr(0x%x)\n", cfg->buffers.image1Buff->start_addr, cfg->buffers.image0Buff->start_addr);
             chal_status |= CHAL_OP_INVALID_PARAMETER;            
         }
         
         if ( offsetAddr & 0x3FF )
         {
-            printk(KERN_INFO"ERROR:  chal_cam_cfg_buffer: offset(0x%x) is not 10 bit aligned \n", offsetAddr);
+            pr_debug("ERROR:  chal_cam_cfg_buffer: offset(0x%x) is not 10 bit aligned \n", offsetAddr);
             chal_status |= CHAL_OP_INVALID_PARAMETER;                        
         }
 
         offsetAddr >>= 10;
         if (cfg->intf == CHAL_CAM_INTF_CSI)
         {            
-            printk(KERN_INFO "chal_cam_cfg_buffer:  Configure CSI2 PingPong buffer offset(0x%x)\n", offsetAddr);
+            pr_debug( "chal_cam_cfg_buffer:  Configure CSI2 PingPong buffer offset(0x%x)\n", offsetAddr);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2PPMGMT,PP_OFFSET_ADDR,offsetAddr);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2PPMGMT,FORCE_HW_RDY,1);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2PPMGMT,CAPTURE_EN,0);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2PPMGMT,PINGPON_EN,1); 
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2PPMGMT,CAPTURE_EN,1);                           
             
-            //printk(KERN_INFO "chal_cam_cfg_buffer:  CAM_CSI2PPMGMT: 0x%0X\n", *(UInt32 *)0x08440400);
+            //pr_debug( "chal_cam_cfg_buffer:  CAM_CSI2PPMGMT: 0x%0X\n", *(UInt32 *)0x08440400);
             
         }
         else
         {
             // CPI and CCP2
-            printk(KERN_INFO "chal_cam_cfg_buffer:  Configure CCP2 PingPong buffer offset(0x%x)\n", offsetAddr);
+            pr_debug( "chal_cam_cfg_buffer:  Configure CCP2 PingPong buffer offset(0x%x)\n", offsetAddr);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,PP_OFFSET_ADDR,offsetAddr);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,FORCE_HW_RDY,1);             
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,CAPTURE_EN,0);
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,PINGPONG_EN,1); 
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,CAPTURE_EN,1);                           
             
-           // printk(KERN_INFO "chal_cam_cfg_buffer:  CAM_CCP2PPMGMT: 0x%0X\n", *(UInt32 *)0x08440B00 );
+           // pr_debug( "chal_cam_cfg_buffer:  CAM_CCP2PPMGMT: 0x%0X\n", *(UInt32 *)0x08440B00 );
         
         }
     }
     else
     {
-	printk("Disabling HW ping-pong\n");
+	pr_debug("Disabling HW ping-pong\n");
          // Disable pingpong buffer for single buffer usage.
          BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,CAPTURE_EN,0);
          BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2PPMGMT,PINGPONG_EN,0); 
@@ -1209,7 +1206,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     UInt32 bytes;
     
-    printk(KERN_INFO "chal_cam_get_buffer_cfg\n");	
+    pr_debug( "chal_cam_get_buffer_cfg\n");	
 
 // CSI Interface
     if (cfg->intf == CHAL_CAM_INTF_CSI)
@@ -1220,7 +1217,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
             if (cfg->buffers.image0Buff != NULL)
             {
             // Image case
-                    printk(KERN_INFO "chal_cam_get_cfg_data:  Chan 0: CHAL_CAM_IMAGE\n" );
+                    pr_debug( "chal_cam_get_cfg_data:  Chan 0: CHAL_CAM_IMAGE\n" );
                 // Image Start Addr
                     cfg->buffers.image0Buff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RSA0);
                 // Image End Addr
@@ -1248,7 +1245,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
                if (cfg->buffers.dataBuff != NULL)   
                {
             // Data case
-                    printk(KERN_INFO "chal_cam_get_cfg_data: Chan 0: CHAL_CAM_DATA\n" );
+                    pr_debug( "chal_cam_get_cfg_data: Chan 0: CHAL_CAM_DATA\n" );
                 // Data Start Addr
                     cfg->buffers.dataBuff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RDSA0);
                 // Data End Addr
@@ -1275,7 +1272,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
         {
                if (cfg->buffers.image0Buff != NULL)  
             {
-                    printk(KERN_INFO "chal_cam_get_cfg_data: Chan 1: CHAL_CAM_IMAGE\n");
+                    pr_debug( "chal_cam_get_cfg_data: Chan 1: CHAL_CAM_IMAGE\n");
                 // Image Start Addr
                     cfg->buffers.image0Buff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RSA1);
                 // Image End Addr
@@ -1302,7 +1299,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
                
                if (cfg->buffers.dataBuff != NULL)  
                {
-                    printk(KERN_INFO "chal_cam_get_cfg_data: Chan 1: CHAL_CAM_DATA\n");
+                    pr_debug( "chal_cam_get_cfg_data: Chan 1: CHAL_CAM_DATA\n");
                 // Data Start Addr
                     cfg->buffers.dataBuff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RDSA1);
                 // Data End Addr
@@ -1332,7 +1329,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
         {
                 if (cfg->buffers.image0Buff != NULL)  
             {
-                    printk(KERN_INFO "chal_cam_get_cfg_data:  Chan 0: CHAL_CAM_IMAGE\n");
+                    pr_debug( "chal_cam_get_cfg_data:  Chan 0: CHAL_CAM_IMAGE\n");
                 // Image Start Addr
                     cfg->buffers.image0Buff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RSA0);
                 // Image End Addr
@@ -1359,7 +1356,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
                 
            if (cfg->buffers.image0Buff != NULL)  
            {
-                    printk(KERN_INFO "chal_cam_get_cfg_data: Chan 0: CHAL_CAM_DATA\n" );
+                    pr_debug( "chal_cam_get_cfg_data: Chan 0: CHAL_CAM_DATA\n" );
                 // Data Start Addr
                     cfg->buffers.dataBuff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RDSA0);
                 // Data End Addr
@@ -1385,7 +1382,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
         {
                 if (cfg->buffers.image0Buff != NULL)  
             {
-                    printk(KERN_INFO "chal_cam_get_cfg_data:  Chan 1: CHAL_CAM_IMAGE\n");
+                    pr_debug( "chal_cam_get_cfg_data:  Chan 1: CHAL_CAM_IMAGE\n");
                 // Image Start Addr
                     cfg->buffers.image0Buff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RSA1);
                 // Image End Addr
@@ -1413,7 +1410,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_buffer_cfg(CHAL_HANDLE handle, CHAL_CAM_BUFFE
                 
                 if (cfg->buffers.dataBuff != NULL)  
                 {
-                    printk(KERN_INFO "chal_cam_get_cfg_data: Chan 1: CHAL_CAM_DATA\n");
+                    pr_debug( "chal_cam_get_cfg_data: Chan 1: CHAL_CAM_DATA\n");
                 // Data Start Addr
                     cfg->buffers.dataBuff->start_addr = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RDSA1);
                 // Data End Addr
@@ -1460,7 +1457,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_frame(CHAL_HANDLE handle, CHAL_CAM_FRAME_CFG_
     cUInt32 reg;
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     
-    printk(KERN_INFO "chal_cam_cfg_frame\n");	
+    pr_debug( "chal_cam_cfg_frame\n");	
 
 // CSI Interface
     if (cfg->intf == CHAL_CAM_INTF_CSI)
@@ -1469,12 +1466,12 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_frame(CHAL_HANDLE handle, CHAL_CAM_FRAME_CFG_
         if (cfg->chan == CHAL_CAM_CHAN_0)
         {
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC0);
-            printk(KERN_INFO "chal_cam_cfg_frame:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0 reg=0x%x\n",reg );
+            pr_debug( "chal_cam_cfg_frame:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0 reg=0x%x\n",reg );
         }
         else
         {
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC1);
-            printk(KERN_INFO "chal_cam_cfg_frame:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1 reg=0x%x\n",reg );
+            pr_debug( "chal_cam_cfg_frame:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1 reg=0x%x\n",reg );
         }
             reg &= ~(CAMINTF_CSI2RC0_FSIE_MASK | CAMINTF_CSI2RC0_FEIE_MASK | CAMINTF_CSI2RC0_LSIE_MASK | CAMINTF_CSI2RC0_LEIE_MASK | CAMINTF_CSI2RC0_LCIE_MASK | CAMINTF_CSI2RC0_GSPIE_MASK);
             // Interrupt Setting
@@ -1525,12 +1522,12 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_frame(CHAL_HANDLE handle, CHAL_CAM_FRAME_CFG_
     // Set CCP2RCx
         if ( (cfg->chan == CHAL_CAM_CHAN_0) || (cfg->intf == CHAL_CAM_INTF_CPI) )
         {
-            printk(KERN_INFO "chal_cam_cfg_frame:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0: intr=0x%x line_count=%d \n",cfg->interrupts,cfg->line_count );
+            pr_debug( "chal_cam_cfg_frame:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0: intr=0x%x line_count=%d \n",cfg->interrupts,cfg->line_count );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC0);
         }
         else
         {
-            printk(KERN_INFO "chal_cam_cfg_frame:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_1\n" );
+            pr_debug( "chal_cam_cfg_frame:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_1\n" );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC1);
         }
             // Interrupt Setting
@@ -1617,12 +1614,12 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_image_id(CHAL_HANDLE handle, CHAL_CAM_IMAGE_I
     // Get Channel Data Type Override Register
         if (cfg->chan == CHAL_CAM_CHAN_0)
         {
-            printk(KERN_INFO "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0\n" );
+            pr_debug( "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_0\n" );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2DTOV0);
         }
         else
         {
-            printk(KERN_INFO "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1\n" );
+            pr_debug( "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CSI: CHAL_CAM_CHAN_1\n" );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2DTOV1);
         }
             reg &= ~(CAMINTF_CSI2DTOV0_IMEN_MASK | CAMINTF_CSI2DTOV0_IMDT_MASK);
@@ -1647,6 +1644,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_image_id(CHAL_HANDLE handle, CHAL_CAM_IMAGE_I
             //reg = (cfg->image_data_id_0 & CHAL_CAM_VIRTUAL_CHANNEL_MASK) >> CHAL_CAM_VIRTUAL_CHANNEL_SHIFT;
             //BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC1,VC,reg);
         }
+		//pr_debug(" ******* Value of DT0V0 is 0x%x.... ********* \n\n\n", BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2DTOV0));
     }
 // CCP Interface
     else 
@@ -1654,12 +1652,12 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_image_id(CHAL_HANDLE handle, CHAL_CAM_IMAGE_I
     // Set Logical Channel Number
         if (cfg->chan == CHAL_CAM_CHAN_0)
         {
-            printk(KERN_INFO "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0\n" );
+            pr_debug( "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_0\n" );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC0);
         }
         else
         {
-            printk(KERN_INFO "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_1\n" );
+            pr_debug( "chal_cam_cfg_image_id:  CHAL_CAM_INTF_CCP: CHAL_CAM_CHAN_1\n" );
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC1);
         }
     // Set the Logical Channel #
@@ -1696,7 +1694,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_window(CHAL_HANDLE handle, CHAL_CAM_WINDOW_CF
     cUInt32 reg;
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     
-    printk(KERN_INFO "chal_cam_cfg_window\n" );	
+    pr_debug( "chal_cam_cfg_window\n" );	
 
 // Windowing CPI Interface Only
     if (cfg->intf == CHAL_CAM_INTF_CPI)
@@ -1768,7 +1766,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_afe_cntrl(CHAL_HANDLE handle, CHAL_CAM_AFE_CF
     {
     // CSI Set Analog Power
         case CHAL_CAM_INTF_CSI:
-            printk(KERN_INFO "chal_cam_cfg_afe_cntrl:  CHAL_CAM_INTF_CSI = %d\n", cfg->bandgap_bias );	
+            pr_debug( "chal_cam_cfg_afe_cntrl:  CHAL_CAM_INTF_CSI = %d\n", cfg->bandgap_bias );	
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC);
             reg &= ~(CAMINTF_CSI2RC_PTATADJ_MASK | CAMINTF_CSI2RC_CTATADJ_MASK);
             // Analog Bandgap Bias Control
@@ -1782,7 +1780,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_afe_cntrl(CHAL_HANDLE handle, CHAL_CAM_AFE_CF
             break;
     // CCP Set Analog Power
         case CHAL_CAM_INTF_CCP:
-            printk(KERN_INFO "chal_cam_cfg_afe_cntrl:  CHAL_CAM_INTF_CCP = %d\n", cfg->bandgap_bias );	
+            pr_debug( "chal_cam_cfg_afe_cntrl:  CHAL_CAM_INTF_CCP = %d\n", cfg->bandgap_bias );	
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC);
             reg &= ~(CAMINTF_CCP2RC_PTATADJ_MASK | CAMINTF_CCP2RC_CTATADJ_MASK);
             // Analog Bandgap Bias Control
@@ -1796,7 +1794,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_afe_cntrl(CHAL_HANDLE handle, CHAL_CAM_AFE_CF
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC);
             reg |= (CAMINTF_CCP2RC_APD_MASK |  CAMINTF_CCP2RC_BPD_MASK);
             reg = BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC,reg);
-            printk(KERN_INFO "chal_cam_cfg_afe_cntrl:  CPI Interface\n" );	
+            pr_debug( "chal_cam_cfg_afe_cntrl:  CPI Interface\n" );	
             break;
     }
     return chal_status;
@@ -1825,21 +1823,21 @@ CHAL_CAM_STATUS_CODES chal_cam_set_analog_pwr(CHAL_HANDLE handle, CHAL_CAM_PARAM
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     cUInt32 reg;
     
-    printk(KERN_INFO "chal_cam_set_analog_pwr = %d\n", param->param );	
+    pr_debug( "chal_cam_set_analog_pwr = %d\n", param->param );	
 
 
     switch (param->intf)
     {
     // CSI Set Analog Power
         case CHAL_CAM_INTF_CSI:
-            printk(KERN_INFO "chal_cam_set_analog_pwr:  CHAL_CAM_INTF_CSI = %d\n", param->param );	
+            pr_debug( "chal_cam_set_analog_pwr:  CHAL_CAM_INTF_CSI = %d\n", param->param );	
         // if Power OFF, Check if channels enabled        
             if (param->param == FALSE)
             {
             // if Power OFF, Check if channels enabled        
                 if ( (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LENC) == 1) || (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LEN1) == 1) || (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LEN2) == 1))
                 {
-                    printk(KERN_INFO "chal_cam_set_analog_pwr: OFF: Channels Enabled\n" );	
+                    pr_debug( "chal_cam_set_analog_pwr: OFF: Channels Enabled\n" );	
                     chal_status |= CHAL_OP_WRONG_ORDER;
                 }
             // Reset Analog Receiver
@@ -1848,7 +1846,7 @@ CHAL_CAM_STATUS_CODES chal_cam_set_analog_pwr(CHAL_HANDLE handle, CHAL_CAM_PARAM
                 BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,APD,1);
                 if ( (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC0,CHEN)) || (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC1,CHEN)) )
                 {
-                    printk(KERN_INFO "chal_cam_set_analog_pwr: OFF: Channels Enabled\n");	
+                    pr_debug( "chal_cam_set_analog_pwr: OFF: Channels Enabled\n");	
                 }
             }
             else
@@ -1862,14 +1860,14 @@ CHAL_CAM_STATUS_CODES chal_cam_set_analog_pwr(CHAL_HANDLE handle, CHAL_CAM_PARAM
             break;
     // CCP Set Analog Power
         case CHAL_CAM_INTF_CCP:
-            printk(KERN_INFO "chal_cam_set_analog_pwr:  CHAL_CAM_INTF_CCP = %d\n", param->param );	
+            pr_debug( "chal_cam_set_analog_pwr:  CHAL_CAM_INTF_CCP = %d\n", param->param );	
         // if Power OFF, Check if channels enabled        
             if (param->param == FALSE)
             {
             // if Power OFF, Check if channels enabled        
                 if (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,RXEN) == 1)
                 {
-                    printk(KERN_INFO "chal_cam_set_analog_pwr: OFF: Channels Enabled\n");	
+                    pr_debug( "chal_cam_set_analog_pwr: OFF: Channels Enabled\n");	
                     chal_status |= CHAL_OP_WRONG_ORDER;
                 }
             // Reset Analog Receiver
@@ -1879,7 +1877,7 @@ CHAL_CAM_STATUS_CODES chal_cam_set_analog_pwr(CHAL_HANDLE handle, CHAL_CAM_PARAM
                 BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,APD,1);
                 if ( (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC0,CHEN)) || (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC1,CHEN)) )
                 {
-                    printk(KERN_INFO "chal_cam_set_analog_pwr: OFF: Channels Enabled\n");	
+                    pr_debug( "chal_cam_set_analog_pwr: OFF: Channels Enabled\n");	
                 }
             }
             else
@@ -1897,7 +1895,7 @@ CHAL_CAM_STATUS_CODES chal_cam_set_analog_pwr(CHAL_HANDLE handle, CHAL_CAM_PARAM
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC);
             reg |= (CAMINTF_CCP2RC_APD_MASK |  CAMINTF_CCP2RC_BPD_MASK);
             reg = BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC,reg);
-            printk(KERN_INFO "chal_cam_set_analog_pwr:  CPI Interface\n");	
+            pr_debug( "chal_cam_set_analog_pwr:  CPI Interface\n");	
             break;
     }
     return chal_status;
@@ -1924,21 +1922,21 @@ CHAL_CAM_STATUS_CODES chal_cam_set_bandgap_pwr(CHAL_HANDLE handle, CHAL_CAM_PARA
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     cUInt32 reg;
     
-    printk(KERN_INFO "chal_cam_set_bandgap_pwr = %d\n", param->param);	
+    pr_debug( "chal_cam_set_bandgap_pwr = %d\n", param->param);	
 
 // Set Bandgap Power
     switch (param->intf)
     {
     // CSI Set Bandgap Power
         case CHAL_CAM_INTF_CSI:
-            printk(KERN_INFO "chal_cam_set_bandgap_pwr:  CHAL_CAM_INTF_CSI = %d\n", param->param);	
+            pr_debug( "chal_cam_set_bandgap_pwr:  CHAL_CAM_INTF_CSI = %d\n", param->param);	
         // if Power OFF, Check if channels enabled        
             if (param->param == FALSE)
             {
             // if Power OFF, Check if channels enabled        
                 if ( (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LENC) == 1) || (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LEN1) == 1) || (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LEN2) == 1))
                 {
-                    printk(KERN_INFO "chal_cam_set_bandgap_pwr: OFF: Channels Enabled\n" );	
+                    pr_debug( "chal_cam_set_bandgap_pwr: OFF: Channels Enabled\n" );	
                     chal_status |= CHAL_OP_WRONG_ORDER;
                 }
             // Bandgap Power Down
@@ -1952,14 +1950,14 @@ CHAL_CAM_STATUS_CODES chal_cam_set_bandgap_pwr(CHAL_HANDLE handle, CHAL_CAM_PARA
             break;
     // CCP Set Bandgap Power
         case CHAL_CAM_INTF_CCP:
-            printk(KERN_INFO "chal_cam_set_bandgap_pwr:  CHAL_CAM_INTF_CCP = %d\n", param->param );	
+            pr_debug( "chal_cam_set_bandgap_pwr:  CHAL_CAM_INTF_CCP = %d\n", param->param );	
         // if Power OFF, Check if channels enabled        
             if (param->param == FALSE)
             {
             // if Power OFF, Check if channels enabled        
                 if (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,RXEN) == 1)
                 {
-                    printk(KERN_INFO "chal_cam_set_bandgap_pwr: OFF: Channels Enabled\n" );	
+                    pr_debug( "chal_cam_set_bandgap_pwr: OFF: Channels Enabled\n" );	
                     chal_status |= CHAL_OP_WRONG_ORDER;
                 }
             // Bandgap Power Down
@@ -1977,7 +1975,7 @@ CHAL_CAM_STATUS_CODES chal_cam_set_bandgap_pwr(CHAL_HANDLE handle, CHAL_CAM_PARA
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC);
             reg |= (CAMINTF_CCP2RC_APD_MASK |  CAMINTF_CCP2RC_BPD_MASK);
             reg = BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC,reg);
-            printk(KERN_INFO "chal_cam_set_bandgap_pwr:  CPI Interface\n" );	
+            pr_debug( "chal_cam_set_bandgap_pwr:  CPI Interface\n" );	
             break;
     }
     return chal_status;
@@ -2006,7 +2004,7 @@ CHAL_CAM_STATUS_CODES chal_cam_lane_enable(CHAL_HANDLE handle, CHAL_CAM_PARAM_st
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     cUInt32 reg;
     
-    printk(KERN_INFO "chal_cam_set_lane: lane=0x%x enable=0x%x\n", param->lane, param->param);	
+    pr_debug( "chal_cam_set_lane: lane=0x%x enable=0x%x\n", param->lane, param->param);	
 // CSI2 Interface
     if (param->intf == CHAL_CAM_INTF_CSI)
     {
@@ -2046,7 +2044,7 @@ CHAL_CAM_STATUS_CODES chal_cam_lane_enable(CHAL_HANDLE handle, CHAL_CAM_PARAM_st
     else
 // CCP2 Interface
     {
-        printk(KERN_INFO "chal_cam_set_lane:  CHAL_CAM_INTF_CCP No Action\n" );	
+        pr_debug( "chal_cam_set_lane:  CHAL_CAM_INTF_CCP No Action\n" );	
     }    
     return chal_status;
 }    
@@ -2070,7 +2068,7 @@ CHAL_CAM_STATUS_CODES chal_cam_set_lane_cntrl(CHAL_HANDLE handle, CHAL_CAM_LANE_
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     cUInt32 reg;
     
-    printk(KERN_INFO "chal_cam_set_lane: lane=0x%x enable=0x%x\n", cfg->lane, cfg->param );	
+    pr_debug( "chal_cam_set_lane: lane=0x%x enable=0x%x\n", cfg->lane, cfg->param );	
 
 // CSI2 Interface
     if (cfg->intf == CHAL_CAM_INTF_CSI)
@@ -2225,7 +2223,24 @@ CHAL_CAM_STATUS_CODES chal_cam_set_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
 
     if (cfg->intf == CHAL_CAM_INTF_CSI)
     {
-        printk(KERN_INFO "chal_cam_set_intf: CHAL_CAM_INTF_CSI \n" );	
+            pr_debug( "chal_cam_set_intf: CHAL_CAM_INTF_CSI \n" );
+            // Receiver Enable
+	    reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC);
+            reg |= (1 << CAMINTF_CSI2RC_LEN1_SHIFT); 
+            reg |= (1 << CAMINTF_CSI2RC_LEN2_SHIFT);
+            BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC,reg);
+            udelay(1); 
+            BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LENC,1);
+            udelay(1);
+            BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,GEN,1);
+            udelay(1);
+	    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,RSYNF,1);
+	    udelay(1);
+            BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2SRST,SRST,1);
+            udelay(1);	
+            BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LENC,0);
+            udelay(1);	
+            BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,GEN,0);
     // Set Rx
             if (cfg->input_mode == CHAL_CAM_INPUT_DUAL_LANE)
             {
@@ -2240,13 +2255,13 @@ CHAL_CAM_STATUS_CODES chal_cam_set_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
     }
     else
     {
-        printk(KERN_INFO "chal_cam_set_intf: CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI \n" );	
+        pr_debug( "chal_cam_set_intf: CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI \n" );	
     // Set Rx
         reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC);
         // CCP Mode
             if (cfg->intf == CHAL_CAM_INTF_CCP)
             {
-                printk(KERN_INFO "chal_cam_set_intf:  CCP Mode\n" );	
+                pr_debug( "chal_cam_set_intf:  CCP Mode\n" );	
                 reg &= ~(CAMINTF_CCP2RC_INMP_MASK);
             // Clk Mode
                 if (cfg->clk_mode == CHAL_CAM_DATA_CLOCK)
@@ -2260,7 +2275,7 @@ CHAL_CAM_STATUS_CODES chal_cam_set_intf(CHAL_HANDLE handle, CHAL_CAM_CFG_INTF_st
         // CPI Mode
             {
                 reg |= CAM_REG_FIELD_SET(CAMINTF_CCP2RC,INMP,1);
-                printk(KERN_INFO "chal_cam_set_intf:  CPI Mode\n" );	
+                pr_debug( "chal_cam_set_intf:  CPI Mode\n" );	
             }
     // Update Cam Control Register
         BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC,reg);
@@ -2440,7 +2455,7 @@ CHAL_CAM_STATUS_CODES chal_cam_cfg_short_pkt(CHAL_HANDLE handle, CHAL_CAM_PKT_CF
 //    chal_cam_t *pCamDevice = (chal_cam_t *)handle;
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
 
-    printk(KERN_INFO "chal_cam_cfg_short_pkt: instance=%d \n",cfg->instance );	
+    pr_debug( "chal_cam_cfg_short_pkt: instance=%d \n",cfg->instance );	
 
     chal_status = CHAL_OP_INVALID;
 
@@ -2466,7 +2481,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_short_pkt(CHAL_HANDLE handle, CHAL_CAM_PKT_st
 // CSI2 Interface
     if (short_pkt->intf == CHAL_CAM_INTF_CSI)
     {
-        printk(KERN_INFO "chal_cam_get_short_pkt: CSI Interface\n" );	
+        pr_debug( "chal_cam_get_short_pkt: CSI Interface\n" );	
         short_pkt->word_count = BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RGSP,DATA);
         short_pkt->data_id = (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RGSP,VC) << CHAL_CAM_VIRTUAL_CHANNEL_SHIFT) | 
                                     (BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RGSP,DT) << CHAL_CAM_DATA_TYPE_SHIFT);
@@ -2476,7 +2491,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_short_pkt(CHAL_HANDLE handle, CHAL_CAM_PKT_st
     else 
     {
         chal_status = CHAL_OP_FAILED;
-        //chal_dprintf( CDBG_INFO, "chal_cam_get_short_pkt: FAILED: No Packet Available\n");	
+        pr_debug("chal_cam_get_short_pkt: FAILED: No Packet Available\n");
     }
 
     return chal_status;
@@ -2512,7 +2527,7 @@ UInt32 chal_cam_get_rx_status(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* param)
         // Clear status          
             BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS,reg);
             param->param = 0;
-//            printk(KERN_INFO "chal_cam_get_rx_status:  CSI2RS=0x%x\n", reg );	
+//            pr_debug( "chal_cam_get_rx_status:  CSI2RS=0x%x\n", reg );	
         // Check status bits	
             if (reg & CAMINTF_CSI2RS_IS0_MASK)
             {
@@ -2577,7 +2592,7 @@ UInt32 chal_cam_get_rx_status(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* param)
             if (reg & CAMINTF_CCP2RS_GEF_MASK)
             {
                 param->param |= CHAL_CAM_RX_ERROR;
-//                printk(KERN_INFO "CHAL_CAM_RX_GLOBAL_ERROR:  CAM_CPC2RS=0x%x\n", reg );
+//                pr_debug( "CHAL_CAM_RX_GLOBAL_ERROR:  CAM_CPC2RS=0x%x\n", reg );
             }
             break;
     }
@@ -2605,7 +2620,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_lane_status(CHAL_HANDLE handle, CHAL_CAM_PARA
     cUInt32 reg;
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     
-    printk(KERN_INFO "chal_cam_get_lane_status:  0x%x\n", param->lane );	
+    pr_debug( "chal_cam_get_lane_status:  0x%x\n", param->lane );	
 
     switch (param->intf)
     {
@@ -2614,7 +2629,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_lane_status(CHAL_HANDLE handle, CHAL_CAM_PARA
         // Get Status Register       
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RDLS);
             param->param = 0;
-            printk(KERN_INFO "chal_cam_get_lane_status:  CHAL_CAM_INTF_CSI=%d CAM_CSI2RDLS=0x%x\n", param->lane, reg );	
+            pr_debug( "chal_cam_get_lane_status:  CHAL_CAM_INTF_CSI=%d CAM_CSI2RDLS=0x%x\n", param->lane, reg );	
             if (param->lane == CHAL_CAM_CLK_LANE)
             {
             // Enabled
@@ -2677,7 +2692,7 @@ CHAL_CAM_STATUS_CODES chal_cam_get_lane_status(CHAL_HANDLE handle, CHAL_CAM_PARA
         case CHAL_CAM_INTF_CCP:
         case CHAL_CAM_INTF_CPI:
         default:
-            printk(KERN_INFO "chal_cam_get_lane_status:  Undefined Interface\n" );	
+            pr_debug( "chal_cam_get_lane_status:  Undefined Interface\n" );	
             chal_status = CHAL_OP_INVALID;
             break;
     }
@@ -2726,7 +2741,7 @@ UInt32 chal_cam_get_chan_status(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* param)
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS1,reg);
             }
             param->param = 0;
-//            printk(KERN_INFO "chal_cam_get_chan_status:  CHAL_CAM_INTF_CSI=%d CAM_CSI2RSx=0x%x\n", param->chan, reg );	
+//            pr_debug( "chal_cam_get_chan_status:  CHAL_CAM_INTF_CSI=%d CAM_CSI2RSx=0x%x\n", param->chan, reg );	
         // Check status bits	
             if (reg & CAMINTF_CSI2RS0_FSI_MASK)
             {
@@ -2779,7 +2794,7 @@ UInt32 chal_cam_get_chan_status(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* param)
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RS1,reg);
             }
             param->param = 0;
-//            printk(KERN_INFO "chal_cam_get_chan_status:  CHAL_CAM_INTF_CCP=%d CAM_CCP2RSx=0x%x\n", param->chan, reg );	
+//            pr_debug( "chal_cam_get_chan_status:  CHAL_CAM_INTF_CCP=%d CAM_CCP2RSx=0x%x\n", param->chan, reg );	
         // Check status bits	
             if (reg & CAMINTF_CCP2RS0_FSI_MASK)
             {
@@ -2840,7 +2855,7 @@ CHAL_CAM_STATUS_CODES chal_cam_reset(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* pa
     {
     // CSI Reset
         case CHAL_CAM_INTF_CSI:
-            printk(KERN_INFO "chal_cam_reset:  CHAL_CAM_INTF_CSI: param=0x%x\n", param->param );
+            pr_debug( "chal_cam_reset:  CHAL_CAM_INTF_CSI: param=0x%x\n", param->param );
         // Software Reset
             if (param->param & CHAL_CAM_RESET_RX)
             {
@@ -2858,11 +2873,11 @@ CHAL_CAM_STATUS_CODES chal_cam_reset(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* pa
     // CCP & CPI Reset
         case CHAL_CAM_INTF_CCP:
         case CHAL_CAM_INTF_CPI:
-            printk(KERN_INFO "chal_cam_reset:  CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI: param=0x%x\n", param->param );
+            pr_debug( "chal_cam_reset:  CHAL_CAM_INTF_CCP/CHAL_CAM_INTF_CPI: param=0x%x\n", param->param );
         // Software Reset
             if (param->param & CHAL_CAM_RESET_RX)
             {
-            //    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1); //haipeng
+                BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
             }
         // Analog Reset
             if (param->param & CHAL_CAM_RESET_ARST)
@@ -2881,7 +2896,7 @@ CHAL_CAM_STATUS_CODES chal_cam_reset(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* pa
             if (param->intf & CHAL_CAM_INTF_CPI)
             {
             // CPI Channel Reset
-                printk(KERN_INFO "chal_cam_reset:  CHAL_CAM_INTF_CPI: CAM_CPIS_ACT\n" );
+                pr_debug( "chal_cam_reset:  CHAL_CAM_INTF_CPI: CAM_CPIS_ACT\n" );
                 BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ACT,0);
                 reg = chal_cam_wait_value(handle, CHAL_CAM_INTF_CPI, MIN_FRAME_RATE, (UInt32 *)(pCamDevice->baseAddr+CAMINTF_CPIS_OFFSET), (UInt32)CAMINTF_CPIS_DACT_MASK, (UInt32)0x00000000);
                 if ( reg != 0 )
@@ -2889,11 +2904,11 @@ CHAL_CAM_STATUS_CODES chal_cam_reset(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* pa
                     chal_dprintf( CDBG_ERRO, "ERROR:  chal_cam_reset: CAM_CPIS_DACT: CAMINTF_CPIS=0x%x\n", reg);	
                 }
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CPIS,0);
-           //     BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1); //haipeng
+                BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
             }
             break;     
         default:
-            printk(KERN_INFO "chal_cam_reset:  Undefined Interface\n");	
+            pr_debug( "chal_cam_reset:  Undefined Interface\n");	
             chal_status = CHAL_OP_INVALID;
             break;
     }
@@ -2924,7 +2939,7 @@ CHAL_CAM_STATUS_CODES chal_cam_channel_trigger(CHAL_HANDLE handle, CHAL_CAM_PARA
 // CSI2 Interface
     if (param->intf == CHAL_CAM_INTF_CSI)
     {
-        printk(KERN_INFO "chal_cam_channel_trigger:  CSI Trigger Unavailable\n" );	
+        pr_debug( "chal_cam_channel_trigger:  CSI Trigger Unavailable\n" );	
     }
     else
     {
@@ -2965,7 +2980,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_start(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t*
     {
     // CSI Interface
         case CHAL_CAM_INTF_CSI:
-            printk(KERN_INFO "chal_cam_rx_start:  CHAL_CAM_INTF_CSI: chan=0x%x \n", param->chan );
+            pr_debug( "chal_cam_rx_start:  CHAL_CAM_INTF_CSI: chan=0x%x \n", param->chan );
         // Channel Enable
             if (param->chan & CHAL_CAM_CHAN_0)
             {                
@@ -2977,14 +2992,14 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_start(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t*
             } 
         // Enable Clock Lane
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,LENC,1);
-              
+            udelay(5);
         // Receiver Enable
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,GEN,1);
             break;
 
     // CCP Interface
         case CHAL_CAM_INTF_CCP:
-            printk(KERN_INFO "chal_cam_rx_start:  CHAL_CAM_INTF_CCP: chan=0x%x \n", param->chan );
+            pr_debug( "chal_cam_rx_start:  CHAL_CAM_INTF_CCP: chan=0x%x \n", param->chan );
         // Channel Enable
             if (param->chan & CHAL_CAM_CHAN_0)
             {                
@@ -3000,7 +3015,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_start(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t*
 
     // CPI Interface
         case CHAL_CAM_INTF_CPI:
-            printk(KERN_INFO "chal_cam_rx_start:  CHAL_CAM_INTF_CPI: chan=0x%x \n", param->chan, param->lane );
+            pr_debug( "chal_cam_rx_start:  CHAL_CAM_INTF_CPI: chan=0x%x \n", param->chan, param->lane );
         // CCP Channel 0 Enable
             BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC0,CHEN,1);
         // CPI Channel Enable
@@ -3011,7 +3026,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_start(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t*
             break;
 
         default:
-            printk(KERN_INFO "chal_cam_rx_start:  Undefined Interface\n" );	
+            pr_debug( "chal_cam_rx_start:  Undefined Interface\n" );	
             chal_status = CHAL_OP_INVALID;
             break;
     }
@@ -3040,15 +3055,29 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
     chal_cam_t *pCamDevice = (chal_cam_t *)handle;
     CHAL_CAM_STATUS_CODES chal_status = CHAL_OP_OK;
     cUInt32 reg;
-	cUInt32 count=0;
-    
-    printk(KERN_INFO "chal_cam_rx_stop:   \n" );
+    int count = 0;
+    int val = 1;
+    pr_debug( "chal_cam_rx_stop:   \n" );
 
     switch (param->intf)
     {
     // CSI Interface
         case CHAL_CAM_INTF_CSI:
         // halt & disable Channel interrupts
+            /* Reading interrupt status and asserting the same */
+	    if(param->chan & CHAL_CAM_CHAN_0)
+	    {
+                // Clear Interrupts
+                reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS0);
+                BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS0,reg);
+	    }
+            else 
+            {
+                // Clear Interrupts
+                reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS1);
+                BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS1,reg);
+            }
+	    
             if (param->chan & CHAL_CAM_CHAN_0)
             {                
                 reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC0);
@@ -3058,33 +3087,43 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
                 reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC1);
             }   
             // halt & disable interrupts
-                reg &= ~(CAMINTF_CSI2RC0_FSIE_MASK|CAMINTF_CSI2RC0_FEIE_MASK|CAMINTF_CSI2RC0_LSIE_MASK|CAMINTF_CSI2RC0_LEIE_MASK|CAMINTF_CSI2RC0_GSPIE_MASK|CAMINTF_CSI2RC0_LCIE_MASK);
-            // halt channel
-                reg &= ~(CAMINTF_CSI2RC0_CHEN_MASK);
+            reg &= ~(CAMINTF_CSI2RC0_FSIE_MASK|CAMINTF_CSI2RC0_FEIE_MASK|CAMINTF_CSI2RC0_LSIE_MASK|CAMINTF_CSI2RC0_LEIE_MASK|CAMINTF_CSI2RC0_GSPIE_MASK|CAMINTF_CSI2RC0_LCIE_MASK);
             if (param->chan & CHAL_CAM_CHAN_0)
             {                
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC0,reg);
-            // Clear Interrupts
-                reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS0);
-                BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS0,reg);
             }
             else
             {
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC1,reg);
-            // Clear Interrupts
-                reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS1);
-                BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS1,reg);
+            }
+	    /* RSYNF assert*/
+	    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2RC,RSYNF,1);
+	    udelay(1);
+	    // Reset Receiver before de-asserting LENC and GEN
+	    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2SRST,SRST,1);
+	    // A small delay to complete reset
+	    udelay(5);
+            if (param->chan & CHAL_CAM_CHAN_0)
+            {                
+                reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC0);
+                reg &= ~(CAMINTF_CSI2RC0_CHEN_MASK);
+                BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC0,reg);
+            }
+            else
+            {
+                reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC1);
+                reg &= ~(CAMINTF_CSI2RC0_CHEN_MASK);
+                BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC1,reg);
             }   
-        // Disable Receiver & Clock Lane
+	
+            // Disable Receiver & Clock Lane
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC);
             reg &= ~(CAMINTF_CSI2RC_LENC_MASK|CAMINTF_CSI2RC_GEN_MASK);
             BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RC,reg);
-        // Reset Receiver
-            BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CSI2SRST,SRST,1);
-        // Clear Receiver Status
+            // Clear Receiver Status
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS);
             BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RS,reg);
-        // Clear Receiver Lane Status
+            // Clear Receiver Lane Status
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CSI2RDLS);
             BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CSI2RDLS,reg);
             break;
@@ -3111,7 +3150,15 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
                     {
                         chal_dprintf( CDBG_ERRO, "ERROR:  chal_cam_rx_stop: CAM_CPIS_DACT: CAMINTF_CPIS=0x%x\n", reg);	
                     }
-                    BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CPIS,0x00000000);
+		    while(BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ACT) != 0){
+			count++;
+			BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ACT,0);
+			if(count >= 10){
+				printk("Could not reset ACT bit!!!!!!!!\n");
+				break;
+			}
+		    }
+                    //BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CPIS,0x00000000);
                 }
 
             // wait for Channel Ready
@@ -3119,7 +3166,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
                 if ( reg != 0 )
                 {
                 // Reset Receiver
-              //      BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
+                    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
                     chal_dprintf( CDBG_ERRO, "ERROR:  chal_cam_rx_stop: CAMINTF_CCP2RS0_CHB: CAMINTF_CCP2RS0=0x%x\n", reg);	
                 }
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC0,0x00000000);
@@ -3138,7 +3185,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
                 if ( reg != 0 )
                 {
                 // Reset Receiver
-                //    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
+                    BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
                     chal_dprintf( CDBG_ERRO, "ERROR:  chal_cam_rx_stop: CAMINTF_CCP2RS1_CHB: CAMINTF_CCP2RS1=0x%x\n", reg);	
                 }
                 BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RC1,0x00000000);
@@ -3151,39 +3198,30 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_stop(CHAL_HANDLE handle, CHAL_CAM_PARAM_st_t* 
         // Clear Receiver status
             reg = BRCM_READ_REG(pCamDevice->baseAddr,CAMINTF_CCP2RS);
             BRCM_WRITE_REG(pCamDevice->baseAddr,CAMINTF_CCP2RS,reg);
-			BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CCP2RC,SWR,1);
-			
-			while(BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ACT)!=0)
-			{
-				count++;
-				BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ACT,0);
-				if(count>=50)
-				{
-					printk("count not reset ACT bit !!!!!!!\n");
-					break;
-				}
-			}
-			for(count=0;count<1000;count++)
-			{
-				/* The following is an SW workaround for ASIC issue. It might happen that the pixel clock
-				 * and AHB clock are in sync due to which the ENB bit might never get reset. We are introducing
-				 * a random delay which will put them out of sync and reset would happen.
-				 * THIS IS AGAIN A PROBABILITY AND NOT ACTUAL FIX
-				*/
-				struct timeval time_val;
-				do_gettimeofday(&time_val);
-				int delay_cnt = time_val.tv_usec % 5;
-				ndelay(delay_cnt + 7);
-						
-				BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ENB,0);
-				if(BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,CAPT)==0)
-					break;
-			}
-
+	    count = 0;
+	    while(val != 0){
+			/* The following is an SW workaround for ASIC issue. It might happen that the pixel clock
+			 * and AHB clock are in sync due to which the ENB bit might never get reset. We are introducing
+			 * a random delay which will put them out of sync and reset would happen.
+			 * THIS IS AGAIN A PROBABILITY AND NOT ACTUAL FIX
+			*/
+		struct timeval time_val;
+		do_gettimeofday(&time_val);
+		int delay_cnt = time_val.tv_usec % 5;
+		ndelay(delay_cnt + 7);
+		BRCM_WRITE_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ENB,0);
+		val = BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,CAPT);
+		count ++;
+		if(count == 10000) {
+			printk("******Breaking out of the loop as the value CAPT could not be reset *********\n");
+			break;
+		}
+	    }
+	    printk("ENB bit is %d and the count for CAPT was %d\n",BRCM_READ_REG_FIELD(pCamDevice->baseAddr,CAMINTF_CPIS,ENB), count);
             break;
 
         default:
-            printk(KERN_INFO "chal_cam_rx_stop:  Undefined Interface\n" );	
+            pr_debug( "chal_cam_rx_stop:  Undefined Interface\n" );	
             chal_status = CHAL_OP_INVALID;
             break;
     }
@@ -3217,7 +3255,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_bytes_written(CHAL_HANDLE handle, CHAL_CAM_PAR
     {
     // CSI Interface
         case CHAL_CAM_INTF_CSI:
-            printk(KERN_INFO "chal_cam_rx_bytes_written:  CHAL_CAM_INTF_CSI: chan=0x%x \n", param->chan );
+            pr_debug( "chal_cam_rx_bytes_written:  CHAL_CAM_INTF_CSI: chan=0x%x \n", param->chan );
         // Channel 
             if (param->chan & CHAL_CAM_CHAN_0)
             {                
@@ -3232,7 +3270,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_bytes_written(CHAL_HANDLE handle, CHAL_CAM_PAR
     // CCP, CPI Interface
         case CHAL_CAM_INTF_CPI:
         case CHAL_CAM_INTF_CCP:
-            printk(KERN_INFO "chal_cam_rx_bytes_written:  CHAL_CAM_INTF_CCP: chan=0x%x \n", param->chan );
+            pr_debug( "chal_cam_rx_bytes_written:  CHAL_CAM_INTF_CCP: chan=0x%x \n", param->chan );
         // Channel 
             if ( (param->chan & CHAL_CAM_CHAN_0) || (param->intf & CHAL_CAM_INTF_CPI) )
             {                
@@ -3245,7 +3283,7 @@ CHAL_CAM_STATUS_CODES chal_cam_rx_bytes_written(CHAL_HANDLE handle, CHAL_CAM_PAR
             break;
 
         default:
-            printk(KERN_INFO "chal_cam_rx_bytes_written:  Undefined Interface\n" );
+            pr_debug( "chal_cam_rx_bytes_written:  Undefined Interface\n" );
             chal_status = CHAL_OP_INVALID;
             break;
     }

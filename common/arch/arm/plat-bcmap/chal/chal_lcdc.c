@@ -71,7 +71,7 @@ CHAL_HANDLE chal_lcdc_init (cUInt32 baseAddr)
 {
     pCHAL_LCDC_T pDev = NULL;
 
-    chal_dprintf (CDBG_INFO, "chal_lcdc_init\n");
+    /*chal_dprintf (CDBG_INFO, "chal_lcdc_init\n");*/
 
     pDev = (pCHAL_LCDC_T) &lcdcDev.lcdcCtrl[0];
 

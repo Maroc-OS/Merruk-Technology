@@ -260,14 +260,12 @@ static int bcm1161_wait_interrupt(struct bcm1161_i2c *i2c)
 	}
 #endif
 	if (res == 0) {
-		/* i thnk this one is better :)*/
-		/* 	I2C_DEBUG(DBG_ERROR, "wait timed out, %d\n", &i2c->adapter.dev); */
 		dev_err(&i2c->adapter.dev, "Timeout on wait\n");
 		return -ETIMEDOUT;
 	} else {
 		res = i2c->interrupt;
 	}
-	/*shauld we set interrupt to 0 before call return?*/
+
 	i2c->interrupt = 0;
 
 	return res;
@@ -952,7 +950,7 @@ int __init i2c_bcm1161_probe(struct platform_device *pdev)
 	int rc;
 	struct resource *res;
 	struct i2c_host_platform_data *pdata = pdev->dev.platform_data;
-	int irq;
+	int irq, str_length;
 
 	dev_dbg(&pdev->dev, "<%s>\n", __func__);
 
@@ -974,7 +972,13 @@ int __init i2c_bcm1161_probe(struct platform_device *pdev)
 	if (!i2c)
 		return -ENOMEM;
 
-	strcpy(i2c->adapter.name, pdev->name);
+	if(strlen(pdev->name) > (sizeof(char) * 48)){
+		dev_err(&pdev->dev, "device name too long\n");
+		return -E2BIG;
+	} else {
+		strcpy(i2c->adapter.name, pdev->name);
+	}
+
 	i2c->adapter.owner = THIS_MODULE;
 	i2c->adapter.algo = &bcm1161_algo;
 	i2c->adapter.dev.parent = &pdev->dev;

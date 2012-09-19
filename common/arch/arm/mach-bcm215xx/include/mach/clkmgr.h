@@ -130,6 +130,6 @@ enum
 
 extern int clk_set_mipidsi_afe_div(int id, int div);
 extern int clk_get_mipidsi_afe_div(int id);
-
+extern u32 bcm21553_apps_pll_get_rate(void);
 
 #endif /* __ARCH_ARM_MACH_BCM21553_CLOCK_H */

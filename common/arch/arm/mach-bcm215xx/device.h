@@ -95,6 +95,9 @@ static void update_avs_sysparm(void)
 
 #if defined(CONFIG_BCM_CPU_FREQ)
 extern struct platform_device bcm21553_cpufreq_drv;
+extern void update_turbo_freq(void);
+#else
+void update_turbo_freq(void) {}
 #endif
 
 #if defined(CONFIG_CPU_FREQ_GOV_BCM21553)

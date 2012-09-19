@@ -194,6 +194,7 @@ ARCH		?=arm
 CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
 #CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_CodeBench_for_ARM_EABI/arm-none-eabi/bin/
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
+EXTRA_AFLAGS	?=-mfpu=neon -ftree-vectorize -mfloat-abi=softfp
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)

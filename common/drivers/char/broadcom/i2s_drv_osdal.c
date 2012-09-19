@@ -678,6 +678,8 @@ unsigned int I2SDRV_Stop_rxDMA(I2S_HANDLE handle)
 	}
 //	bcm_i2s_flush_fifo(block->i2s_handle,CAPTURE);
 	bcm_i2s_disable_clk(block->i2s_handle, I2S_INT_CLK);
+	DMADRV_Release_Channel(block->dev[RX_INDEX].dmaChanNum);
+	block->dev[RX_INDEX].get_chan = false;
 	block->dev[RX_INDEX].state = I2STST_RUNNING_NO_DMA;
 	return 0;
 }
@@ -837,6 +839,8 @@ unsigned int I2SDRV_Cir_rx_buf(I2S_HANDLE handle, I2S_Cir_t *circular)
 	block->dev[RX_INDEX].dmaChanInfo.incMode = DMA_INC_MODE_DST;
 	block->dev[RX_INDEX].dmaChanInfo.xferCompleteCb = (DmaDrv_Callback) i2s_dma_handler_rx;
 	block->dev[RX_INDEX].dmaChanInfo.freeChan = FALSE;
+	block->dev[RX_INDEX].dmaChanInfo.dstMaster = 0;
+	block->dev[RX_INDEX].dmaChanInfo.srcMaster = 0;
 	block->dev[RX_INDEX].dmaChanInfo.priority = 0;
 	block->dev[RX_INDEX].dmaChanInfo.bCircular = TRUE;
 

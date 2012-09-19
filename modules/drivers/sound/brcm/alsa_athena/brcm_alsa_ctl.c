@@ -204,8 +204,8 @@ static int GetControlItem(
 	//DEBUG("\n%lx:GetControlItem",jiffies);
 	DEBUG("\n%lx:GetControlItem ctrl->private_value=%d",jiffies, kcontrol->private_value);
 
-
-	if(kcontrol->private_value>=0 && kcontrol->private_value<BRCM_CTL_TOTAL)
+	//Coverity prevent kcontrol->private_value is unsigned type
+	if(kcontrol->private_value < BRCM_CTL_TOTAL)
 		ucontrol->value.integer.value[0] = sgBrcmCtrlVal[kcontrol->private_value];
 
 	return 0;
@@ -315,8 +315,8 @@ static int SetControlItem(
 
     audio_init();
 	//DEBUG("\n%lx:SetControlItem",jiffies);
-
-	if(kcontrol->private_value>=0 && kcontrol->private_value<BRCM_CTL_TOTAL)
+	//Coverity prevent kcontrol->private_value is unsigned long 
+	if(kcontrol->private_value<BRCM_CTL_TOTAL)
 	{
 		if(!(kcontrol->private_value&1))//volume
 		{

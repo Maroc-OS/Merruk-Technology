@@ -43,6 +43,8 @@
 #include <plat/bcm_auxadc.h>
 #include <linux/broadcom/types.h>
 
+#include <linux/device.h>
+
 #include "linux/broadcom/bcm_reset_utils.h"
 
 #include "../../../../modules/drivers/char/brcm/fuse_ril/CAPI2_CIB/sysinterface/hal/adc/public/hal_adc.h"
@@ -196,6 +198,21 @@ int auxadc_access(int regID)
 #endif
 EXPORT_SYMBOL(auxadc_access);
 
+static ssize_t sysfs_adcregID_store (struct device_driver *drv, const char *buf, size_t count)
+{
+	int regID, data;
+	sscanf(buf, "%d", &regID);
+	if ((regID < 0) || (regID > 4)) {
+		pr_err("%s: invalid channel number: %d\n", __func__, regID);
+		return -EINVAL;
+	}
+	data = auxadc_access_through_cp(regID);
+	pr_info("0x%08X\n", data);
+	return sizeof(int);
+}
+
+DRIVER_ATTR(adcregID, S_IWUSR, NULL, sysfs_adcregID_store);
+
 /**
 * @brief Called to perform module initialization when the module is loaded.
 *
@@ -264,6 +281,9 @@ struct platform_driver auxadc_driver = {
 static int __init auxadc_init(void)
 {
 	platform_driver_register(&auxadc_driver);
+
+	driver_create_file(&auxadc_driver.driver, &driver_attr_adcregID);
+
 	return 0;
 }				/* auxadc_init */
 

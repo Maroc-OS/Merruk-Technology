@@ -186,10 +186,10 @@ static int bma150_accl_suspend(struct i2c_client *client, pm_message_t mesg)
 
 static int bma150_accl_resume(struct i2c_client *client)
 {
+#ifdef BMA150_ACCL_IRQ_MODE
 	struct drv_data *dd;
 	dd = i2c_get_clientdata(client);
 
-#ifdef BMA150_ACCL_IRQ_MODE
 	enable_irq(dd->irq);
 	if (atomic_read(&a_flag))
 		bma150_accl_power_up(dd);
@@ -289,8 +289,8 @@ static void bma150_accl_release(struct input_dev *dev)
 static void bma150_accl_getdata(struct drv_data *dd)
 {
 	smb380acc_t acc;
-	int X, Y, Z;
-	struct bma150_accl_platform_data *pdata = pdata =
+	int X=0, Y=0, Z=0;
+	struct bma150_accl_platform_data *pdata =
 	    bma150_accl_client->dev.platform_data;
 
 	mutex_lock(&bma150_accl_wrk_lock);
@@ -322,6 +322,7 @@ static void bma150_accl_getdata(struct drv_data *dd)
 		break;
 	default:
 		pr_err("bma150_accl: invalid orientation specified\n");
+		break;
 	case BMA_NO_ROT:
 		X = acc.x;
 		Y = acc.y;
@@ -515,7 +516,7 @@ static int __devinit bma150_accl_probe(struct i2c_client *client,
 {
 	struct drv_data *dd;
 	int rc = 0;
-	struct bma150_accl_platform_data *pdata = pdata =
+	struct bma150_accl_platform_data *pdata =
 	    client->dev.platform_data;
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
@@ -694,7 +695,7 @@ probe_exit:
 static int __devexit bma150_accl_remove(struct i2c_client *client)
 {
 	struct drv_data *dd;
-	struct bma150_accl_platform_data *pdata = pdata =
+	struct bma150_accl_platform_data *pdata =
 	    client->dev.platform_data;
 	int rc;
 	const char *devname;

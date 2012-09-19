@@ -28,7 +28,7 @@ enum {
 /* Tunables */
 static const int sync_expire = HZ / 2;	/* max time before a sync is submitted. */
 static const int async_expire = 5 * HZ;	/* ditto for async, these limits are SOFT! */
-static const int fifo_batch = 1;	/* #16 of sequential requests treated as one
+static const int fifo_batch = 16;	/* #16 of sequential requests treated as one 1 for arm
 					   by the above parameters. For throughput. */
 
 /* Elevator data */

@@ -71,10 +71,8 @@ void flush_cache_range(struct vm_area_struct *vma, unsigned long start, unsigned
 		    : "cc");
 	}
 
-	if (vma->vm_flags & VM_EXEC) {
+	if (vma->vm_flags & VM_EXEC)
 		__flush_icache_all();
-                outer_clean_range(0, 130*1024);
-        }
 }
 
 void flush_cache_page(struct vm_area_struct *vma, unsigned long user_addr, unsigned long pfn)
@@ -87,7 +85,6 @@ void flush_cache_page(struct vm_area_struct *vma, unsigned long user_addr, unsig
 	if (cache_is_vipt_aliasing()) {
 		flush_pfn_alias(pfn, user_addr);
 		__flush_icache_all();
-                outer_clean_range(0, 130*1024);
 	}
 
 	if (vma->vm_flags & VM_EXEC && icache_is_vivt_asid_tagged())
@@ -119,7 +116,6 @@ void flush_ptrace_access(struct vm_area_struct *vma, struct page *page,
 	if (cache_is_vipt_aliasing()) {
 		flush_pfn_alias(page_to_pfn(page), uaddr);
 		__flush_icache_all();
-                outer_clean_range(0, 130*1024);
 		return;
 	}
 
@@ -300,7 +296,6 @@ void __flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned l
 		 */
 		flush_pfn_alias(pfn, vmaddr);
 		__flush_icache_all();
-                outer_clean_range(0, 130*1024);
 	}
 
 	/*
@@ -310,4 +305,3 @@ void __flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned l
 	 */
 	__cpuc_flush_dcache_area(page_address(page), PAGE_SIZE);
 }
-

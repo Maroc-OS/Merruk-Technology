@@ -44,25 +44,25 @@ struct silicon_type_info
 	int lpm_voltage;
 	/* NM voltage. Pass -1 if no update needed */
 	int nm_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 osuper mode voltage. Pass -1 if no update needed */
 	int nm2_osuper_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 super mode voltage. Pass -1 if no update needed */
 	int nm2_super_voltage;
 	/* NM2 turbo mode voltage. Pass -1 if no update needed */
 	int nm2_turbo_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 higher mode voltage. Pass -1 if no update needed */
 	int nm2_heigher_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 omedium mode voltage. Pass -1 if no update needed */
 	int nm2_omedium_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 umedium mode voltage. Pass -1 if no update needed */
 	int nm2_umedium_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 normal mode voltage. Pass -1 if no update needed */
 	int nm2_normal_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 starter mode voltage. Pass -1 if no update needed */
 	int nm2_starter_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 lower mode voltage. Pass -1 if no update needed */
 	int nm2_lower_voltage;
-	/* NM2 turbo mode voltage. Pass -1 if no update needed */
+	/* NM2 ulower mode voltage. Pass -1 if no update needed */
 	int nm2_ulower_voltage;
 };
 

@@ -36,6 +36,7 @@ static struct work_struct proc_removal_work;
 /* External */
 extern void ProcessCPCrashedDump(struct work_struct *); 
 extern int IpcCPCrashCheck(void);
+extern void ipcs_get_ipc_state(int *state);
 
 /* Globals */
 struct proc_dir_entry *cp_dump_proc;
@@ -97,15 +98,23 @@ static int cp_proc_write(struct file *file, const char __user *buffer,
 static int do_cp_crash(struct notifier_block *this, unsigned long event,
 			void *ptr)
 {
+    int ipc_state;
+
 #ifdef CONFIG_PREEMPT
 	/* Ensure that cond_resched() won't try to preempt anybody */
 	add_preempt_count(PREEMPT_ACTIVE);
 #endif
 
+    ipcs_get_ipc_state(&ipc_state);
+
+    if(!ipc_state)
+        goto out;
+
 	if (!IpcCPCrashCheck())
 		IPCCP_SetCPCrashedStatus(IPC_AP_ASSERT);
 	ProcessCPCrashedDump(NULL);	
 
+out:
 #ifdef CONFIG_PREEMPT
 	sub_preempt_count(PREEMPT_ACTIVE);
 #endif

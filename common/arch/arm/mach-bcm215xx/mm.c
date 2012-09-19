@@ -144,13 +144,13 @@ void bcm21553_mm_mem_init(void)
 
 #ifdef CONFIG_BRCM_V3D
 	if (v3d_mempool_size) {
-	ret = reserve_bootmem(v3d_mem_phys_base, v3d_mempool_size, BOOTMEM_EXCLUSIVE);
-	if (ret < 0) {
-		printk(KERN_ERR "Failed to allocate memory for v3d\n");
-		return;
-	}
+		ret = reserve_bootmem(v3d_mem_phys_base, v3d_mempool_size, BOOTMEM_EXCLUSIVE);
+		if (ret < 0) {
+			printk(KERN_ERR "Failed to allocate memory for v3d\n");
+			return;
+		}
 
-	v3d_mempool_base = phys_to_virt(v3d_mem_phys_base);
+		v3d_mempool_base = phys_to_virt(v3d_mem_phys_base);
 		pr_info("v3d phys[0x%08x] virt[0x%08x] size[0x%08x] \n",
 			v3d_mem_phys_base, (uint32_t)v3d_mempool_base, (int)v3d_mempool_size);
 	} else {

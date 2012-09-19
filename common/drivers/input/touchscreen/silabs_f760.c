@@ -32,7 +32,7 @@
 #define MAX_Y					320
 #define TSP_INT					30
 
-#define F760_MAX_TOUCH			2
+#define F760_MAX_TOUCH			3
 #define ESCAPE_ADDR				0xAA
 #define TS_READ_START_ADDR		0x10
 #define TS_READ_VERSION_ADDR	0x1F
@@ -96,7 +96,7 @@ static struct workqueue_struct *check_ic_wq;
 static struct regulator *touch_regulator=NULL;
 
 /* add by brcm */
-int touch_id[2], posX[2], posY[2], strength[2];
+int touch_id[3], posX[3], posY[3], strength[3];
 int Press_Check=0;
 
 static int firmware_ret_val = -1;

@@ -53,6 +53,8 @@
 #define FPEXC_EN                       0x40000000
 #define CACHE_LINE_SIZE                0x20 /* in bytes */
 
+/* TB BASE DEFINITION :) */
+#define TB_BASE			0x13000000
 /*
  * Specify whether Dormant mode entry/exit code uses its own static memory
  * setup i.e. after saving memory setup state it changes to a memory setup
@@ -169,8 +171,8 @@ idle_l1_prefetch_loop:
 idle_save_preload_start:
 #ifdef CONFIG_BCM21553_L2_EVCT
     @ Dummy reads
-    ldr     r0,[r10]                    @ dummy read from L2 eviction address
-    ldr     r0,[r6]                     @ dummy read of l2 cache sync WO reg
+    ldr     r0,[r10]          @ dummy read from L2 eviction address
+    ldr     r0,[r6]           @ dummy read of l2 cache sync WO reg
 #endif
 
 .if ENABLE_L2X0_CODE==1
@@ -178,8 +180,7 @@ idle_save_preload_start:
     mcr     p15,0,r0,c7,c10,4                @ DSB
     str     r0,[r6]                          @ L2 Cache Sync
     mcr     p15,0,r0,c7,c10,4                @ DSB
-    @ Dummy read to assure data ejected by L2 sync arrive at DRAM
-    ldr     r0,[r10]
+    ldr     r0,[r10]                         @ Dummy read to assure data ejected by L2 sync arrive at DRAM
     mov	    r0,#0
     mcr     p15,0,r0,c7,c10,4                @ DSB
 .endif
@@ -188,8 +189,7 @@ idle_save_preload_start:
     mov     r0,#0
     str     r0,[r10]                         @ Clean L2 buffer eviction buffer
     mcr     p15,0,r0,c7,c10,4                @ DSB
-    @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
-    ldr     r0,[r10]
+    ldr     r0,[r10]                         @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
     mov     r0, #0
     mcr     p15,0,r0,c7,c10,4                @ DSB
 #endif
@@ -206,48 +206,9 @@ kernel_delaybyloop1:
     mcr     p15,0,r0,c7,c10,4                @ DSB
     mcr     p15,0,r0,c7,c0,4                 @ Wait-For-Interrupt
 
+    .rept   42
     mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
+    .endr
 
     mrc     p15,0,r1,c1,c0,0                 @ Read ctrl reg
     orr     r0,r1,#CP15_CTRL_BPRED_BIT       @ Enable branch prediction
@@ -720,6 +681,7 @@ no_dma:
     mov     r3,#0
     adr     r4,dormant_save_preload_start
     adr     r5,dormant_save_preload_end
+@    ldr     r5,[r0]                    @ may cause L1/L2 data cache churning
     bic     r4,r4,#0x1F
 l1_prefetch_loop:
     mcr     p15,0,r4,c7,c13,1          @ Prefetch Instruction Cache Line
@@ -767,15 +729,13 @@ dormant_save_preload_start:
     mcr     p15,0,r2,c7,c10,4          @ DSB
     str     r2,[r4,#L2X0_CACHE_SYNC]   @ L2 Cache sync
     mcr     p15,0,r2,c7,c10,4          @ DSB
-    @ Dummy read to assure data ejected by L2 sync arrive at DRAM
-    ldr     r7,[r6]
+    ldr     r7,[r6]                    @ Dummy read to assure data ejected by L2 sync arrive at DRAM
     mcr     p15,0,r2,c7,c10,4          @ DSB
 #ifdef CONFIG_BCM21553_L2_EVCT
     mov     r7,#0
     str     r7,[r6]                    @ Clean L2 buffer eviction buffer
     mcr     p15,0,r2,c7,c10,4          @ DSB
-    @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
-    ldr     r7,[r6]
+    ldr     r7,[r6]                    @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
     mcr     p15,0,r2,c7,c10,4          @ DSB
 #endif
 
@@ -846,14 +806,15 @@ bcm215xx_turn_off_mmu:
     mov     pc,r3
 
 bcm215xx_mmu_off:
-     mov     r4,r4
-     mov     r4,r4
-     mov     r4,r4
+    mov     r4,r4
+    mov     r4,r4
+    mov     r4,r4
 
     @ Preload rest of the dormant code (in physical space) into L1 cache
     mov     r3,#0
     adr     r4,static_mem_setup
     adr     r5,dormant_save_preload_end
+@    ldr     r5,[r0]                    @ may cause L1/L2 data cache churning
     bic     r4,r4,#0x1F
 l1_prefetch_loop_phys:
     mcr     p15,0,r4,c7,c13,1          @ Prefetch Instruction Cache Line
@@ -942,7 +903,7 @@ rev0_skip3:
     mrchs   p15,3,r7,c15,c8,5          @ Icache master valid 5
     mrchs   p15,3,r8,c15,c8,6          @ Icache master valid 6
     mrchs   p15,3,r9,c15,c8,7          @ Icache master valid 7
-   stmhsia r1!,{r6-r9}                @ Save
+   stmhsia  r1!,{r6-r9}                @ Save
 
     @ If TCMs are enabled as SmartCache, save the SmartCache
     @ master valid bits and the TCM region registers.
@@ -1194,139 +1155,15 @@ kernel_delaybyloop2:
     @ thus no bus transactions. A reset will happen during the following NOP
     @ code.
     @ Hui Luo, 1/4/11
+    .rept   160
     mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
-    mov     r1,r1
+    .endr
 
     b       resume_wfi_fail
 
     .align 5
 dormant_save_preload_end:
+@    ldr     r5,[r0]                    @ may cause L1/L2 data cache churning
 
   @ We come here if there are any pending interrupts. MMU is still
   @ disabled. Branch to dormant restore function using physical
@@ -1845,11 +1682,11 @@ l2_invalidate_skipped:
 .endif /* ENABLE_L2X0_CODE */
 
     @ Load the virt address of ret_from_func in r3
-    adr     r3,ret_from_dormant           @ Physical address of in r3
+    adr     r3,ret_from_dormant           @ Physical address in r3
     ldr     r0,phys_offset
     sub     r3,r3,r0
     ldr     r0,page_offset
-    add     r3,r3,r0                      @ Virtual address of in r3
+    add     r3,r3,r0                      @ Virtual address in r3
 
     @ Turn on mmu
     @ Sequence from arch/arm/kernel/head.S
@@ -2233,11 +2070,11 @@ l2_invalidate_skipped:
 .endif /* ENABLE_L2X0_CODE */
 
     @ Load the virt address of ret_from_func in r3
-    adr     r3,ret_from_dormant           @ Physical address of in r3
+    adr     r3,ret_from_dormant           @ Physical address in r3
     ldr     r0,phys_offset
     sub     r3,r3,r0
     ldr     r0,page_offset
-    add     r3,r3,r0                      @ Virtual address of in r3
+    add     r3,r3,r0                      @ Virtual address in r3
 
     @ Turn on mmu
     @ Sequence from arch/arm/kernel/head.S
@@ -2335,9 +2172,9 @@ ret_from_dormant:
     @ Indicate normal dormant exit status
     ldr     r0,=bcm_pm_sleep_buf
     ldr     r0,[r0]
-    ldr    r2,[r0,#PM_DORMANT_EXIT_STAT]
-    orr    r2,r2,#0x20
-    str    r2,[r0,#PM_DORMANT_EXIT_STAT]
+    ldr     r2,[r0,#PM_DORMANT_EXIT_STAT]
+    orr     r2,r2,#0x20
+    str     r2,[r0,#PM_DORMANT_EXIT_STAT]
 
     @ Restore System mode regs
     ldmdb   r1,{r0-r14}                   @ Restore r0-r14 (SYS)
@@ -2966,7 +2803,7 @@ sys_mode_regs: .asciz  "\r\nSYS Mode Registers:"
  * Description: Print the dormant buffer contents onto UARTA console.
  *
  * Inputs:
- *   None
+ *   None.
  *
  * Expects:
  *   None.
@@ -3176,125 +3013,125 @@ exception_stack_end:
  */
 ENTRY(bcm215xx_set_armahb_mode)
 		stmfd   sp!,{r0-r12,lr}
-		ldr		r3, =ADDR_CLKPWR_CLK_ARMAHB_MODE
-		ldr		r2, [r3]
-		and		r2, r2, #0x0F
-		and		r0, r0, #0x0F
-		cmp		r0, r2
-		beq		set_armahb_mode_ret
+		ldr	r3, =ADDR_CLKPWR_CLK_ARMAHB_MODE
+		ldr	r2, [r3]
+		and	r2, r2, #0x0F
+		and	r0, r0, #0x0F
+		cmp	r0, r2
+		beq	set_armahb_mode_ret
 
-		mrs		r6, cpsr				@  r6 saves cpsr
-		orr		r4, r6, #0xc0
-		msr		cpsr_c, r4
-		mrc     p15,0,r4,c1,c0,0		@  read ctrl reg
-		bic     r5,r4,#1<<11			@  disable branch prediction
-		mcr     p15,0,r5,c1,c0,0		@  write ctrl reg
-		eor		r5, r5, r4				@  r5 saves current branch prediction setting
+		mrs	r6, cpsr		@  r6 saves cpsr
+		orr	r4, r6, #0xc0
+		msr	cpsr_c, r4
+		mrc     p15,0,r4,c1,c0,0	@  read ctrl reg
+		bic     r5,r4,#1<<11		@  disable branch prediction
+		mcr     p15,0,r5,c1,c0,0	@  write ctrl reg
+		eor	r5, r5, r4		@  r5 saves current branch prediction setting
 
-		ldr		r8, =ADDR_EMI_REQUEST_MASK
-		ldr		r4, [r8]				@ dummy read to assure MMU descriptor is in TLB cache
-		ldr		r4, [r3]				@ dummy read to assure MMU descriptor is in TLB cache
+		ldr	r8, =ADDR_EMI_REQUEST_MASK
+		ldr	r4, [r8]		@ dummy read to assure MMU descriptor is in TLB cache
+		ldr	r4, [r3]		@ dummy read to assure MMU descriptor is in TLB cache
 
-		adr		r4, set_armahb_mode_incache_begin
-		adr		r7, set_armahb_mode_incache_end
-		bic		r4, r4, #0x1f
+		adr	r4, set_armahb_mode_incache_begin
+		adr	r7, set_armahb_mode_incache_end
+		bic	r4, r4, #0x1f
 set_armahb_mode_prefetch:
-		mcr		p15, 0, r4, c7, c13, 1	@  prefetch instruction cache line
-		add		r4, r4, #0x20
-		cmp		r4, r7
-		blt		set_armahb_mode_prefetch
+		mcr	p15, 0, r4, c7, c13, 1	@  prefetch instruction cache line
+		add	r4, r4, #0x20
+		cmp	r4, r7
+		blt	set_armahb_mode_prefetch
 
 		mov     r4,#0
-		mcr     p15,0,r4,c7,c10,4		@ DSB
+		mcr     p15,0,r4,c7,c10,4	@ DSB
 
 set_armahb_mode_incache_begin:
-		mov		r4, #300				@ arm11 delay 12us @416mhz or 6us @832mhz
+		mov	r4, #400		@ arm11 delay 12us @416mhz or 6us @832mhz
 set_armahb_mode_delay0:
 		subs	r4, r4, #1
 		bne		set_armahb_mode_delay0
 
-		B		set_armahb_mode_get_semaphore2
+		B	set_armahb_mode_get_semaphore2
 set_armahb_mode_get_semaphore:
-		MOV		r4, #50
+		MOV	r4, #50
 set_armahb_mode_get_semaphore1:
 		SUBS	r4, r4, #1
-		BNE		set_armahb_mode_get_semaphore1
+		BNE	set_armahb_mode_get_semaphore1
 set_armahb_mode_get_semaphore2:
-		LDR		r9, [r8]
+		LDR	r9, [r8]
 		ANDS	r7, r9, #0x0F
-		BNE		set_armahb_mode_get_semaphore
-		AND		r9, r9, #0xF0
-		ORR		r10, r9, #4
-		STR		r10, [r8]
-		MOV		r4, #50
+		BNE	set_armahb_mode_get_semaphore
+		AND	r9, r9, #0xF0
+		ORR	r10, r9, #4
+		STR	r10, [r8]
+		MOV	r4, #50
 set_armahb_mode_get_semaphore3:
 		SUBS	r4, r4, #1
-		BNE		set_armahb_mode_get_semaphore3
-		LDR		r9, [r8]
-		AND		r7, r9, #0x0F
-		CMP		r7, #4
-		BNE		set_armahb_mode_get_semaphore
-				 @semaphore has been obtained
-		AND		r9, r9, #0xF0
-		ORR		r10, r9, #0x0F
+		BNE	set_armahb_mode_get_semaphore3
+		LDR	r9, [r8]
+		AND	r7, r9, #0x0F
+		CMP	r7, #4
+		BNE	set_armahb_mode_get_semaphore
+			@ semaphore has been obtained
+		AND	r9, r9, #0xF0
+		ORR	r10, r9, #0x0F
 
-		str		r10, [r8]				@  block all emi ports
-		mov		r4, #100				@  arm11 delay 4us @416mhz or 2us @832mhz
+		str	r10, [r8]		@  block all emi ports
+		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_armahb_mode_delay1:
 		subs	r4, r4, #1
-		bne		set_armahb_mode_delay1
-		str		r0, [r3]				@  change armahb
-		mov		r4, #100				@  arm11 delay 4us @416mhz or 2us @832mhz
+		bne	set_armahb_mode_delay1
+		str	r0, [r3]		@  change armahb
+		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_armahb_mode_delay2:
 		subs	r4, r4, #1
-		bne		set_armahb_mode_delay2
-		str		r9, [r8]				@  unblock all emi ports
-		mov		r4, #100				@  arm11 delay 4us @416mhz or 2us @832mhz
+		bne	set_armahb_mode_delay2
+		str	r9, [r8]		@  unblock all emi ports
+		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_armahb_mode_delay3:
 		subs	r4, r4, #1
-		bne		set_armahb_mode_delay3
+		bne	set_armahb_mode_delay3
 
-		mov		r4, #0x00
-		mov		r4, #0x01
-		mov		r4, #0x02
-		mov		r4, #0x03
-		mov		r4, #0x04
-		mov		r4, #0x05
-		mov		r4, #0x06
-		mov		r4, #0x07
-		mov		r4, #0x08
-		mov		r4, #0x09
-		mov		r4, #0x0A
-		mov		r4, #0x0B
-		mov		r4, #0x0C
-		mov		r4, #0x0D
-		mov		r4, #0x0E
-		mov		r4, #0x0F
-		mov		r4, #0x10
-		mov		r4, #0x11
-		mov		r4, #0x12
-		mov		r4, #0x13
-		mov		r4, #0x14
-		mov		r4, #0x15
-		mov		r4, #0x16
-		mov		r4, #0x17
-		mov		r4, #0x18
-		mov		r4, #0x19
-		mov		r4, #0x1A
-		mov		r4, #0x1B
-		mov		r4, #0x1C
-		mov		r4, #0x1D
-		mov		r4, #0x1E
-		mov		r4, #0x1F
+		mov	r4, #0x00
+		mov	r4, #0x01
+		mov	r4, #0x02
+		mov	r4, #0x03
+		mov	r4, #0x04
+		mov	r4, #0x05
+		mov	r4, #0x06
+		mov	r4, #0x07
+		mov	r4, #0x08
+		mov	r4, #0x09
+		mov	r4, #0x0A
+		mov	r4, #0x0B
+		mov	r4, #0x0C
+		mov	r4, #0x0D
+		mov	r4, #0x0E
+		mov	r4, #0x0F
+		mov	r4, #0x10
+		mov	r4, #0x11
+		mov	r4, #0x12
+		mov	r4, #0x13
+		mov	r4, #0x14
+		mov	r4, #0x15
+		mov	r4, #0x16
+		mov	r4, #0x17
+		mov	r4, #0x18
+		mov	r4, #0x19
+		mov	r4, #0x1A
+		mov	r4, #0x1B
+		mov	r4, #0x1C
+		mov	r4, #0x1D
+		mov	r4, #0x1E
+		mov	r4, #0x1F
 
 set_armahb_mode_incache_end:
-		mrc     p15,0,r4,c1,c0,0		@  read ctrl reg
-		bic     r4,r4,#1<<11			@  disable branch prediction
-		orr		r4,r4,r5
-		mcr     p15,0,r4,c1,c0,0		@  write ctrl reg
-		msr		cpsr_c, r6
+		mrc     p15,0,r4,c1,c0,0	@  read ctrl reg
+		bic     r4,r4,#1<<11		@  disable branch prediction
+		orr	r4,r4,r5
+		mcr     p15,0,r4,c1,c0,0	@  write ctrl reg
+		msr	cpsr_c, r6
 set_armahb_mode_ret:
-	   ldmfd   sp!,{r0-r12,pc}                  @ restore regs and return
+	   ldmfd   sp!,{r0-r12,pc}		@ restore regs and return
 
 
 /*Util function to set AHB mode
@@ -3302,135 +3139,135 @@ set_armahb_mode_ret:
  */
 ENTRY(bcm215xx_set_appll_enable)
 		stmfd   sp!,{r0-r12,lr}
-		ldr		r3, =ADDR_CLKPWR_CLK_APPSPLL_ENABLE
-		ldr		r2, [r3]
-		and		r2, r2, #1
-		and		r0, r0, #1
-		cmp		r0, r2
-		beq		set_appll_enable_ret
+		ldr	r3, =ADDR_CLKPWR_CLK_APPSPLL_ENABLE
+		ldr	r2, [r3]
+		and	r2, r2, #1
+		and	r0, r0, #1
+		cmp	r0, r2
+		beq	set_appll_enable_ret
 
-		mrs		r6, cpsr				@  r6 saves cpsr
-		orr		r4, r6, #0xc0
-		msr		cpsr_c, r4
-		mrc     p15,0,r4,c1,c0,0		@  read ctrl reg
-		bic     r5,r4,#1<<11			@  disable branch prediction
-		mcr     p15,0,r5,c1,c0,0		@  write ctrl reg
-		eor		r5, r5, r4				@  r5 saves current branch prediction setting
+		mrs	r6, cpsr		@  r6 saves cpsr
+		orr	r4, r6, #0xc0
+		msr	cpsr_c, r4
+		mrc     p15,0,r4,c1,c0,0	@  read ctrl reg
+		bic     r5,r4,#1<<11		@  disable branch prediction
+		mcr     p15,0,r5,c1,c0,0	@  write ctrl reg
+		eor	r5, r5, r4		@  r5 saves current branch prediction setting
 
-		ldr		r2, =ADDR_CLKPWR_CLK_SYSCLK_DEBUG_MON2
-		ldr		r8, =ADDR_EMI_REQUEST_MASK
-		ldr		r4, [r8]			@ dummy read to assure MMU descriptor is in TLB cache
-		ldr		r4, [r2]				@ dummy read to assure MMU descriptor is in TLB cache
-		ldr		r4, [r3]				@ dummy read to assure MMU descriptor is in TLB cache
+		ldr	r2, =ADDR_CLKPWR_CLK_SYSCLK_DEBUG_MON2
+		ldr	r8, =ADDR_EMI_REQUEST_MASK
+		ldr	r4, [r8]		@ dummy read to assure MMU descriptor is in TLB cache
+		ldr	r4, [r2]		@ dummy read to assure MMU descriptor is in TLB cache
+		ldr	r4, [r3]		@ dummy read to assure MMU descriptor is in TLB cache
 
-		adr		r4, set_appll_enable_incache_begin
-		adr		r7, set_appll_enable_incache_end
-		bic		r4, r4, #0x1f
+		adr	r4, set_appll_enable_incache_begin
+		adr	r7, set_appll_enable_incache_end
+		bic	r4, r4, #0x1f
 set_appll_enable_prefetch:
-		mcr		p15, 0, r4, c7, c13, 1	@  prefetch instruction cache line
-		add		r4, r4, #0x20
-		cmp		r4, r7
-		blt		set_appll_enable_prefetch
+		mcr	p15, 0, r4, c7, c13, 1	@  prefetch instruction cache line
+		add	r4, r4, #0x20
+		cmp	r4, r7
+		blt	set_appll_enable_prefetch
 
 		mov     r4,#0
-		mcr     p15,0,r4,c7,c10,4		@ DSB
+		mcr     p15,0,r4,c7,c10,4	@ DSB
 
 set_appll_enable_incache_begin:
-		mov		r4, #300				@ arm11 delay 12us @416mhz or 6us @832mhz
+		mov	r4, #400		@ arm11 delay 12us @416mhz or 6us @832mhz
 set_appll_enable_delay0:
 		subs	r4, r4, #1
-		bne		set_appll_enable_delay0
+		bne	set_appll_enable_delay0
 
-		B		set_appll_enable_get_semaphore2
+		B	set_appll_enable_get_semaphore2
 set_appll_enable_get_semaphore:
-		MOV		r4, #50
+		MOV	r4, #50
 set_appll_enable_get_semaphore1:
 		SUBS	r4, r4, #1
-		BNE		set_appll_enable_get_semaphore1
+		BNE	set_appll_enable_get_semaphore1
 set_appll_enable_get_semaphore2:
-		LDR		r9, [r8]
+		LDR	r9, [r8]
 		ANDS	r7, r9, #0x0F
-		BNE		set_appll_enable_get_semaphore
-		AND		r9, r9, #0xF0
-		ORR		r10, r9, #4
-		STR		r10, [r8]
-		MOV		r4, #50
+		BNE	set_appll_enable_get_semaphore
+		AND	r9, r9, #0xF0
+		ORR	r10, r9, #4
+		STR	r10, [r8]
+		MOV	r4, #50
 set_appll_enable_get_semaphore3:
 		SUBS	r4, r4, #1
-		BNE		set_appll_enable_get_semaphore3
-		LDR		r9, [r8]
-		AND		r7, r9, #0x0F
-		CMP		r7, #4
-		BNE		set_appll_enable_get_semaphore
-					@ semaphore has been obtained
-		AND		r9, r9, #0xF0
-		ORR		r10, r9, #0x0F
+		BNE	set_appll_enable_get_semaphore3
+		LDR	r9, [r8]
+		AND	r7, r9, #0x0F
+		CMP	r7, #4
+		BNE	set_appll_enable_get_semaphore
+			@ semaphore has been obtained
+		AND	r9, r9, #0xF0
+		ORR	r10, r9, #0x0F
 
-		str		r10, [r8]				@  block all emi ports
-		mov		r4, #100				@  arm11 delay 4us @416mhz or 2us @832mhz
+		str	r10, [r8]		@  block all emi ports
+		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_appll_enable_delay1:
 		subs	r4, r4, #1
-		bne		set_appll_enable_delay1
-		str		r0, [r3]				@  change apll_enable
+		bne	set_appll_enable_delay1
+		str	r0, [r3]		@  change apll_enable
 set_appll_enable_loop:
-		mov		r4, #100				@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_appll_enable_delay2:
 		subs	r4, r4, #1
-		bne		set_appll_enable_delay2
-		cmp		r0, #0
-		beq		set_appll_enable_unblock
-		ldr		r1, [r2]
-		and		r1, r1, #0xf0
-		cmp		r1, #0x50
-		bne		set_appll_enable_loop
+		bne	set_appll_enable_delay2
+		cmp	r0, #0
+		beq	set_appll_enable_unblock
+		ldr	r1, [r2]
+		and	r1, r1, #0xf0
+		cmp	r1, #0x50
+		bne	set_appll_enable_loop
 set_appll_enable_unblock:
-		str		r9, [r8]				@  unblock all emi ports
-		mov		r4, #100				@  arm11 delay 4us @416mhz or 2us @832mhz
+		str	r9, [r8]		@  unblock all emi ports
+		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_appll_enable_delay3:
 		subs	r4, r4, #1
-		bne		set_appll_enable_delay3
+		bne	set_appll_enable_delay3
 
-		mov		r4, #0x00
-		mov		r4, #0x01
-		mov		r4, #0x02
-		mov		r4, #0x03
-		mov		r4, #0x04
-		mov		r4, #0x05
-		mov		r4, #0x06
-		mov		r4, #0x07
-		mov		r4, #0x08
-		mov		r4, #0x09
-		mov		r4, #0x0A
-		mov		r4, #0x0B
-		mov		r4, #0x0C
-		mov		r4, #0x0D
-		mov		r4, #0x0E
-		mov		r4, #0x0F
-		mov		r4, #0x10
-		mov		r4, #0x11
-		mov		r4, #0x12
-		mov		r4, #0x13
-		mov		r4, #0x14
-		mov		r4, #0x15
-		mov		r4, #0x16
-		mov		r4, #0x17
-		mov		r4, #0x18
-		mov		r4, #0x19
-		mov		r4, #0x1A
-		mov		r4, #0x1B
-		mov		r4, #0x1C
-		mov		r4, #0x1D
-		mov		r4, #0x1E
-		mov		r4, #0x1F
+		mov	r4, #0x00
+		mov	r4, #0x01
+		mov	r4, #0x02
+		mov	r4, #0x03
+		mov	r4, #0x04
+		mov	r4, #0x05
+		mov	r4, #0x06
+		mov	r4, #0x07
+		mov	r4, #0x08
+		mov	r4, #0x09
+		mov	r4, #0x0A
+		mov	r4, #0x0B
+		mov	r4, #0x0C
+		mov	r4, #0x0D
+		mov	r4, #0x0E
+		mov	r4, #0x0F
+		mov	r4, #0x10
+		mov	r4, #0x11
+		mov	r4, #0x12
+		mov	r4, #0x13
+		mov	r4, #0x14
+		mov	r4, #0x15
+		mov	r4, #0x16
+		mov	r4, #0x17
+		mov	r4, #0x18
+		mov	r4, #0x19
+		mov	r4, #0x1A
+		mov	r4, #0x1B
+		mov	r4, #0x1C
+		mov	r4, #0x1D
+		mov	r4, #0x1E
+		mov	r4, #0x1F
 
 set_appll_enable_incache_end:
-		mrc     p15,0,r4,c1,c0,0		@  read ctrl reg
-		bic     r4,r4,#1<<11			@  disable branch prediction
-		orr		r4,r4,r5
-		mcr     p15,0,r4,c1,c0,0		@  write ctrl reg
-		msr		cpsr_c, r6
+		mrc     p15,0,r4,c1,c0,0	@  read ctrl reg
+		bic     r4,r4,#1<<11		@  disable branch prediction
+		orr	r4,r4,r5
+		mcr     p15,0,r4,c1,c0,0	@  write ctrl reg
+		msr	cpsr_c, r6
 set_appll_enable_ret:
-	   ldmfd   sp!,{r0-r12,pc}                  @ restore regs and return
+		ldmfd   sp!,{r0-r12,pc}		@ restore regs and return
 
 
 @****************************************************************************

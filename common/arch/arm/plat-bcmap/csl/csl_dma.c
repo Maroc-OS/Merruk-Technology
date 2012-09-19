@@ -442,7 +442,7 @@ Int32 csl_dma_obtain_channel(UInt8 srcID, UInt8 dstID)
 
 		switch (priority) {
 		case DMA_CHAN_PRI_LOW:
-						/* Find one free channel from low priority to high */
+				/* Find one free channel from low priority to high */
 				for (idx = chan_scan_max; idx >= chan_scan_min; idx--) {
 					if (chanArray[idx].bUsed == FALSE) {
 					chan = idx;
@@ -891,7 +891,6 @@ Int32 csl_dma_bind_data(DMA_CHANNEL chanID,
 			pr_err("%s - chal cannot allocate specific channel %d\n", __func__,chanID);
 			return 0;
 		}
-
 		if (chal_dma_config_channel(pdma->handle, chanID, ASSOC_CHAN_NONE,
 					(ChalDmaChanConfig_t *) & chanConfig) == 0) {
 			pr_err("%s - chal has exceeded number of LLI's channle %d\n", __func__, chanID);

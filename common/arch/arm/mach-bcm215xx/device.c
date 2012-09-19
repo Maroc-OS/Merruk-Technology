@@ -62,6 +62,8 @@
 
 #include <linux/mfd/max8986/max8986.h>
 
+#include <mach/clkmgr.h>
+
 #if defined(CONFIG_SERIAL_8250) || defined(CONFIG_SERIAL_8250_MODULE)
 /*!
  * The serial port definition structure.
@@ -313,7 +315,7 @@ struct platform_device bcm21553_sdhc_slot1 = {
 	.resource = sdhc1_resources,
 };
 EXPORT_SYMBOL(bcm21553_sdhc_slot1);
-#if !defined(CONFIG_MTD_ONENAND)
+#if !defined(CONFIG_MTD_ONENAND) && !defined(CONFIG_MTD_NAND)
 /*
  * SDHC2 is used for eMMC and SDHC2 shares pin mux with FLASH(OneNAND)
  * So both OneNAND and SDHC2 cannot co-exist
@@ -533,6 +535,21 @@ struct platform_device	bcm21xx_dma_device = {
 #endif
 
 #ifdef CONFIG_BCM215XX_DSS
+
+#ifdef CONFIG_LCD_CONTROLLER_DSI
+static struct resource lcdc_resources[] = {
+	{
+	    .start	= IO_ADDRESS(BCM21553_DSI_BASE),
+	    .end	= IO_ADDRESS(BCM21553_DSI_BASE) + SZ_4K - 1,
+	    .flags	= IORESOURCE_MEM,
+	 },
+	{
+	    .start	= IRQ_DSI,
+	    .end	= IRQ_DSI,
+	    .flags	= IORESOURCE_IRQ,
+	},
+};
+#else//CONFIG_LCD_CONTROLLER_LEGACY
 static struct resource lcdc_resources[] = {
 	{
 	 .start = IO_ADDRESS(BCM21553_LCDC_BASE),
@@ -540,6 +557,7 @@ static struct resource lcdc_resources[] = {
 	 .flags = IORESOURCE_MEM,
 	 },
 };
+#endif //CONFIG_LCD_CONTROLLER_DSI
 
 struct platform_device bcm215xx_lcdc_device = {
 	.name		= "LCDC",
@@ -547,7 +565,22 @@ struct platform_device bcm215xx_lcdc_device = {
 	.resource	= lcdc_resources,
 	.num_resources	= ARRAY_SIZE(lcdc_resources),
 };
-#endif
+
+#endif //CONFIG_BCM215XX_DSS
+
+/* List of arm core clk frequencies. */
+/*enum {
+	BCM21553_CORECLK_KHZ_156 = (156U * 1000),
+	BCM21553_CORECLK_KHZ_208 = (208U * 1000),
+	BCM21553_CORECLK_KHZ_288 = (288U * 1000),
+	BCM21553_CORECLK_KHZ_312 = (312U * 1000),
+	BCM21553_CORECLK_KHZ_416 = (416U * 1000),
+	BCM21553_CORECLK_KHZ_468 = (468U * 1000),
+	BCM21553_CORECLK_KHZ_624 = (624U * 1000),
+	BCM21553_CORECLK_KHZ_832 = (832U * 1000),
+	BCM21553_CORECLK_KHZ_936 = (936U * 1000),
+	BCM21553_CORECLK_KHZ_1GB = (1248U * 1000),
+};*/
 
 #define BCM_CORE_CLK_OSUPER		BCM21553_CORECLK_KHZ_1GB
 #define BCM_CORE_CLK_SUPER		BCM21553_CORECLK_KHZ_936
@@ -590,8 +623,8 @@ static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
 	FTBL_INIT(BCM_CORE_CLK_OMEDIUM / 1000, 1240000),
 	FTBL_INIT(BCM_CORE_CLK_HEIGHER / 1000, 1280000),
 	FTBL_INIT(BCM_CORE_CLK_TURBO / 1000, 1320000),
-	FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 1340000),
-	FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 1360000),
+	FTBL_INIT(BCM_CORE_CLK_SUPER / 1000, 1360000),
+	FTBL_INIT(BCM_CORE_CLK_OSUPER / 1000, 1380000),
 };
 /* BCM21553 CPU info */
 static struct bcm_cpu_info bcm215xx_cpu_info[] = {
@@ -627,6 +660,18 @@ struct platform_device bcm21553_cpufreq_drv = {
 		.platform_data = &bcm21553_cpufreq_drv_plat,
 	},
 };
+
+void __init update_turbo_freq(void)
+{
+	u32 cpu_freq;
+
+	cpu_freq = bcm21553_apps_pll_get_rate();
+	cpu_freq = (cpu_freq * 3) / 4;          /* in Hz  */
+	cpu_freq = cpu_freq / 1000 / 1000;      /* in MHz */
+
+	bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_freq = cpu_freq;
+	pr_info("%s: cpu frequency : %u\n", __func__, cpu_freq);
+}
 #endif /* CONFIG_BCM_CPU_FREQ */
 
 #if defined(CONFIG_CPU_FREQ_GOV_BCM21553)
@@ -692,20 +737,20 @@ struct platform_device bcm21553_cpufreq_gov = {
 #define NM2_SS_VOLTAGE_HEIGHER	1320000
 
 #define NM2_FF_VOLTAGE_TURBO	1220000
-#define NM2_TT_VOLTAGE_TURBO	1300000
+#define NM2_TT_VOLTAGE_TURBO	1320000
 #define NM2_SS_VOLTAGE_TURBO	1340000
 
 #define NM2_FF_VOLTAGE_SUPER	1280000
-#define NM2_TT_VOLTAGE_SUPER	1340000
+#define NM2_TT_VOLTAGE_SUPER	1360000
 #define NM2_SS_VOLTAGE_SUPER	1360000
 
 #define NM2_FF_VOLTAGE_OSUPER	1340000
-#define NM2_TT_VOLTAGE_OSUPER	1360000
-#define NM2_SS_VOLTAGE_OSUPER	1360000
+#define NM2_TT_VOLTAGE_OSUPER	1380000
+#define NM2_SS_VOLTAGE_OSUPER	1380000
 
 #define NM_FF_VOLTAGE		1340000
-#define NM_TT_VOLTAGE		1360000
-#define NM_SS_VOLTAGE		1360000
+#define NM_TT_VOLTAGE		1380000
+#define NM_SS_VOLTAGE		1380000
 
 #define FF_THRESHOLD 445
 #define SS_THRESHOLD 395

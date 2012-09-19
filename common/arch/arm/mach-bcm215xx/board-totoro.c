@@ -151,7 +151,7 @@
 #include <linux/usb/android.h>
 #endif
 
-#define FREQ_GHZ(mhz)		((ghz)*1000UL*1000UL*1000UL)
+#define FREQ_GHZ(ghz)		((ghz)*1000UL*1000UL*1000UL)
 #define FREQ_MHZ(mhz)		((mhz)*1000UL*1000UL)
 #define FREQ_KHZ(khz)		((khz)*1000UL)
 
@@ -1847,30 +1847,30 @@ static struct i2c_board_info __initdata athenaray_i2cgpio3_board_info[] = {
 static void athenaray_add_i2c_slaves(void)
 {
 	i2c_register_board_info(I2C_BSC_ID0, athenaray_i2c1_board_info,
-		ARRAY_SIZE(athenaray_i2c1_board_info));
+				ARRAY_SIZE(athenaray_i2c1_board_info));
 /*	i2c_register_board_info(I2C_BSC_ID1, athenaray_i2c2_board_info,
-		ARRAY_SIZE(athenaray_i2c2_board_info));
+				ARRAY_SIZE(athenaray_i2c2_board_info));
 	i2c_register_board_info(I2C_BSC_ID2, athenaray_i2c3_board_info,
-		ARRAY_SIZE(athenaray_i2c3_board_info));
+				ARRAY_SIZE(athenaray_i2c3_board_info));
 */
 #if defined (CONFIG_BRCM_HAL_CAM)
 	i2c_register_board_info(I2C_BSC_ID1, bcm21553_cam_i2c_board_info,
-			ARRAY_SIZE(bcm21553_cam_i2c_board_info));
+				ARRAY_SIZE(bcm21553_cam_i2c_board_info));
 #endif
 	i2c_register_board_info(0x3, athenaray_i2cgpio0_board_info,
-		ARRAY_SIZE(athenaray_i2cgpio0_board_info));
+				ARRAY_SIZE(athenaray_i2cgpio0_board_info));
 
 #if defined (CONFIG_SENSORS_BMA222)
 	i2c_register_board_info(0x4, athenaray_i2cgpio1_board_info,
-		ARRAY_SIZE(athenaray_i2cgpio1_board_info));
+				ARRAY_SIZE(athenaray_i2cgpio1_board_info));
 #endif
 #if defined (CONFIG_SENSORS_GP2A)
 	i2c_register_board_info(0x5, athenaray_i2cgpio2_board_info,
-		ARRAY_SIZE(athenaray_i2cgpio2_board_info));
+				ARRAY_SIZE(athenaray_i2cgpio2_board_info));
 #endif
 #if defined (CONFIG_SENSORS_MMC328X)
 	i2c_register_board_info(0x6, athenaray_i2cgpio3_board_info,
-		ARRAY_SIZE(athenaray_i2cgpio3_board_info));
+				ARRAY_SIZE(athenaray_i2cgpio3_board_info));
 #endif
 }
 

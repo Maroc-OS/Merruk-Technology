@@ -1,7 +1,7 @@
 /*******************************************************************************
 * Copyright 2010 Broadcom Corporation.  All rights reserved.
 *
-*       @file   arch/arm/plat-bcmap/include/plat/csl/csl_lcdc.h
+* 	@file	arch/arm/plat-bcmap/include/plat/csl/csl_lcdc.h
 *
 * Unless you and Broadcom execute a separate written software license agreement
 * governing use of this software, this software is licensed to you under the
@@ -418,6 +418,37 @@ extern "C" {
 *
 *****************************************************************************/
 	CSL_LCD_RES_T CSL_LCDC_Unlock(CSL_LCD_HANDLE lcdcH);
+
+/**
+*
+*  @brief    Lock LCDC Controller For Exclusive Use (all supported modes)
+*
+* 	To be used only while in atomic context
+*
+*  @param	 lcdcH         (in) CSL LCDC handle
+*
+*  @return	 CSL_LCD_RES_T (out)
+*
+*  @note     Common to Z80/M68 & DBI modes
+*
+*****************************************************************************/
+	CSL_LCD_RES_T CSL_LCDC_Lock_NoSem(CSL_LCD_HANDLE lcdcH);
+
+/**
+*
+*  @brief    Unlock LCDC Controller (all supported modes)
+*
+*
+* 	To be used only while in atomic context
+*
+*  @param	 lcdcH         (in) CSL LCDC handle
+*
+*  @return	 CSL_LCD_RES_T (out)
+*
+*  @note     Common to Z80/M68 & DBI modes
+*
+*****************************************************************************/
+	CSL_LCD_RES_T CSL_LCDC_Unlock_NoSem(CSL_LCD_HANDLE lcdcH);
 
 /**
 *
