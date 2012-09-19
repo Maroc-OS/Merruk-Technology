@@ -65,7 +65,7 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
 
   echo \#define LINUX_COMPILE_TIME \"`date +%T`\"
   #echo \#define LINUX_COMPILE_BY \"`whoami`\"
-  echo \#define LINUX_COMPILE_BY \"`echo "Merruk-2.5"`\"
+  echo \#define LINUX_COMPILE_BY \"`echo "MT-2.5"`\"
   #echo \#define LINUX_COMPILE_HOST \"`hostname | $UTS_TRUNCATE`\"
   echo \#define LINUX_COMPILE_HOST \"`echo "By-Merruk's-Team" | $UTS_TRUNCATE`\"
 
