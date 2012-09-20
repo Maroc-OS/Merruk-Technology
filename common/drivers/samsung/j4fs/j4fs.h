@@ -73,10 +73,8 @@
 #define PHYSICAL_BLOCK_SIZE	PHYSICAL_PAGE_SIZE*64		// 256KB
 #define J4FS_PARTITION_ID		21
 #undef J4FS_USE_XSR							// NO XSR
-/*#define J4FS_USE_XSR*/
 // J4FS for moviNAND merged from ROSSI
 #undef J4FS_USE_FSR						// FSR
-/*#define J4FS_USE_FSR*/
 #define J4FS_USE_MOVI
 
 #if defined(J4FS_USE_MOVI)
@@ -492,3 +490,5 @@ extern int FlashDevSpecial(j4fs_device_info *dev_ptr, DWORD scmd);
 #else
 #define TOUT(p) printf p
 #endif
+
+

@@ -1502,17 +1502,17 @@ const struct file_operations j4fs_file_operations = {
 const struct file_operations j4fs_dir_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= generic_read_dir,
-	.readdir	= j4fs_readdir,
+	.readdir		= j4fs_readdir,
 };
 
 const struct inode_operations j4fs_file_inode_operations = {
-	/*.permission = NULL,*/
+	.permission = NULL,
 };
 
 const struct inode_operations j4fs_dir_inode_operations = {
 	.create		= j4fs_create,
 	.lookup		= j4fs_lookup,
-	/*.permission	= NULL,*/
+	.permission	= NULL,
 };
 
 const struct super_operations j4fs_sops = {
@@ -1523,3 +1523,5 @@ const struct super_operations j4fs_sops = {
 	.read_inode	= j4fs_read_inode,
 #endif
 };
+
+

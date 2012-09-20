@@ -123,12 +123,12 @@ static ssize_t brcm_switch_read(struct file *file, char *buf, int count, loff_t 
 		return len;
 	} else {
 		pr_info("\nTest Modes:\n");
-        	pr_info("MSC_ONLY_MODE: echo 1 > /proc/brcm_switch\n");
-        	pr_info("ADB_MSC_MODE: echo 2 > /proc/brcm_switch\n");
-        	pr_info("RNDIS_ETH_MODE: echo 3 > /proc/brcm_switch\n");
+        pr_info("MSC_ONLY_MODE: echo 1 > /proc/brcm_switch\n");
+        pr_info("ADB_MSC_MODE: echo 2 > /proc/brcm_switch\n");
+        pr_info("RNDIS_ETH_MODE: echo 3 > /proc/brcm_switch\n");
 		pr_info("ACM_ONLY_MODE: echo 6 > /proc/brcm_switch\n");
-        	pr_info("ACM_MSC_MODE: echo 7 > /proc/brcm_switch\n");
-        	pr_info("LOOPBACK_TEST_MODE: echo 8 > /proc/brcm_switch\n");
+        pr_info("ACM_MSC_MODE: echo 7 > /proc/brcm_switch\n");
+        pr_info("LOOPBACK_TEST_MODE: echo 8 > /proc/brcm_switch\n");
        	return 0;
 	}      
 }
@@ -158,15 +158,15 @@ static ssize_t brcm_switch_write(struct file *file, const char *buffer, unsigned
 			brcm_switch_task = kthread_run(brcm_switch_restore_adb, 0, "restore_adb");
 			break;
 	case ACM_ONLY_MODE:
-			pr_info("\ACM_ONLY_MODE\n");	
+			pr_info("\nACM_ONLY_MODE\n");	
 			brcm_switch_task = kthread_run(brcm_switch_acm_only, 0, "acm_only");			
 			break;
 	case ACM_OBEX_MODE:
-			pr_info("\ACM_OBEX_MODE\n");		
+			pr_info("\nACM_OBEX_MODE\n");		
 			brcm_switch_task = kthread_run(brcm_switch_acm_obex, 0, "acm_msc");				
 			break;	
 	case LOOPBACK_TEST_MODE:
-			pr_info("LOOPBACK_TEST_MODE\n");
+			pr_info("\nLOOPBACK_TEST_MODE\n");
 			brcm_switch_task = kthread_run(brcm_switch_toggle_test, 0, "toggle_test");
 			break;
         case CHECK_USB_MODE:

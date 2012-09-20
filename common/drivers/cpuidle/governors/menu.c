@@ -251,8 +251,10 @@ static int menu_select(struct cpuidle_device *dev)
 		return 0;
 
 	/* determine the expected residency time, round up */
+	/* fixed wrapping timers at 4.294 seconds */
 	t = ktime_to_timespec(tick_nohz_get_sleep_length());
-	data->expected_us = t.tv_sec * USEC_PER_SEC + t.tv_nsec / NSEC_PER_USEC;
+	data->expected_us =
+		t.tv_sec * USEC_PER_SEC + t.tv_nsec / NSEC_PER_USEC;
 
 
 	data->bucket = which_bucket(data->expected_us);

@@ -295,9 +295,13 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
 	else
 		addr = page_address(page);
 
-	if (addr)
+	/* free allocated page if unable to map thanks "github/ronisbr" */
+	if (addr) {
 		*handle = page_to_dma(dev, page);
-
+	}
+	else {
+		__dma_free_buffer(page,size);
+	}
 	return addr;
 }
 

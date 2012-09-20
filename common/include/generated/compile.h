@@ -1,9 +1,9 @@
-/* This file is auto generated, version 127 */
+/* This file is auto generated, version 136 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#127 PREEMPT Mon Sep 17 09:08:45 CEST 2012"
-#define LINUX_COMPILE_TIME "09:08:45"
-#define LINUX_COMPILE_BY "Merruk-2.5"
+#define UTS_VERSION "#136 PREEMPT Thu Sep 20 06:42:27 CEST 2012"
+#define LINUX_COMPILE_TIME "06:42:27"
+#define LINUX_COMPILE_BY "MT-2.5"
 #define LINUX_COMPILE_HOST "By-Merruk's-Team"
 #define LINUX_COMPILE_DOMAIN "(none)"
-#define LINUX_COMPILER "gcc version 4.4.1 (Sourcery G++ Lite 2009q3-68) "
+#define LINUX_COMPILER "gcc version 4.6.3 (Sourcery CodeBench Lite 2012.03-56) "

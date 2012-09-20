@@ -191,10 +191,9 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?=arm
-CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
-#CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_CodeBench_for_ARM_EABI/arm-none-eabi/bin/
+#CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
+CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
-EXTRA_AFLAGS	?=-mfpu=neon -ftree-vectorize -mfloat-abi=softfp
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -354,19 +353,29 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include -Iinclude \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
-		   -fno-delete-null-pointer-checks
-
 #KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-#		   -fno-delete-null-pointer-checks -march=armv7-a -mcpu=cortex-a9 -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -#fgcse-las \
-#		   -fgcse-sm -fgcse-las -ftree-loop-linear -ftree-loop-im -ftree-loop-ivcanon -fivopts -funroll-loops -fbtr-bb-exclusive -fremove-local-statics \
-#		   --param l2-cache-size=512 --param l1-cache-size=64 --param simultaneous-prefetches=6 --param prefetch-latency=400 --param l1-cache-line-size=64 -#mvectorize-with-neon-quad \
+#		   -fno-strict-aliasing -fno-common \
+#		   -Werror-implicit-function-declaration \
+#		   -Wno-format-security \
+#		   -fno-delete-null-pointer-checks
+
+#KBUILD_CFLAGS  := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+#		  -fno-delete-null-pointer-checks -march=armv7-a -mcpu=cortex-a9 -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -#fgcse-las \
+#		  -fgcse-sm -fgcse-las -ftree-loop-linear -ftree-loop-im -ftree-loop-ivcanon -fivopts -funroll-loops -fbtr-bb-exclusive -fremove-local-statics \
+#		  --param l2-cache-size=512 --param l1-cache-size=64 --param simultaneous-prefetches=6 --param prefetch-latency=400 --param l1-cache-line-size=64 -#mvectorize-with-neon-quad \
 #		   -fmodulo-sched -fmodulo-sched-allow-regmoves -freschedule-modulo-scheduled-loops -fvect-cost-model \
 #		   -mno-unaligned-access
 
+KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Wno-unused-but-set-variable \
+		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
+		   -Wno-format-security -mthumb -mthumb-interwork -mfloat-abi=hard \
+		   -fno-delete-null-pointer-checks -march=armv7-a -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -fgcse-las \
+		   -fgcse-sm -fgcse-las -ftree-loop-linear -ftree-loop-im -ftree-loop-ivcanon -fivopts -funroll-loops -fbtr-bb-exclusive -fremove-local-statics \
+		   --param l2-cache-size=512 --param l1-cache-size=64 --param simultaneous-prefetches=6 --param prefetch-latency=400 --param l1-cache-line-size=64 -mvectorize-with-neon-quad \
+		   -fmodulo-sched -fmodulo-sched-allow-regmoves -freschedule-modulo-scheduled-loops -fvect-cost-model \
+		   -mno-unaligned-access
+		   
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)

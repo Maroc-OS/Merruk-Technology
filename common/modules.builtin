@@ -63,6 +63,10 @@ kernel/drivers/cpufreq/cpufreq_powersave.ko
 kernel/drivers/cpufreq/cpufreq_userspace.ko
 kernel/drivers/cpufreq/cpufreq_ondemand.ko
 kernel/drivers/cpufreq/cpufreq_conservative.ko
+kernel/drivers/cpufreq/cpufreq_interactive.ko
+kernel/drivers/cpufreq/cpufreq_lionheart.ko
+kernel/drivers/cpufreq/cpufreq_ondemandx.ko
+kernel/drivers/cpufreq/cpufreq_smartass2.ko
 kernel/drivers/cpufreq/freq_table.ko
 kernel/drivers/haptic/haptic-class.ko
 kernel/drivers/haptic/haptic-samsung-pwm.ko
