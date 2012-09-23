@@ -367,14 +367,14 @@ KBUILD_CPPFLAGS := -D__KERNEL__
 #		   -mno-unaligned-access
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Wno-unused-but-set-variable \
-		   -fno-strict-aliasing -fno-common \
+		   -fno-strict-aliasing -fno-common -fno-inline-functions-called-once \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security -mthumb -mthumb-interwork -mfloat-abi=hard \
 		   -fno-delete-null-pointer-checks -march=armv7-a -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -fgcse-las \
 		   -fgcse-sm -fgcse-las -ftree-loop-linear -ftree-loop-im -ftree-loop-ivcanon -fivopts -funroll-loops -fbtr-bb-exclusive -fremove-local-statics \
 		   --param l2-cache-size=512 --param l1-cache-size=64 --param simultaneous-prefetches=6 --param prefetch-latency=400 --param l1-cache-line-size=64 -mvectorize-with-neon-quad \
 		   -fmodulo-sched -fmodulo-sched-allow-regmoves -freschedule-modulo-scheduled-loops -fvect-cost-model \
-		   -mno-unaligned-access
+		   -mno-unaligned-access -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fvect-cost-model -fipa-cp-clone
 		   
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
@@ -550,7 +550,7 @@ endif # $(dot-config)
 # command line.
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults vmlinux but it is usually overridden in the arch makefile
-# (-Ofast)
+# -Ofast
 all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE

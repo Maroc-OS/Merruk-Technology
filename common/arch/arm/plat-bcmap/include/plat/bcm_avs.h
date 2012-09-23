@@ -108,7 +108,7 @@ struct bcm_avs_platform_data_t
 	 */
 	char *core_omedium_regl;
 
-	/* Name of the regulator to control core omedium mode voltage
+	/* Name of the regulator to control core higher mode voltage
 	 * Pass NULL if not supported/need not update
 	 */
 	char *core_heigher_regl;

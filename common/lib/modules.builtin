@@ -7,5 +7,7 @@ kernel/lib/libcrc32c.ko
 kernel/lib/ts_kmp.ko
 kernel/lib/ts_bm.ko
 kernel/lib/ts_fsm.ko
+kernel/lib/lzo/lzo_decompress.ko
+kernel/lib/reed_solomon/reed_solomon.ko
 kernel/lib/zlib_deflate/zlib_deflate.ko
 kernel/lib/zlib_inflate/zlib_inflate.ko

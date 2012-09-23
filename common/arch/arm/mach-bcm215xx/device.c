@@ -666,8 +666,8 @@ void __init update_turbo_freq(void)
 	u32 cpu_freq;
 
 	cpu_freq = bcm21553_apps_pll_get_rate();
-	cpu_freq = (cpu_freq * 3) / 4;          /* in Hz  */
-	cpu_freq = cpu_freq / 1000 / 1000;      /* in MHz */
+	/*cpu_freq = 1024; cpu_freq - ((cpu_freq * 2) / 12); in Hz  */
+	cpu_freq = cpu_freq / 1000 / 1000;				/* in MHz */
 
 	bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_freq = cpu_freq;
 	pr_info("%s: cpu frequency : %u\n", __func__, cpu_freq);
@@ -876,43 +876,43 @@ static void bcm215xx_avs_notify(int silicon_type)
 
 	}
 
-	if (ulower >= 0)
+	if (ulower > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
 		  (u32)ulower;
 
-	if (lower >= 0)
+	if (lower > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
 		  (u32)lower;
 
-	if (starter >= 0)
+	if (starter > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_STARTER_MODE].cpu_voltage =
 		  (u32)starter;
 
-	if (normal >= 0)
+	if (normal > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_NORMAL_MODE].cpu_voltage =
 		  (u32)normal;
 
-	if (umedium >= 0)
+	if (umedium > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_UMEDIUM_MODE].cpu_voltage =
 		  (u32)umedium;
 
-	if (omedium >= 0)
+	if (omedium > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OMEDIUM_MODE].cpu_voltage =
 		  (u32)omedium;
 
-	if (heigher >= 0)
+	if (heigher > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_HEIGHER_MODE].cpu_voltage =
 		  (u32)heigher;
 
-	if (turbo >= 0)
+	if (turbo > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_TURBO_MODE].cpu_voltage =
 		  (u32)turbo;
 
-	if (super >= 0)
+	if (super > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_SUPER_MODE].cpu_voltage =
 		  (u32)super;
 
-	if (osuper >= 0)
+	if (osuper > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_OSUPER_MODE].cpu_voltage =
 		  (u32)osuper;
 

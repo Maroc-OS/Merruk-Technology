@@ -83,26 +83,26 @@ extern void bcm215xx_set_appll_enable(u32 enable);
 static struct proc_dir_entry *brcm_proc_file;
 
 /*ARM11 clock */
-#define bcm21553_arm11_enable 		NULL
-#define bcm21553_arm11_disable 		NULL
-#define bcm21553_arm11_set_parent 	NULL
+#define bcm21553_arm11_enable			NULL
+#define bcm21553_arm11_disable			NULL
+#define bcm21553_arm11_set_parent		NULL
 static unsigned long bcm21553_arm11_get_rate(struct clk *clk);
 static int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_arm11_round_rate(struct clk *clk,
 				      unsigned long desired_val);
 
 /*AHB*/
-#define bcm21553_ahb_enable 		NULL
-#define bcm21553_ahb_disable  	NULL
-#define bcm21553_ahb_set_rate     NULL
-#define bcm21553_ahb_round_rate   NULL
+#define bcm21553_ahb_enable 			NULL
+#define bcm21553_ahb_disable  			NULL
+#define bcm21553_ahb_set_rate 			NULL
+#define bcm21553_ahb_round_rate			NULL
 static unsigned long bcm21553_ahb_get_rate(struct clk *clk);
 
 /*AHB fast*/
-#define bcm21553_ahb_fast_enable 		NULL
-#define bcm21553_ahb_fast_disable  	NULL
-#define bcm21553_ahb_fast_set_rate     NULL
-#define bcm21553_ahb_fast_round_rate   NULL
+#define bcm21553_ahb_fast_enable		NULL
+#define bcm21553_ahb_fast_disable		NULL
+#define bcm21553_ahb_fast_set_rate		NULL
+#define bcm21553_ahb_fast_round_rate	NULL
 static unsigned long bcm21553_ahb_fast_get_rate(struct clk *clk);
 
 
@@ -114,48 +114,48 @@ static int bcm21553_cam_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_cam_round_rate(struct clk *clk, unsigned long desired_val);
 
 /*I2S Int clk */
-#define bcm21553_i2s_int_enable 		NULL
-#define bcm21553_i2s_int_disable 		NULL
+#define bcm21553_i2s_int_enable			NULL
+#define bcm21553_i2s_int_disable		NULL
 static unsigned long bcm21553_i2s_int_get_rate(struct clk *clk);
 static int bcm21553_i2s_int_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_i2s_int_round_rate(struct clk *clk,
 					unsigned long desired_val);
 
 /*DAM clk */
-#define bcm21553_damck_get_rate 	NULL
-#define bcm21553_damck_set_rate		NULL
-#define bcm21553_damck_round_rate	NULL
+#define bcm21553_damck_get_rate			NULL
+#define bcm21553_damck_set_rate			NULL
+#define bcm21553_damck_round_rate		NULL
 static int bcm21553_damck_enable(struct clk *clk);
 static void bcm21553_damck_disable(struct clk *clk);
 
 /*PDP clk */
-#define bcm21553_pdpck_enable 		NULL
-#define bcm21553_pdpck_disable 		NULL
+#define bcm21553_pdpck_enable			NULL
+#define bcm21553_pdpck_disable			NULL
 static unsigned long bcm21553_pdpck_get_rate(struct clk *clk);
 static int bcm21553_pdpck_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_pdpck_round_rate(struct clk *clk,
 				      unsigned long desired_val);
 
 /*SDIO1 clk*/
-#define bcm21553_sdio1_enable 	bcm21553_sdio_enable
-#define bcm21553_sdio1_disable  bcm21553_sdio_disable
-#define bcm21553_sdio1_get_rate	bcm21553_sdio_get_rate
-#define bcm21553_sdio1_set_rate bcm21553_sdio_set_rate
-#define bcm21553_sdio1_round_rate bcm21553_sdio_round_rate
+#define bcm21553_sdio1_enable			bcm21553_sdio_enable
+#define bcm21553_sdio1_disable			bcm21553_sdio_disable
+#define bcm21553_sdio1_get_rate			bcm21553_sdio_get_rate
+#define bcm21553_sdio1_set_rate			bcm21553_sdio_set_rate
+#define bcm21553_sdio1_round_rate		bcm21553_sdio_round_rate
 
 /*SDIO2 clk*/
-#define bcm21553_sdio2_enable 	bcm21553_sdio_enable
-#define bcm21553_sdio2_disable  bcm21553_sdio_disable
-#define bcm21553_sdio2_get_rate	bcm21553_sdio_get_rate
-#define bcm21553_sdio2_set_rate bcm21553_sdio_set_rate
-#define bcm21553_sdio2_round_rate bcm21553_sdio_round_rate
+#define bcm21553_sdio2_enable			bcm21553_sdio_enable
+#define bcm21553_sdio2_disable			bcm21553_sdio_disable
+#define bcm21553_sdio2_get_rate			bcm21553_sdio_get_rate
+#define bcm21553_sdio2_set_rate			bcm21553_sdio_set_rate
+#define bcm21553_sdio2_round_rate		bcm21553_sdio_round_rate
 
 /*SDIO3 clk*/
-#define bcm21553_sdio3_enable 	bcm21553_sdio_enable
-#define bcm21553_sdio3_disable  bcm21553_sdio_disable
-#define bcm21553_sdio3_get_rate	bcm21553_sdio_get_rate
-#define bcm21553_sdio3_set_rate bcm21553_sdio_set_rate
-#define bcm21553_sdio3_round_rate bcm21553_sdio_round_rate
+#define bcm21553_sdio3_enable			bcm21553_sdio_enable
+#define bcm21553_sdio3_disable			bcm21553_sdio_disable
+#define bcm21553_sdio3_get_rate			bcm21553_sdio_get_rate
+#define bcm21553_sdio3_set_rate			bcm21553_sdio_set_rate
+#define bcm21553_sdio3_round_rate		bcm21553_sdio_round_rate
 
 static int bcm21553_sdio_enable(struct clk *clk);
 static void bcm21553_sdio_disable(struct clk *clk);
@@ -165,57 +165,57 @@ static long bcm21553_sdio_round_rate(struct clk *clk,
 				     unsigned long desired_val);
 
 /*SDRAM clk*/
-#define bcm21553_sdram_enable 		NULL
-#define bcm21553_sdram_disable  	NULL
-#define bcm21553_sdram_set_rate     NULL
-#define bcm21553_sdram_round_rate   NULL
+#define bcm21553_sdram_enable			NULL
+#define bcm21553_sdram_disable			NULL
+#define bcm21553_sdram_set_rate			NULL
+#define bcm21553_sdram_round_rate		NULL
 static unsigned long bcm21553_sdram_get_rate(struct clk *clk);
 
 /*NVSRAM clk*/
-#define bcm21553_nvsram_enable 		NULL
-#define bcm21553_nvsram_disable  	NULL
-#define bcm21553_nvsram_set_rate     NULL
-#define bcm21553_nvsram_round_rate   NULL
+#define bcm21553_nvsram_enable			NULL
+#define bcm21553_nvsram_disable			NULL
+#define bcm21553_nvsram_set_rate		NULL
+#define bcm21553_nvsram_round_rate		NULL
 static unsigned long bcm21553_nvsram_get_rate(struct clk *clk);
 
 /*SPI1 clk */
-#define bcm21553_spi1_enable 		NULL
-#define bcm21553_spi1_disable  		NULL
-#define bcm21553_spi1_get_rate		bcm21553_spi_get_rate
-#define bcm21553_spi1_set_rate		bcm21553_spi_set_rate
-#define bcm21553_spi1_round_rate	bcm21553_spi_round_rate
+#define bcm21553_spi1_enable			NULL
+#define bcm21553_spi1_disable			NULL
+#define bcm21553_spi1_get_rate			bcm21553_spi_get_rate
+#define bcm21553_spi1_set_rate			bcm21553_spi_set_rate
+#define bcm21553_spi1_round_rate		bcm21553_spi_round_rate
 
 /*SPI2 clk */
-#define bcm21553_spi2_enable 		NULL
-#define bcm21553_spi2_disable  		NULL
-#define bcm21553_spi2_get_rate		bcm21553_spi_get_rate
-#define bcm21553_spi2_set_rate		bcm21553_spi_set_rate
-#define bcm21553_spi2_round_rate	bcm21553_spi_round_rate
+#define bcm21553_spi2_enable			NULL
+#define bcm21553_spi2_disable			NULL
+#define bcm21553_spi2_get_rate			bcm21553_spi_get_rate
+#define bcm21553_spi2_set_rate			bcm21553_spi_set_rate
+#define bcm21553_spi2_round_rate		bcm21553_spi_round_rate
 
 static unsigned long bcm21553_spi_get_rate(struct clk *clk);
 static int bcm21553_spi_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_spi_round_rate(struct clk *clk, unsigned long desired_val);
 
 /* UARTA clk */
-#define bcm21553_uarta_enable 	bcm21553_uart_enable
-#define bcm21553_uarta_disable  bcm21553_uart_disable
-#define bcm21553_uarta_get_rate	bcm21553_uart_get_rate
-#define bcm21553_uarta_set_rate bcm21553_uart_set_rate
-#define bcm21553_uarta_round_rate bcm21553_uart_round_rate
+#define bcm21553_uarta_enable			bcm21553_uart_enable
+#define bcm21553_uarta_disable			bcm21553_uart_disable
+#define bcm21553_uarta_get_rate			bcm21553_uart_get_rate
+#define bcm21553_uarta_set_rate			bcm21553_uart_set_rate
+#define bcm21553_uarta_round_rate		bcm21553_uart_round_rate
 
 /* UARTB clk */
-#define bcm21553_uartb_enable 		bcm21553_uart_enable
-#define bcm21553_uartb_disable  	bcm21553_uart_disable
-#define bcm21553_uartb_get_rate	bcm21553_uart_get_rate
-#define bcm21553_uartb_set_rate bcm21553_uart_set_rate
-#define bcm21553_uartb_round_rate bcm21553_uart_round_rate
+#define bcm21553_uartb_enable			bcm21553_uart_enable
+#define bcm21553_uartb_disable			bcm21553_uart_disable
+#define bcm21553_uartb_get_rate			bcm21553_uart_get_rate
+#define bcm21553_uartb_set_rate			bcm21553_uart_set_rate
+#define bcm21553_uartb_round_rate		bcm21553_uart_round_rate
 
 /* UARTC clk */
-#define bcm21553_uartc_enable 	bcm21553_uart_enable
-#define bcm21553_uartc_disable  bcm21553_uart_disable
-#define bcm21553_uartc_get_rate	bcm21553_uart_get_rate
-#define bcm21553_uartc_set_rate bcm21553_uart_set_rate
-#define bcm21553_uartc_round_rate bcm21553_uart_round_rate
+#define bcm21553_uartc_enable			bcm21553_uart_enable
+#define bcm21553_uartc_disable			bcm21553_uart_disable
+#define bcm21553_uartc_get_rate			bcm21553_uart_get_rate
+#define bcm21553_uartc_set_rate			bcm21553_uart_set_rate
+#define bcm21553_uartc_round_rate		bcm21553_uart_round_rate
 
 static int bcm21553_uart_enable(struct clk *clk);
 static void bcm21553_uart_disable(struct clk *clk);
@@ -225,24 +225,24 @@ static long bcm21553_uart_round_rate(struct clk *clk,
 				     unsigned long desired_val);
 
 /*GP clk*/
-#define bcm21553_gp_enable 	NULL
-#define bcm21553_gp_disable  NULL
+#define bcm21553_gp_enable				NULL
+#define bcm21553_gp_disable				NULL
 static unsigned long bcm21553_gp_get_rate(struct clk *clk);
 static int bcm21553_gp_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_gp_round_rate(struct clk *clk, unsigned long desired_val);
 
 /*MSPRO clk*/
-#define bcm21553_mspro_enable 	NULL
-#define bcm21553_mspro_disable  NULL
+#define bcm21553_mspro_enable			NULL
+#define bcm21553_mspro_disable			NULL
 static unsigned long bcm21553_mspro_get_rate(struct clk *clk);
 static int bcm21553_mspro_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_mspro_round_rate(struct clk *clk,
 				      unsigned long desired_val);
 
 /*USB Clk*/
-#define bcm21553_usb_get_rate		NULL
-#define bcm21553_usb_set_rate		NULL
-#define bcm21553_usb_round_rate		NULL
+#define bcm21553_usb_get_rate			NULL
+#define bcm21553_usb_set_rate			NULL
+#define bcm21553_usb_round_rate			NULL
 static void bcm21553_usb_disable(struct clk *clk);
 static int bcm21553_usb_enable(struct clk *clk);
 
@@ -255,33 +255,33 @@ static long bcm21553_mipidsi_round_rate(struct clk *clk,
 					unsigned long desired_val);
 
 /* I2C1 clk */
-#define bcm21553_i2c1_enable 	NULL
-#define bcm21553_i2c1_disable  	NULL
-#define bcm21553_i2c1_get_rate	bcm21553_i2c_get_rate
-#define bcm21553_i2c1_set_rate bcm21553_i2c_set_rate
-#define bcm21553_i2c1_round_rate bcm21553_i2c_round_rate
+#define bcm21553_i2c1_enable			NULL
+#define bcm21553_i2c1_disable			NULL
+#define bcm21553_i2c1_get_rate			bcm21553_i2c_get_rate
+#define bcm21553_i2c1_set_rate			bcm21553_i2c_set_rate
+#define bcm21553_i2c1_round_rate		bcm21553_i2c_round_rate
 
 /* I2C2 clk */
-#define bcm21553_i2c2_enable 	NULL
-#define bcm21553_i2c2_disable  	NULL
-#define bcm21553_i2c2_get_rate	bcm21553_i2c_get_rate
-#define bcm21553_i2c2_set_rate bcm21553_i2c_set_rate
-#define bcm21553_i2c2_round_rate bcm21553_i2c_round_rate
+#define bcm21553_i2c2_enable			NULL
+#define bcm21553_i2c2_disable			NULL
+#define bcm21553_i2c2_get_rate			bcm21553_i2c_get_rate
+#define bcm21553_i2c2_set_rate			bcm21553_i2c_set_rate
+#define bcm21553_i2c2_round_rate		bcm21553_i2c_round_rate
 
 /* I2C3 clk */
-#define bcm21553_i2c3_enable	NULL
-#define bcm21553_i2c3_disable	NULL
-#define bcm21553_i2c3_get_rate	bcm21553_i2c_get_rate
-#define bcm21553_i2c3_set_rate	bcm21553_i2c_set_rate
-#define bcm21553_i2c3_round_rate	bcm21553_i2c_round_rate
+#define bcm21553_i2c3_enable			NULL
+#define bcm21553_i2c3_disable			NULL
+#define bcm21553_i2c3_get_rate			bcm21553_i2c_get_rate
+#define bcm21553_i2c3_set_rate			bcm21553_i2c_set_rate
+#define bcm21553_i2c3_round_rate		bcm21553_i2c_round_rate
 
 static unsigned long bcm21553_i2c_get_rate(struct clk *clk);
 static int bcm21553_i2c_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_i2c_round_rate(struct clk *clk, unsigned long desired_val);
 
 /*CAMRX clk */
-#define bcm21553_camrx_enable 	NULL
-#define bcm21553_camrx_disable  NULL
+#define bcm21553_camrx_enable			NULL
+#define bcm21553_camrx_disable			NULL
 static unsigned long bcm21553_camrx_get_rate(struct clk *clk);
 static int bcm21553_camrx_set_rate(struct clk *clk, unsigned long val);
 static long bcm21553_camrx_round_rate(struct clk *clk,
@@ -290,21 +290,21 @@ static long bcm21553_camrx_round_rate(struct clk *clk,
 /*v3d_power  Clk*/
 #define bcm21553_v3d_power_get_rate		NULL
 #define bcm21553_v3d_power_set_rate		NULL
-#define bcm21553_v3d_power_round_rate		NULL
+#define bcm21553_v3d_power_round_rate	NULL
 static void bcm21553_v3d_power_disable(struct clk *clk);
 static int bcm21553_v3d_power_enable(struct clk *clk);
 
 /*vcodec_power clk*/
 #define bcm21553_vcodec_power_get_rate		NULL
 #define bcm21553_vcodec_power_set_rate		NULL
-#define bcm21553_vcodec_power_round_rate		NULL
+#define bcm21553_vcodec_power_round_rate	NULL
 static void bcm21553_vcodec_power_disable(struct clk *clk);
 static int bcm21553_vcodec_power_enable(struct clk *clk);
 
 /*Apps PLL enable clk*/
-#define bcm21553_appspll_en_get_rate		NULL
-#define bcm21553_appspll_en_set_rate		NULL
-#define bcm21553_appspll_en_round_rate		NULL
+#define bcm21553_appspll_en_get_rate	NULL
+#define bcm21553_appspll_en_set_rate	NULL
+#define bcm21553_appspll_en_round_rate	NULL
 static void bcm21553_appspll_en_disable(struct clk *clk);
 static int bcm21553_appspll_en_enable(struct clk *clk);
 
@@ -446,7 +446,6 @@ static u32 clk_armahb_reg_to_arm11_freq_mapping[] = {
 };
 
 static u32 clk_armahb_reg_to_cp_freq_mapping[] = {
-
 	FREQ_MHZ(52),
 	FREQ_MHZ(78),
 	FREQ_MHZ(52),
@@ -504,7 +503,6 @@ static u32 clk_armahb_reg_to_ahb_freq_mapping[] = {
 };
 
 static u32 clk_armahb_reg_to_v3d_clk_mapping[] = {
-
 	FREQ_MHZ(52),
 	FREQ_MHZ(78),
 	FREQ_MHZ(52),
@@ -580,7 +578,7 @@ unsigned long bcm21553_arm11_get_rate(struct clk *clk)
 
 	/* We assume that APPS PLL is active
 	& mode value less than 7 is not supported*/
-	if(mode <= 0xC)
+	if(mode <= 0x09)
 		return clk_armahb_reg_to_arm11_freq_mapping[mode];
 
 	apps_pll_freq = bcm21553_apps_pll_get_rate();
@@ -667,7 +665,7 @@ long bcm21553_arm11_round_rate(struct clk *clk, unsigned long desired_val)
 	arm11_freq[3] = (apps_pll_freq*3)/6;
 	arm11_freq[4] = (apps_pll_freq*2)/3;
 	arm11_freq[5] = (apps_pll_freq*3)/4;
-	arm11_freq[6] = apps_pll_freq;
+	arm11_freq[6] = apps_pll_freq; /*(apps_pll_freq-((apps_pll_freq*2)/12));*/
 	arm11_freq[7] = (apps_pll_freq*2)/16;
 	arm11_freq[8] = (apps_pll_freq*2)/12;
 	arm11_freq[9] = (apps_pll_freq*3)/13;
@@ -683,7 +681,7 @@ unsigned long bcm21553_ahb_get_rate(struct clk *clk)
 	u32 mode = 0, ahb;
 	u32 apps_pll_freq = 0;
 	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
-	if(mode < 0x0C)
+	if(mode < 0x09)
 		ahb = clk_armahb_reg_to_ahb_freq_mapping[mode];
 	else
 	{
@@ -705,7 +703,7 @@ unsigned long bcm21553_ahb_fast_get_rate(struct clk *clk)
 	u32 apps_pll_freq = 0;
 	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
 
-	if(mode < 0x0C)
+	if(mode < 0x09)
 		ahb_fast = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 	else
 	{
@@ -733,7 +731,7 @@ void bcm21553_cam_disable(struct clk *clk)
 	regVal &= ~(clk->enable_bit_mask);
 	writel(regVal, clk->enable_reg);
 
-	writel(0x0, ADDR_SYSCFG_CAMARA_INTERFACE_AHB_CLK_EN);	/* disable AHB clock */
+	writel(0x00, ADDR_SYSCFG_CAMARA_INTERFACE_AHB_CLK_EN);	/* disable AHB clock */
 }
 
 int bcm21553_cam_enable(struct clk *clk)
@@ -834,8 +832,7 @@ long bcm21553_i2s_int_round_rate(struct clk *clk, unsigned long desired_val)
 /* PDP clk - interface functions */
 unsigned long bcm21553_pdpck_get_rate(struct clk *clk)
 {
-	return pdpck_freq_list[(readl(ADDR_CLKPWR_CLK_PDPCK_DIV) & 0x7)];
-
+	return pdpck_freq_list[(readl(ADDR_CLKPWR_CLK_PDPCK_DIV) & 0x07)];
 }
 
 int bcm21553_pdpck_set_rate(struct clk *clk, unsigned long val)
@@ -1030,7 +1027,7 @@ unsigned long bcm21553_sdram_get_rate(struct clk *clk)
 	if (sdram_mode & CLK_SDRAM_SYC_MODE)
 	{
 		mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
-		if(mode < 0xC)
+		if(mode < 0x09)
 			sdram_clk_speed = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 		else
 			/*STUPID THINGS AGAIN [ (mode <= 8) ? apps_pll_freq/9 :  ]*/
@@ -1039,7 +1036,7 @@ unsigned long bcm21553_sdram_get_rate(struct clk *clk)
 	else
 	{
 		sdram_clk_speed = apps_pll_freq /
-			    clk_sdram_mode_reg_to_appspll_divider[sdram_mode & 0x3];
+			    clk_sdram_mode_reg_to_appspll_divider[sdram_mode & 0x03];
 	}
 	return sdram_clk_speed;
 }
@@ -1053,9 +1050,8 @@ unsigned long bcm21553_nvsram_get_rate(struct clk *clk)
 	if (regVal & CLK_NVSRAM_SYNC_MODE) {
 		ahbVal = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
 		return clk_armahb_reg_to_ahb_freq_mapping[ahbVal];
-
 	} else {
-		switch (regVal & 0x3) {
+		switch (regVal & 0x03) {
 		case 0x00:
 			return FREQ_MHZ(78);
 		case 0x01:
@@ -1064,7 +1060,6 @@ unsigned long bcm21553_nvsram_get_rate(struct clk *clk)
 			return FREQ_MHZ(156);
 		}
 	}
-
 	return 0;
 }
 
@@ -1088,7 +1083,7 @@ unsigned long bcm21553_spi_get_rate(struct clk *clk)
 	if (regVal & CLK_SPI_DIV_104_EN)
 		return FREQ_MHZ(104);
 	else {
-		regVal &= 0x7;
+		regVal &= 0x07;
 		return spi_freq_list[regVal + 1];
 	}
 
@@ -1252,7 +1247,7 @@ long bcm21553_uart_round_rate(struct clk *clk, unsigned long desired_val)
 /*GP - interface function */
 unsigned long bcm21553_gp_get_rate(struct clk *clk)
 {
-	return gp_freq_list[(readl(ADDR_CLKPWR_CLK_GPCK_DIV) & 0x7)];
+	return gp_freq_list[(readl(ADDR_CLKPWR_CLK_GPCK_DIV) & 0x07)];
 }
 
 int bcm21553_gp_set_rate(struct clk *clk, unsigned long val)
@@ -1283,7 +1278,7 @@ long bcm21553_gp_round_rate(struct clk *clk, unsigned long desired_val)
 /* MSPRO clk - interface functions*/
 unsigned long bcm21553_mspro_get_rate(struct clk *clk)
 {
-	u32 regVal = readl(ADDR_CLKPWR_CLK_MSPRO_DIV) & 0x7;
+	u32 regVal = readl(ADDR_CLKPWR_CLK_MSPRO_DIV) & 0x07;
 
 	return mspro_freq_list[regVal - 1];
 }
@@ -1390,7 +1385,7 @@ void bcm21553_damck_disable(struct clk *clk)
 	regVal &= ~(clk->enable_bit_mask);
 	writel(regVal, clk->enable_reg);
 
-	writel(0x0, ADDR_SYSCFG_DA_AHB_CLK_EN);	/* disable AHB clock */
+	writel(0x00, ADDR_SYSCFG_DA_AHB_CLK_EN);	/* disable AHB clock */
 
 }
 
@@ -1417,13 +1412,13 @@ void bcm21553_mipidsi_disable(struct clk *clk)
 	regVal &= ~(clk->enable_bit_mask);
 	writel(regVal, clk->enable_reg);
 
-	writel(0x0, ADDR_SYSCFG_DSICR);	/* disable AHB clock */
+	writel(0x00, ADDR_SYSCFG_DSICR);	/* disable AHB clock */
 
 }
 
 unsigned long bcm21553_mipidsi_get_rate(struct clk *clk)
 {
-	return mipidsi_freq_list[(readl(ADDR_CLKPWR_CLK_MIPI_DSI_CTRL) & 0x7)];
+	return mipidsi_freq_list[(readl(ADDR_CLKPWR_CLK_MIPI_DSI_CTRL) & 0x07)];
 }
 
 int bcm21553_mipidsi_set_rate(struct clk *clk, unsigned long val)
@@ -1454,7 +1449,7 @@ long bcm21553_mipidsi_round_rate(struct clk *clk, unsigned long desired_val)
 /*camrx clk - interface functions*/
 unsigned long bcm21553_camrx_get_rate(struct clk *clk)
 {
-	u32 regVal = readl(ADDR_CLKPWR_CLK_CAMRX_MODE) & 0x7;
+	u32 regVal = readl(ADDR_CLKPWR_CLK_CAMRX_MODE) & 0x07;
 
 	switch (regVal) {
 	case 0x01:
@@ -1538,8 +1533,8 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
 	//writel(0x0C, ADDR_CLKPWR_CLK_ARMAHB_MODE);
 	/*I wanna Switch to 0x0D :P*/
-	bcm215xx_set_armahb_mode(0x0D);
-	udelay(80);
+	bcm215xx_set_armahb_mode(0x0E);
+	udelay(90);
 
 	/* Write 0 bit 0 to POWER ON V3D island */
 	writel(V3D_POWER_ON, clk->enable_reg);
@@ -1577,7 +1572,7 @@ void bcm21553_v3d_power_disable(struct clk *clk)
 	} while ((readl(clk->enable_reg) & V3D_POWER_OK) == V3D_POWER_OK);
 	udelay(12);
 	/*disable AHB request*/
-	writel(0x0, ADDR_SYSCFG_V3D_AHB_CLK_EN);
+	writel(0x00, ADDR_SYSCFG_V3D_AHB_CLK_EN);
 	raw_local_irq_restore(flags);
 }
 
@@ -1669,8 +1664,7 @@ static struct clk_lookup lookups[] = {
 	BRCM_REGISTER_CLK(BCM_CLK_CAMERASYS_STR_ID, NULL, camsys),
 	BRCM_REGISTER_CLK(BCM_CLK_USB_STR_ID, NULL, usb),
 	BRCM_REGISTER_CLK(BCM_CLK_VCODEC_STR_ID, NULL, vcodec),
-	BRCM_REGISTER_CLK(BCM_CLK_VCODEC_POWER_STR_ID, NULL,
-			  vcodec_power),
+	BRCM_REGISTER_CLK(BCM_CLK_VCODEC_POWER_STR_ID, NULL, vcodec_power),
 	BRCM_REGISTER_CLK(BCM_CLK_V3D_STR_ID, NULL, v3d),
 	BRCM_REGISTER_CLK(BCM_CLK_V3D_POWER_STR_ID, NULL, v3d_power),
 	BRCM_REGISTER_CLK(BCM_CLK_DMAC_STR_ID, NULL, dmac),
@@ -1945,7 +1939,7 @@ brcm_clk_proc_read(char *page, char **start,
 
 	/* We assume that APPS PLL is active
 	& mode value less than 0xC is not supported*/
-	if(mode <= 0xC)
+	if(mode <= 0x09)
 	{
 		arm11	 = clk_armahb_reg_to_arm11_freq_mapping[mode];
 		cp_clk	 = clk_armahb_reg_to_cp_freq_mapping[mode];
@@ -1955,18 +1949,18 @@ brcm_clk_proc_read(char *page, char **start,
 	}
 	else
 	{
-		arm11 = (apps_pll_freq*2)/arm11_div[mode -0xD];
-		cp_clk = apps_pll_freq/cp_clk_div[mode -0xD];
+		arm11 = (apps_pll_freq*2)/arm11_div[mode -0x0D];
+		cp_clk = apps_pll_freq/cp_clk_div[mode -0x0D];
 		ahb = apps_pll_freq/9;
 		ahb_fast = apps_pll_freq/6;
 		v3d_clk = apps_pll_freq/4;
 	}
 
-	dsp_mode = readl(ADDR_CLKPWR_CLK_DSP_MODE) & 0x7;
+	dsp_mode = readl(ADDR_CLKPWR_CLK_DSP_MODE) & 0x07;
 	if(dsp_mode == 0)
 		dsp_clk = 52; /*52 Mhz - only on main pll*/
 	/* special case 932 ??!! nope :) it's 1372 :P */
-	else if(FREQ_MHZ(apps_pll_freq) > FREQ_MHZ(1274) && dsp_mode == 6)
+	else if(FREQ_MHZ(apps_pll_freq) == FREQ_MHZ(932) && dsp_mode == 6)
 		dsp_clk = (apps_pll_freq*2)/9;
 	else
 		dsp_clk = apps_pll_freq/dsp_clk_div[dsp_mode -1];
@@ -1977,7 +1971,7 @@ brcm_clk_proc_read(char *page, char **start,
 	else
 	{
 		sdram = apps_pll_freq /
-		    clk_sdram_mode_reg_to_appspll_divider[sdram_mode & 0x3];
+		    clk_sdram_mode_reg_to_appspll_divider[sdram_mode & 0x03];
 	}
 
 	pg += sprintf(pg,"Apps PLL = %uMhz\n",apps_pll_freq);
@@ -1985,7 +1979,7 @@ brcm_clk_proc_read(char *page, char **start,
 	pg += sprintf(pg,"AHB = %uMhz\n",ahb);
 	pg += sprintf(pg,"AHB Fast = %uMhz\n",ahb_fast);
 	pg += sprintf(pg,"V3D clk= %uMhz\n",v3d_clk);
-	pg += sprintf(pg,"SDRAM clk= %uMhz  (%s)\n",sdram, (sdram_mode & 0x4) ? "Sync Mode" : "Async Mode");
+	pg += sprintf(pg,"SDRAM clk= %uMhz  (%s)\n",sdram, (sdram_mode & 0x04) ? "Sync Mode" : "Async Mode");
 	pg += sprintf(pg,"DSP clk= %uMhz\n",dsp_clk);
 	pg += sprintf(pg,"CP-ARM= %uMhz\n\n",cp_clk);
 

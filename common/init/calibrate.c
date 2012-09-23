@@ -28,7 +28,7 @@ __setup("lpj=", lpj_setup);
  * (like SMIs)
  */
 #define DELAY_CALIBRATION_TICKS			((HZ < 100) ? 1 : (HZ/100))
-#define MAX_DIRECT_CALIBRATION_RETRIES		5
+#define MAX_DIRECT_CALIBRATION_RETRIES		6
 
 static unsigned long __cpuinit calibrate_delay_direct(void)
 {
@@ -101,7 +101,8 @@ static unsigned long __cpuinit calibrate_delay_direct(void)
 		return (good_timer_sum/good_timer_count);
 
 	printk(KERN_WARNING "calibrate_delay_direct() failed to get a good "
-	       "estimate for loops_per_jiffy.\nProbably due to long platform interrupts. Consider using \"lpj=\" boot option.\n");
+	       "estimate for loops_per_jiffy.\nProbably due to long platform \
+		   interrupts. Consider using \"lpj=\" boot option.\n");
 	return 0;
 }
 #else
@@ -117,7 +118,7 @@ static unsigned long __cpuinit calibrate_delay_direct(void) {return 0;}
  * For the rest of the CPUs we cannot assume that the timer frequency is same as
  * the cpu frequency, hence do the calibration for those.
  */
-#define LPS_PREC 8
+#define LPS_PREC 10
 
 void __cpuinit calibrate_delay(void)
 {

@@ -67,7 +67,6 @@ kernel/../modules/../modules/drivers/video/ge/gememalloc/gememalloc.ko
 kernel/../modules/../modules/drivers/video/ge/ge_drv/ge_drv.ko
 kernel/../modules/../modules/drivers/sound/brcm/headset/brcm-headsetsw.ko
 kernel/net/ipv4/ipip.ko
+kernel/lib/lzo/lzo_compress.ko
 kernel/lib/crc-itu-t.ko
 kernel/lib/crc7.ko
-kernel/lib/lzo/lzo_compress.ko
-kernel/lib/lzo/lzo_decompress.ko

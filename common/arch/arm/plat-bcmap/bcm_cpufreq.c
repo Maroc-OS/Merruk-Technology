@@ -341,12 +341,9 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	unsigned int freq_starter, index_starter;
 	unsigned int freq_lower, index_lower;
 	unsigned int freq_ulower, index_ulower;
+	int activate = 0;
 	int volt_new;
 	int volt_old;
-	int cpu = policy->cpu;
-	int cur = policy->cur;
-	int min = policy->min;
-	int max = policy->max;
 	int index;
 	int ret = 0;
 
@@ -359,12 +356,42 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	freqs.old = bcm_cpufreq_get_speed(0);
 	freqs.new = b->bcm_freqs_table[index].frequency;
 
-	if (freqs.new > max)
-		freqs.new = max;
-	if (freqs.new < min)
-		freqs.new = min;
-	/*if (freqs.new == freqs.old)
-		return 0;*/
+	if (freqs.new > policy->max) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq set to : %u --> %u we don't support higher\n",
+			freqs.new, policy->max);
+#endif
+		freqs.new = policy->max;
+	}
+	if (freqs.new < policy->min) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq set to : %u --> %u we don't support lower\n",
+			freqs.new, policy->min);
+#endif
+		freqs.new = policy->min;
+	}
+	if (freqs.new == freqs.old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq is same : %u <-> %u\n",
+			freqs.old, freqs.new);
+#endif
+		activate = 0;
+		return 0;
+	}
+	if (freqs.new < freqs.old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq is lower : %u --> %u\n",
+			freqs.old, freqs.new);
+#endif
+		activate = 0;
+	}
+	if (freqs.new > freqs.old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+		printk(KERN_DEBUG "cpufreq is higher : %u --> %u\n",
+			freqs.old, freqs.new);
+#endif
+		activate = 1;
+	}
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 	local_irq_disable();
@@ -372,44 +399,53 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	/* If we are switching to a higher frequency, we may have to increase
 	 * the core voltage first before changing the frequency.
 	 */
-	if (freqs.new == freqs.old) {
+
+	if (freqs.new != freqs.old) {
 #ifdef CONFIG_CPU_FREQ_DEBUG
-		printk(KERN_DEBUG "cpufreq is same: %u <-> %u current freq: %u\n",
-			freqs.old, freqs.new, cur);
-#endif
-	}
-	else if (freqs.new > freqs.old || freqs.new < freqs.old) {
-#ifdef CONFIG_CPU_FREQ_DEBUG
-		printk(KERN_DEBUG "cpufreq transiotion: %u --> %u\n",
+		printk(KERN_DEBUG "cpufreq transition : %u --> %u\n",
 			freqs.old, freqs.new);
 #endif
-		/* we set the nedded declarations here for all freqs :) */
-		index_osuper	= info->index_osuper;
-		freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
-		index_super		= info->index_super;
-		freq_super		= info->freq_tbl[index_super].cpu_freq * 1000;
-		index_turbo		= info->index_turbo;
-		freq_turbo		= info->freq_tbl[index_turbo].cpu_freq * 1000;
-		index_heigher	= info->index_heigher;
-		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-		index_heigher	= info->index_heigher;
-		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-		index_heigher	= info->index_heigher;
-		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-		index_heigher	= info->index_heigher;
-		freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
-		index_omedium	= info->index_omedium;
-		freq_omedium	= info->freq_tbl[index_omedium].cpu_freq * 1000;
-		index_umedium	= info->index_umedium;
-		freq_umedium	= info->freq_tbl[index_umedium].cpu_freq * 1000;
-		index_starter	= info->index_starter;
-		freq_starter	= info->freq_tbl[index_starter].cpu_freq * 1000;
-		index_normal	= info->index_normal;
-		freq_normal		= info->freq_tbl[index_normal].cpu_freq * 1000;
-		index_lower		= info->index_lower;
-		freq_lower		= info->freq_tbl[index_lower].cpu_freq * 1000;
-		index_ulower	= info->index_ulower;
-		freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
+		if (activate==1) {
+			volt_new = bcm_get_cpuvoltage(policy->cpu, freqs.new / 1000);
+			volt_old = bcm_get_cpuvoltage(policy->cpu, freqs.old / 1000);
+
+			if (volt_new == volt_old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+				printk(KERN_DEBUG "cpu_volt is same: %d <-> %d\n",
+					volt_old, volt_new);
+#endif
+			}
+			else if (volt_new != volt_old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+				printk(KERN_DEBUG "cpu_volt change: %d --> %d\n",
+					volt_old, volt_new);
+#endif
+				regulator_set_voltage(b->cpu_regulator, volt_new,
+					volt_new);
+			}
+		}
+
+	/* We set the nedded declarations for all found freqs */
+	index_osuper	= info->index_osuper;
+	freq_osuper 	= info->freq_tbl[index_osuper].cpu_freq * 1000;
+	index_super		= info->index_super;
+	freq_super		= info->freq_tbl[index_super].cpu_freq * 1000;
+	index_turbo		= info->index_turbo;
+	freq_turbo		= info->freq_tbl[index_turbo].cpu_freq * 1000;
+	index_heigher	= info->index_heigher;
+	freq_heigher	= info->freq_tbl[index_heigher].cpu_freq * 1000;
+	index_omedium	= info->index_omedium;
+	freq_omedium	= info->freq_tbl[index_omedium].cpu_freq * 1000;
+	index_umedium	= info->index_umedium;
+	freq_umedium	= info->freq_tbl[index_umedium].cpu_freq * 1000;
+	index_starter	= info->index_starter;
+	freq_starter	= info->freq_tbl[index_starter].cpu_freq * 1000;
+	index_normal	= info->index_normal;
+	freq_normal		= info->freq_tbl[index_normal].cpu_freq * 1000;
+	index_lower		= info->index_lower;
+	freq_lower		= info->freq_tbl[index_lower].cpu_freq * 1000;
+	index_ulower	= info->index_ulower;
+	freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
 
 		/* Height Frequencies Need's special hundling :) */
 		if ((freqs.new == freq_osuper)	||
@@ -422,37 +458,35 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 			if (!ret)
 				ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
 		}
-		else if ((!ret && (freqs.new == freq_omedium))	||
-				 (!ret && (freqs.new == freq_umedium))	||
-				 (!ret && (freqs.new == freq_starter))	||
-				 (!ret && (freqs.new == freq_normal))	||
-				 (!ret && (freqs.new == freq_lower))	||
-				 (!ret && (freqs.new == freq_ulower)))
+		else if ((freqs.new == freq_omedium) ||
+				(freqs.new == freq_umedium)	 ||
+				(freqs.new == freq_starter)	 ||
+				(freqs.new == freq_normal)	 ||
+				(freqs.new == freq_lower)	 ||
+				(freqs.new == freq_ulower))
 		{
 			clk_disable(b->appspll_en_clk);
+		}
+
+		if (activate==0) {
+			volt_new = bcm_get_cpuvoltage(policy->cpu, freqs.new / 1000);
+			volt_old = bcm_get_cpuvoltage(policy->cpu, freqs.old / 1000);
+
+			if (volt_new == volt_old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+				printk(KERN_DEBUG "cpu_volt is same: %d <-> %d\n",
+					volt_old, volt_new);
+#endif
+			}
+			else if (volt_new != volt_old) {
+#ifdef CONFIG_CPU_FREQ_DEBUG
+				printk(KERN_DEBUG "cpu_volt change: %d --> %d\n",
+					volt_old, volt_new);
+#endif
+				regulator_set_voltage(b->cpu_regulator, volt_new,
+					volt_new);
+			}
 			ret = clk_set_rate(b->cpu_clk, freqs.new * 1000);
-		}
-
-		/* bcm_get_cpuvoltage expects frequency in MHz, cpufreq core
-		 * gives the frequency in kHz. Hence the kHz to MHz conversion
-		 * below.
-		 */
-		volt_new = bcm_get_cpuvoltage(cpu, freqs.new / 1000);
-		volt_old = bcm_get_cpuvoltage(cpu, freqs.old / 1000);
-
-		if (volt_new == volt_old) {
-#ifdef CONFIG_CPU_FREQ_DEBUG
-			printk(KERN_DEBUG "cpu_volt is same: %d <-> %d\n",
-				volt_old, volt_new);
-#endif
-		}
-		else if (volt_new != volt_old) {
-#ifdef CONFIG_CPU_FREQ_DEBUG
-			printk(KERN_DEBUG "cpu_volt change: %d --> %d\n",
-				volt_old, volt_new);
-#endif
-			regulator_set_voltage(b->cpu_regulator, volt_new,
-				volt_new);
 		}
 	}
 
@@ -470,15 +504,13 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 {
 	struct bcm_cpufreq *b = NULL;
 	struct bcm_cpu_info *info = NULL;
-	int cpu = policy->cpu;
-	int cur = policy->cur;
 	int ret;
 
-	pr_info("%s: current frequency: %u\n", __func__, cpu);
+	pr_info("%s: current frequency: %u\n", __func__, policy->cpu);
 
 	/* Get handle to cpu private data */
-	b = &bcm_cpufreq[cpu];
-	info = &b->plat->info[cpu];
+	b = &bcm_cpufreq[policy->cpu];
+	info = &b->plat->info[policy->cpu];
 
 	/* Get cpu clock handle */
 	b->cpu_clk = clk_get(NULL, info->cpu_clk);
@@ -505,7 +537,7 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 	}
 
 	/* Set default policy and cpuinfo */
-	cur = bcm_cpufreq_get_speed(0);
+	policy->cur = bcm_cpufreq_get_speed(0);
 
 	/* FIX_ME: Tune this value */
 	/* I think it's alrady done :) */
@@ -525,7 +557,7 @@ static int bcm_cpufreq_init(struct cpufreq_policy *policy)
 		goto err_cpuinfo;
 	}
 
-	cpufreq_frequency_table_get_attr(b->bcm_freqs_table, cur);
+	cpufreq_frequency_table_get_attr(b->bcm_freqs_table, policy->cur);
 
 	b->policy = policy;
 
@@ -545,16 +577,15 @@ err_clk_get_cpu_clk:
 
 static int bcm_cpufreq_exit(struct cpufreq_policy *policy)
 {
-	int cpu = policy->cpu;
-
-	struct bcm_cpufreq *b = &bcm_cpufreq[cpu];
+	struct bcm_cpufreq *b = &bcm_cpufreq[policy->cpu];
 	pr_info("%s\n", __func__);
 
 	kfree(b->bcm_freqs_table);
-	cpufreq_frequency_table_put_attr(cpu);
+	cpufreq_frequency_table_put_attr(policy->cur);
 	regulator_put(b->cpu_regulator);
 	clk_put(b->cpu_clk);
 	b->policy = policy;
+
 	return 0;
 }
 
