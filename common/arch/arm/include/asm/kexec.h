@@ -19,6 +19,7 @@
 
 #ifndef __ASSEMBLY__
 
+struct kimage;
 /**
  * crash_setup_regs() - save registers for the panic kernel
  * @newregs: registers are saved here

@@ -180,7 +180,8 @@ idle_save_preload_start:
     mcr     p15,0,r0,c7,c10,4                @ DSB
     str     r0,[r6]                          @ L2 Cache Sync
     mcr     p15,0,r0,c7,c10,4                @ DSB
-    ldr     r0,[r10]                         @ Dummy read to assure data ejected by L2 sync arrive at DRAM
+    @ Dummy read to assure data ejected by L2 sync arrive at DRAM
+    ldr     r0,[r10]
     mov	    r0,#0
     mcr     p15,0,r0,c7,c10,4                @ DSB
 .endif
@@ -189,7 +190,8 @@ idle_save_preload_start:
     mov     r0,#0
     str     r0,[r10]                         @ Clean L2 buffer eviction buffer
     mcr     p15,0,r0,c7,c10,4                @ DSB
-    ldr     r0,[r10]                         @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
+    @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
+    ldr     r0,[r10]
     mov     r0, #0
     mcr     p15,0,r0,c7,c10,4                @ DSB
 #endif
@@ -729,13 +731,15 @@ dormant_save_preload_start:
     mcr     p15,0,r2,c7,c10,4          @ DSB
     str     r2,[r4,#L2X0_CACHE_SYNC]   @ L2 Cache sync
     mcr     p15,0,r2,c7,c10,4          @ DSB
-    ldr     r7,[r6]                    @ Dummy read to assure data ejected by L2 sync arrive at DRAM
+    @ Dummy read to assure data ejected by L2 sync arrive at DRAM
+    ldr     r7,[r6]
     mcr     p15,0,r2,c7,c10,4          @ DSB
 #ifdef CONFIG_BCM21553_L2_EVCT
     mov     r7,#0
     str     r7,[r6]                    @ Clean L2 buffer eviction buffer
     mcr     p15,0,r2,c7,c10,4          @ DSB
-    ldr     r7,[r6]                    @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
+    @ Dummy read to assure data ejected by L2 eviction arrive at DRAM
+    ldr     r7,[r6]
     mcr     p15,0,r2,c7,c10,4          @ DSB
 #endif
 
@@ -1701,7 +1705,7 @@ bcm215xx_turn_on_mmu:
     mrc     p15,0,r2,c0,c0,0              @ Read id reg
     mov     r2,r2
     mov     r2,r2
-    mov     pc,r3                         @ jump to virtual address of ret_from_dormant
+    mov     pc,r3                         @ jump to virtual address
     mov     r2,r2
     mov     r2,r2
 
@@ -3045,7 +3049,7 @@ set_armahb_mode_prefetch:
 		mcr     p15,0,r4,c7,c10,4	@ DSB
 
 set_armahb_mode_incache_begin:
-		mov	r4, #400		@ arm11 delay 12us @416mhz or 6us @832mhz
+		mov	r4, #300		@ arm11 delay 12us @416mhz or 6us @832mhz
 set_armahb_mode_delay0:
 		subs	r4, r4, #1
 		bne		set_armahb_mode_delay0
@@ -3076,17 +3080,17 @@ set_armahb_mode_get_semaphore3:
 		ORR	r10, r9, #0x0F
 
 		str	r10, [r8]		@  block all emi ports
-		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #100		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_armahb_mode_delay1:
 		subs	r4, r4, #1
 		bne	set_armahb_mode_delay1
 		str	r0, [r3]		@  change armahb
-		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #100		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_armahb_mode_delay2:
 		subs	r4, r4, #1
 		bne	set_armahb_mode_delay2
 		str	r9, [r8]		@  unblock all emi ports
-		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #100		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_armahb_mode_delay3:
 		subs	r4, r4, #1
 		bne	set_armahb_mode_delay3
@@ -3173,7 +3177,7 @@ set_appll_enable_prefetch:
 		mcr     p15,0,r4,c7,c10,4	@ DSB
 
 set_appll_enable_incache_begin:
-		mov	r4, #400		@ arm11 delay 12us @416mhz or 6us @832mhz
+		mov	r4, #300		@ arm11 delay 12us @416mhz or 6us @832mhz
 set_appll_enable_delay0:
 		subs	r4, r4, #1
 		bne	set_appll_enable_delay0
@@ -3204,13 +3208,13 @@ set_appll_enable_get_semaphore3:
 		ORR	r10, r9, #0x0F
 
 		str	r10, [r8]		@  block all emi ports
-		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #100		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_appll_enable_delay1:
 		subs	r4, r4, #1
 		bne	set_appll_enable_delay1
 		str	r0, [r3]		@  change apll_enable
 set_appll_enable_loop:
-		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #100		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_appll_enable_delay2:
 		subs	r4, r4, #1
 		bne	set_appll_enable_delay2
@@ -3222,7 +3226,7 @@ set_appll_enable_delay2:
 		bne	set_appll_enable_loop
 set_appll_enable_unblock:
 		str	r9, [r8]		@  unblock all emi ports
-		mov	r4, #200		@  arm11 delay 4us @416mhz or 2us @832mhz
+		mov	r4, #100		@  arm11 delay 4us @416mhz or 2us @832mhz
 set_appll_enable_delay3:
 		subs	r4, r4, #1
 		bne	set_appll_enable_delay3

@@ -3022,6 +3022,7 @@ static int do_otp_read(struct mtd_info *mtd, loff_t from, size_t len,
 		.retlen = 0,
 	};
 	int ret;
+
 	/* Enter OTP access mode */
 	this->command(mtd, ONENAND_CMD_OTP_ACCESS, 0, 0);
 	this->wait(mtd, FL_OTPING);
@@ -3034,6 +3035,7 @@ static int do_otp_read(struct mtd_info *mtd, loff_t from, size_t len,
 	/* Exit OTP access mode */
 	this->command(mtd, ONENAND_CMD_RESET, 0, 0);
 	this->wait(mtd, FL_RESETING);
+
 	return ret;
 }
 
@@ -3054,6 +3056,7 @@ static int do_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
 	unsigned char *pbuf = buf;
 	int ret;
 	struct mtd_oob_ops ops;
+
 	/* Force buffer page aligned */
 	if (len < mtd->writesize) {
 		memcpy(this->page_buf, buf, len);
@@ -3076,6 +3079,7 @@ static int do_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
 	/* Exit OTP access mode */
 	this->command(mtd, ONENAND_CMD_RESET, 0, 0);
 	this->wait(mtd, FL_RESETING);
+
 	return ret;
 }
 
@@ -3174,6 +3178,7 @@ static int onenand_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
 	while (len > 0 && otp_pages > 0) {
 		if (!action) {	/* OTP Info functions */
 			struct otp_info *otpinfo;
+
 			len -= sizeof(struct otp_info);
 			if (len <= 0) {
 				ret = -ENOSPC;

@@ -309,7 +309,7 @@ static int FreeMemory(GEMEMALLOC_HDL hdl, unsigned long *busaddr)
 		}
 	else
 		{
-		printk(KERN_ERR "MEMFREE fail: addr: 0x%08x\n", (unsigned int)*busaddr);
+		printk(KERN_ERR "GEMEMFREE fail: addr: 0x%08x\n", (unsigned int)*busaddr);
 		}
 
 	return 0;

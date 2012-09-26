@@ -1,7 +1,6 @@
 kernel/fs/nls/nls_utf8.ko
 kernel/fs/smbfs/smbfs.ko
 kernel/fs/cifs/cifs.ko
-kernel/fs/ntfs/ntfs.ko
 kernel/crypto/seqiv.ko
 kernel/crypto/xcbc.ko
 kernel/crypto/md4.ko
@@ -55,7 +54,6 @@ kernel/drivers/samsung/j4fs/j4fs.ko
 kernel/drivers/samsung/vibetonz/vibrator.ko
 kernel/drivers/scsi/scsi_mod.ko
 kernel/drivers/scsi/scsi_wait_scan.ko
-kernel/drivers/ata/libata.ko
 kernel/drivers/usb/core/usbcore.ko
 kernel/drivers/input/gameport/gameport.ko
 kernel/drivers/input/gameport/lightning.ko

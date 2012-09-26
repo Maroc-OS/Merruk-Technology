@@ -16,8 +16,10 @@
 #ifndef _BMEM_WRAPPER_H_
 #define _BMEM_WRAPPER_H_
 
+#include "linux/types.h"
+
 #if defined (CONFIG_BRCM_V3D_OPT)
-#define BMEM_SIZE  (1024*1024*60)
+#define BMEM_SIZE  (1024*1024*80)
 #else
 #define BMEM_SIZE  (1024*1024*24)
 #endif
@@ -68,10 +70,16 @@ struct bmem_logic {
 	int (*open)(BMEM_HDL *hdlp);
 	int (*release)(BMEM_HDL hdl);
 	int (*mmap)(unsigned long size, unsigned long pgoff);
+#ifdef BMEM_CHECK_OVERRUN
+	int (*init)(unsigned int memory_size, unsigned int phy_start_address, void *virt_start_address);
+#else
 	int (*init)(unsigned int memory_size, unsigned int phy_start_address);
+#endif
 	int (*cleanup)(void);
 	int (*GetStatus)(bmem_status_t *p_bmem_status);
 	int (*SetStatus)(bmem_set_status_t *p_bmem_set_status);
+	int (*GetFreeMemorySize)(void);
+	int (*GetUsedMemoryByTgid)(pid_t tgid);
 };
 
 int register_bmem_wrapper(struct bmem_logic *logic);

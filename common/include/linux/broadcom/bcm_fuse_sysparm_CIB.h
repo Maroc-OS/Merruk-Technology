@@ -406,8 +406,7 @@ typedef struct {
 
 	UInt16 omega_voice_enable;
 	UInt16 omega_voice_max_allowed_gain_spread_dB;
-	OmegaVoice_Sysparm_t
-	    omega_voice_parms[NUM_OMEGA_VOICE_MAX_VOLUME_LEVELS];
+	OmegaVoice_Sysparm_t omega_voice_parms[NUM_OMEGA_VOICE_MAX_VOLUME_LEVELS];
 	AlphaVoice_Sysparm_t alpha_voice_parms;
 	KappaVoice_Sysparm_t kappa_voice_parms;
 

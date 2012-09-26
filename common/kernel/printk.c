@@ -871,7 +871,7 @@ asmlinkage int vprintk(const char *fmt, va_list args)
 			printed_len += 3;
 			new_text_line = 0;
 
-			if(printk_time){
+			if (printk_time) {
 				/* Follow the token with the time */
 				char tbuf[50], *tp;
 				unsigned tlen;
@@ -1134,13 +1134,15 @@ void printk_tick(void)
 
 int printk_needs_cpu(int cpu)
 {
+	if (unlikely(cpu_is_offline(cpu)))
+		printk_tick();
 	return per_cpu(printk_pending, cpu);
 }
 
 void wake_up_klogd(void)
 {
 	if (waitqueue_active(&log_wait))
-		__raw_get_cpu_var(printk_pending) = 1;
+		this_cpu_write(printk_pending, 1);
 }
 
 /**

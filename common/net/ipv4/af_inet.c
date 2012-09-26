@@ -272,7 +272,6 @@ static inline int inet_netns_ok(struct net *net, int protocol)
 	return ipprot->netns_ok;
 }
 
-
 /*
  *	Create an inet socket.
  */
@@ -479,6 +478,9 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 	}
 	err = -EINVAL;
 	if (addr_len < sizeof(struct sockaddr_in))
+		goto out;
+
+	if (addr->sin_family != AF_INET)
 		goto out;
 
 	chk_addr_ret = inet_addr_type(sock_net(sk), addr->sin_addr.s_addr);

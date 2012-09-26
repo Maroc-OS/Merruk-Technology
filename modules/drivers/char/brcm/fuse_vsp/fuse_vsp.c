@@ -725,6 +725,7 @@ int VSP_Init(void)
 static int __init bcm_fuse_vsp_init_module(void)
 {
     int ret = 0;
+
     // check for AP only boot mode
     if ( AP_ONLY_BOOT == get_ap_boot_mode() )
     {

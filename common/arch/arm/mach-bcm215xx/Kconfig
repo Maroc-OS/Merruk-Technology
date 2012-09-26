@@ -70,6 +70,12 @@ config BOARD_ATHENARAY
 	  Configure this option to specify the whether the board used
 	  for development is a BCM21553 EDN10 AthenaRay.
 
+config BOARD_ATHENARAY_B1
+	bool "Broadcom BCM21553 AthenaRay B1 development board"
+	help
+	  Configure this option to specify the whether the board used
+	  for development is a BCM21553 B1 AthenaRay.
+
 config BOARD_ATHENARAY_EDN20
 	bool "Broadcom BCM21553 AthenaRay EDN20 development board"
 	help
@@ -93,6 +99,19 @@ config BOARD_THUNDERBIRD_EDN5x
 	help
 	  Configure this option to specify whether the board used
 	  for development is a BCM21553 Thunderbird EDN5x.
+	  
+config BOARD_ACAR
+	bool "China reference platform AthenaPebble (ACAR)"
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 ACAR board.
+	  
+config BOARD_ACAR_TYPE_EDN10
+	bool "China reference platform AthenaPebble (ACAR) board type EDN10"
+	depends on BOARD_ACAR
+	help
+	  Configure this option to specify the whether the used
+	  for development is a BCM21553 ACAR board EDN10.
 
 config BOARD_TOTORO
 	bool "Samsung BCM2155x Totoro board"

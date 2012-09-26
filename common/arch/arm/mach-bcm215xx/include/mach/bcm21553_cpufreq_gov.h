@@ -16,22 +16,6 @@
 #ifndef BCM21553_CPUFREQ_GOV_H
 #define BCM21553_CPUFREQ_GOV_H
 
-/* List of arm core clk frequencies. this is used by bcm21553 governor, which
- * expects the frequency value to be in kHz.
- */
-enum {
-	BCM21553_CORECLK_KHZ_156 = (156U * 1000),
-	BCM21553_CORECLK_KHZ_208 = (208U * 1000),
-	BCM21553_CORECLK_KHZ_288 = (288U * 1000),
-	BCM21553_CORECLK_KHZ_312 = (312U * 1000),
-	BCM21553_CORECLK_KHZ_416 = (416U * 1000),
-	BCM21553_CORECLK_KHZ_468 = (468U * 1000),
-	BCM21553_CORECLK_KHZ_624 = (624U * 1000),
-	BCM21553_CORECLK_KHZ_832 = (832U * 1000),
-	BCM21553_CORECLK_KHZ_936 = (936U * 1000),
-	BCM21553_CORECLK_KHZ_1GB = (1248U * 1000),
-};
-
 struct bcm21553_cpufreq_gov_plat {
 	unsigned int freq_osuper;
 	unsigned int freq_super;

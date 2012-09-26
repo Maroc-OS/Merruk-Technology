@@ -265,17 +265,17 @@ void ipcs_intr_workqueue_process(struct work_struct *work)
 #endif
 		} else 
 		{
-		schedule_work(&g_ipc_info.cp_crash_dump_wq);
-	}
+			schedule_work(&g_ipc_info.cp_crash_dump_wq);
+		}
 
 		IPC_ProcessEvents();
 	}else
 	{
-       IPC_ProcessEvents();  
+		IPC_ProcessEvents();  
 #ifdef CONFIG_HAS_WAKELOCK 
-       wake_unlock(&ipc_wake_lock);
+		wake_unlock(&ipc_wake_lock);
 #endif // CONFIG_HAS_WAKELOCK
-   }
+	}
 }
 
 
@@ -461,27 +461,26 @@ static int __init ipcs_module_init(void)
   }
   else
   {
-  // wait for CP to have IPC setup as well; if we exit module init
-  // before IPC is ready, RPC module will likely crash during its 
-  // own init
-  startTime = current_kernel_time();
-  while ( !g_ipc_info.ipc_state )
-  {
-    IPC_DEBUG(DBG_INFO, "[ipc]: CP IPC not ready, sleeping...\n");
-    msleep(20);
-    readyChkCnt++;
-    if ( readyChkCnt > 100 )
-    {
-        IPC_DEBUG(DBG_ERROR, "[ipc]: IPC init timeout - no response from CP\n");
-        rc = -1;
-        goto out_del;
-    }
-  }
-  endTime = current_kernel_time();
-  IPC_DEBUG(DBG_INFO,"readyChkCnt=%d time=%ldus\n", readyChkCnt,
-        ((endTime.tv_sec - startTime.tv_sec)*1000000L+(endTime.tv_nsec - startTime.tv_nsec)/1000L));
-
-  IPC_DEBUG(DBG_INFO,"[ipc]: ipcs_module_init ok\n");
+      // wait for CP to have IPC setup as well; if we exit module init
+      // before IPC is ready, RPC module will likely crash during its 
+      // own init
+      startTime = current_kernel_time();
+      while ( !g_ipc_info.ipc_state )
+      {
+        IPC_DEBUG(DBG_INFO, "[ipc]: CP IPC not ready, sleeping...\n");
+        msleep(20);
+        readyChkCnt++;
+        if ( readyChkCnt > 100 )
+        {
+            IPC_DEBUG(DBG_ERROR, "[ipc]: IPC init timeout - no response from CP\n");
+            rc = -1;
+            goto out_del;
+        }
+      }
+      endTime = current_kernel_time();
+      IPC_DEBUG(DBG_INFO,"readyChkCnt=%d time=%ldus\n", readyChkCnt,
+            ((endTime.tv_sec - startTime.tv_sec)*1000000L+(endTime.tv_nsec - startTime.tv_nsec)/1000L));
+      IPC_DEBUG(DBG_INFO,"[ipc]: ipcs_module_init ok\n");
   }
     
   return 0;

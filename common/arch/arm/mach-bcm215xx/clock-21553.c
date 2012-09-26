@@ -1533,8 +1533,8 @@ int bcm21553_v3d_power_enable(struct clk *clk)
 	ahb_mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
 	//writel(0x0C, ADDR_CLKPWR_CLK_ARMAHB_MODE);
 	/*I wanna Switch to 0x0D :P*/
-	bcm215xx_set_armahb_mode(0x0E);
-	udelay(90);
+	/*bcm215xx_set_armahb_mode(0x0E);*/
+	/*udelay(90);*/
 
 	/* Write 0 bit 0 to POWER ON V3D island */
 	writel(V3D_POWER_ON, clk->enable_reg);

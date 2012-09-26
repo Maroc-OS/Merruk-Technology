@@ -11,4 +11,4 @@
 # the GPL, without Broadcom's express prior written consent.
 #*******************************************************************************
 
-obj-$(CONFIG_HANTRO)	+= ldriver/kernel_26x/
+obj-$(CONFIG_HANTRO)	+= memalloc/ ldriver/kernel_26x/

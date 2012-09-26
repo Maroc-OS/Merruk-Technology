@@ -955,7 +955,7 @@ static int twl_remove(struct i2c_client *client)
 }
 
 /* NOTE:  this driver only handles a single twl4030/tps659x0 chip */
-static int __devinit 
+static int __init
 twl_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 	int				status;

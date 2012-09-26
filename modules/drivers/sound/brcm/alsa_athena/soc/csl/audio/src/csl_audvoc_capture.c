@@ -401,6 +401,8 @@ static Result_t ConfigDMA(
     chanInfo.dstBstSize = OSDAL_DMA_BURST_SIZE_64;
     chanInfo.srcDataWidth = dataWidth;
     chanInfo.dstDataWidth = dataWidth;
+    chanInfo.srcMaster = 0;
+    chanInfo.dstMaster = 0;
     chanInfo.incMode = OSDAL_DMA_INC_MODE_DST; // mode_dst
     chanInfo.xferCompleteCb = dmaCB;
     chanInfo.freeChan = FALSE;

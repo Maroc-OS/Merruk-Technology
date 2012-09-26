@@ -47,6 +47,9 @@ the GPL, without Broadcom's express prior written consent.
 
 
 #include <linux/broadcom/bcm_major.h>
+#if defined(CONFIG_BOARD_ACAR)
+#include <plat/syscfg.h>
+#endif
 
 
 #define GPS_KERNEL_MODULE_NAME  "bcm_gps"
@@ -134,6 +137,9 @@ static int GPS_KERNEL_Ioctl(struct inode *inode, struct file *filp,unsigned int 
 	switch(cmd)
 	{
 		case 0:	  // GPS is ON
+#if defined(CONFIG_BOARD_ACAR)
+            board_sysconfig(SYSCFG_SERIAL, SYSCFG_ENABLE);
+#endif
 			gpsRegulator=regulator_get(NULL, "aldo1_3v0");
 			regulator_set_mode(gpsRegulator,REGULATOR_MODE_NORMAL);
 			regulator_put(gpsRegulator);

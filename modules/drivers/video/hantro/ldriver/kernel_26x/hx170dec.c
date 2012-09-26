@@ -226,6 +226,9 @@ typedef struct {
 
 static hx170dec_t hx170dec_data;	/* dynamic allocation? */
 
+static unsigned int hx170dec_instance_count;
+DEFINE_SPINLOCK(hx170dec_instance_lock);
+
 static int ReserveIO(void);
 static void ReleaseIO(void);
 
@@ -429,24 +432,33 @@ static int hx170dec_open(struct inode *inode, struct file *filp)
 	// by default, assign to decoder instance.
 	((struct private_data *)(filp->private_data))->clk_count = 0;
 #endif
+
+	spin_lock(&hx170dec_instance_lock); 
+	if(hx170dec_instance_count==0)
+	{
 #ifdef CONFIG_HAS_WAKELOCK
-	atomic_inc(&hx170dec_data.wake_lock_count);
-	wake_lock(&hx170dec_data.hxdec_wake_lock);
+		atomic_inc(&hx170dec_data.wake_lock_count);
+		wake_lock(&hx170dec_data.hxdec_wake_lock);
 #endif
 #ifndef HANTRO_ENABLE_CLK_FRAME
-	clk_enable(hx_clk);
-	clk_enable(hx_codec_island_clk);
+		clk_enable(hx_clk);
+		clk_enable(hx_codec_island_clk);
 #else
-	clk_enable(hx_codec_island_clk);
+		clk_enable(hx_codec_island_clk);
 #endif
 
-	// When decoder/pp is opened, disable the DVFS
+		// When decoder/pp is opened, disable the DVFS
 #ifdef CONFIG_CPU_FREQ_GOV_BCM21553
-	printk("disabling DVFS as hantro is being used\n");
-	cpufreq_bcm_dvfs_disable(hantro_dec_client);
+		printk("disabling DVFS as hantro is being used\n");
+		cpufreq_bcm_dvfs_disable(hantro_dec_client);
 #endif
+	}	
+	
+	hx170dec_instance_count++;
+	spin_unlock(&hx170dec_instance_lock);
 
 	PDEBUG("dev opened\n");
+
 	return 0;
 }
 
@@ -498,45 +510,61 @@ static int hx170dec_fasync(int fd, struct file *filp, int mode)
 
 static int hx170dec_release(struct inode *inode, struct file *filp)
 {
+	spin_lock(&hx170dec_instance_lock); 
+	if(hx170dec_instance_count==1)
+	{
 #ifndef HANTRO_ENABLE_CLK_FRAME
-	clk_disable(hx_clk);
-	clk_disable(hx_codec_island_clk);
+		clk_disable(hx_clk);
+		clk_disable(hx_codec_island_clk);
 #else
-	clk_disable(hx_codec_island_clk);
+		clk_disable(hx_codec_island_clk);
 #endif
-
+		sema_init(&hx170dec_data.dec_resv_sem, 1);
+		sema_init(&hx170dec_data.pp_resv_sem, 1);
 #ifdef USE_SIGNAL
-	/* remove this filp from the asynchronusly notified filp's */
-	hx170dec_fasync(-1, filp, 0);
+		/* remove this filp from the asynchronusly notified filp's */
+		hx170dec_fasync(-1, filp, 0);
 #endif
 #ifdef CONFIG_HAS_WAKELOCK
-	if (atomic_sub_and_test(1, &hx170dec_data.wake_lock_count))
-		wake_unlock(&hx170dec_data.hxdec_wake_lock);
+		if (atomic_sub_and_test(1, &hx170dec_data.wake_lock_count))
+			wake_unlock(&hx170dec_data.hxdec_wake_lock);
 #endif
-#ifdef HANTRO_ENABLE_CLK_FRAME
-	pr_debug("Rel called for %d with cnt %d\n",
-		 ((struct private_data *)(filp->private_data))->instance,
-		 ((struct private_data *)(filp->private_data))->clk_count);
-	while (((struct private_data *)(filp->private_data))->clk_count > 0) {
-		clk_disable(hx_clk);
-		//clk_disable(hx_codec_island_clk);
-		((struct private_data *)(filp->private_data))->clk_count--;
-		pr_debug("Rel called for %d with cnt %d\n",
-			 ((struct private_data *)(filp->private_data))->
-			 instance,
-			 ((struct private_data *)(filp->private_data))->
-			 clk_count);
-		// in case of crash, forcefully release all the clocks enabled by this instance.
 	}
-	kfree(filp->private_data);
+
+#ifdef HANTRO_ENABLE_CLK_FRAME
+	if(filp->private_data)
+	{
+		pr_debug("Rel called for %d with cnt %d\n",
+			 ((struct private_data *)(filp->private_data))->instance,
+			 ((struct private_data *)(filp->private_data))->clk_count);
+		while (((struct private_data *)(filp->private_data))->clk_count > 0) {
+			clk_disable(hx_clk);
+			//clk_disable(hx_codec_island_clk);
+			((struct private_data *)(filp->private_data))->clk_count--;
+			pr_debug("Rel called for %d with cnt %d\n",
+				 ((struct private_data *)(filp->private_data))->
+				 instance,
+				 ((struct private_data *)(filp->private_data))->
+				 clk_count);
+			// in case of crash, forcefully release all the clocks enabled by this instance.
+		}
+	    kfree(filp->private_data);
+	}
 #endif
 
+	if(hx170dec_instance_count==1)
+	{
 #ifdef CONFIG_CPU_FREQ_GOV_BCM21553
-	printk("enabling DVFS as hantro is being closed\n");
-	cpufreq_bcm_dvfs_enable(hantro_dec_client);
+		printk("enabling DVFS as hantro is being closed\n");
+		cpufreq_bcm_dvfs_enable(hantro_dec_client);
 #endif
+	}
+	
+	hx170dec_instance_count--;
+	spin_unlock(&hx170dec_instance_lock);
 
 	PDEBUG("dev closed\n");
+	
 	return 0;
 }
 
@@ -611,6 +639,11 @@ int __init hx170dec_init(void)
 	sema_init(&hx170dec_data.dec_irq_sem, 0);
 	sema_init(&hx170dec_data.pp_irq_sem, 0);
 #endif
+
+	spin_lock(&hx170dec_instance_lock); 
+	hx170dec_instance_count = 0;
+	spin_unlock(&hx170dec_instance_lock);
+	
 	sema_init(&hx170dec_data.dec_resv_sem, 1);
 	sema_init(&hx170dec_data.pp_resv_sem, 1);
 #ifdef CONFIG_HAS_WAKELOCK

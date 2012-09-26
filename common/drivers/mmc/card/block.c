@@ -86,7 +86,11 @@ static void mmc_blk_put(struct mmc_blk_data *md)
 	mutex_lock(&open_lock);
 	md->usage--;
 	if (md->usage == 0) {
-		int devidx = md->disk->first_minor >> MMC_SHIFT;
+		int devmaj = MAJOR(disk_devt(md->disk));
+		int devidx = MINOR(disk_devt(md->disk)) >> MMC_SHIFT;
+
+		if (!devmaj)
+			devidx = md->disk->first_minor >> MMC_SHIFT;
 
 		blk_cleanup_queue(md->queue.queue);
 

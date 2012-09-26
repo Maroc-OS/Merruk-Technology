@@ -307,6 +307,7 @@ static int bcm_cpufreq_verify_speed(struct cpufreq_policy *policy)
 static int wait_for_pll_on(void)
 {
 	int ret = 1;
+	/*int cnt = 10;*/
 
 	/* Poll for PLL_ON state (CLK_DEBUG_MON2[7:4]==4b0101) */
 	do {
@@ -315,6 +316,7 @@ static int wait_for_pll_on(void)
 		val >>= APPL_MON_APLL_SWITCH_STATE_SHIFT;
 		if (val == APLL_MON_PLL_ON) {
 			ret = 0;
+			/*break;*/
 		}
 		udelay(1);
 	} while (ret != 0);

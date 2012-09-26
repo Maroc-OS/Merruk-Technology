@@ -85,6 +85,7 @@
 #define   SYSCFG_IOCR3_CAMD_PD	    	    	    (1 << 10)
 #define   SYSCFG_IOCR3_TWIF_ENB			    (1 << 21)
 #define   SYSCFG_IOCR3_SIMDAT_PU		    (1 << 27)
+#define   SYSCFG_IOCR3_PCMDI_PD			    (1 << 30)
 #define   SYSCFG_IOCR3_I2C3_EN			    (1 << 31)
 #define ADDR_SYSCFG_IOCR4                           (HW_SYSCFG_BASE + 0x020)
 #define	  SYSCFG_IOCR4_CAM_DRV_STGTH(x)  	    (((x) & 0x7) << 12)

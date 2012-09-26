@@ -125,6 +125,16 @@ extern int gpt_stop(int gpt_index);
  */
 extern unsigned int gpt_read(int gpt_index);
 
+/*
+ * This function will return the current reload count on a give GPT.
+ *
+ * Return:
+ * 	Non-zero counter value : This is the current reload count of the requested timer
+ *	Zero  		       : On any error (if an invalid GPT index is specified,
+ *				 or If the gpt_read is performed with a proper request.
+ */
+extern unsigned int gpt_reload_read(int index);
+
 /* Platform specific data */
 struct gpt_base_config {
 	int irq;

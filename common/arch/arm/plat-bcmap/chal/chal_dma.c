@@ -548,7 +548,6 @@ cUInt32 chal_dma_allocate_specific_channel(CHAL_HANDLE handle, cUInt32 chan)
         return (cInt32)chan;
     }
     
-    pr_err("%s - requested channel %d is currently used\n", __func__, chan);  
     return rc;
 }
                    
@@ -624,7 +623,6 @@ cUInt32 chal_dma_config_channel(
                     
                 }
                 pDmaDev->chanInfo[configChan].bandNum = 0; //reset count
-	        	pr_err("%s - exceeded available LLI's\n", __func__);
                 return 0;
             }
         }

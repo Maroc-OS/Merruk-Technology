@@ -41,11 +41,14 @@
 #include <linux/rtc.h>
 
 int current_intensity;
+EXPORT_SYMBOL(current_intensity);
+
 static int backlight_pin = 17;
 
 static DEFINE_SPINLOCK(bl_ctrl_lock);
 static int lcd_brightness = 0;
 int real_level = 13;
+extern int gInitialized;
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 /* early suspend support */
@@ -300,7 +303,7 @@ if(backlight_mode==BACKLIGHT_RESUME)
     {
     if(real_level == 0)
     {
-	mdelay(200);
+	mdelay(400);
     }
     
     if(tune_level<=0)
@@ -320,7 +323,7 @@ if(backlight_mode==BACKLIGHT_RESUME)
             gpio_set_value(backlight_pin,0);
             udelay(80);      
             lcd_backlight_control(pulse); 
-            udelay(500);   
+
     }
 
     real_level = tune_level;

@@ -35,4 +35,14 @@ the GPL, without Broadcom's express prior written consent.
  */
 void BcmRpc_SetApSleep( bool inSleep ); 
 
+/***************************************************************************/
+/**
+ *  Called by Linux power management system when battery charger is inserted/
+ *  removed. Api will notify CP of current charger insertion state (this is
+ *  required to enable battery temp notifications from CP).
+ *
+ *  @param  inChargerIn (in)   TRUE if charger is inserted, FALSE if removed
+ */
+void BcmRpc_SetChargerInserted( bool inChargerIn );
+
 #endif // __BCM_RPC_H 

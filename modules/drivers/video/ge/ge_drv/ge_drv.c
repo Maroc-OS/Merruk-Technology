@@ -146,9 +146,9 @@ filp->private_data = temp;
 
 static int ge_release(struct inode *inode, struct file *filp)
 {
-	spin_lock(&ge_drv_lock);
 	int i = 0;
-	for(i =0; i<MAX_CLIENTS;i++)
+	spin_lock(&ge_drv_lock);
+	for(i = 0; i < MAX_CLIENTS;i++)
 	{
 		if(private_data[i] == 0)
 		{
@@ -198,6 +198,7 @@ static int ge_ioctl(struct inode *inode, struct file *filp,
                           unsigned int cmd, unsigned long arg)
 {
 		int err = 0;
+		int i = 0;
 		/*
 		 * extract the type and number bitfields, and don't decode
 		 * wrong cmds: return ENOTTY (inappropriate ioctl) before access_ok()
@@ -233,8 +234,7 @@ static int ge_ioctl(struct inode *inode, struct file *filp,
 		case GE_IOC_WAIT:
 			down_interruptible(&ge_data.irq_sem);
 			spin_lock(&ge_drv_lock);
-			int i;
-			for(i =0; i<MAX_CLIENTS;i++)
+			for(i = 0; i < MAX_CLIENTS;i++)
 			{
 				if(private_data[i] != 0)
 				{
@@ -417,7 +417,7 @@ module_exit(ge_cleanup);
 ------------------------------------------------------------------------------*/
 static int ReserveIO(void)
 {
-	long int hwid;
+	/*long int hwid;*/
 	if (!request_mem_region
 		(ge_data.iobaseaddr, ge_data.iosize, "ge_drv")) {
 		pr_info("ge_drv: failed to reserve HW regs\n");

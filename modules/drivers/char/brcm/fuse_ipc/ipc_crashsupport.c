@@ -331,7 +331,7 @@ void DUMP_CP_assert_log(void)
     struct rtc_time tm;
     char assertFileName[CP_CRASH_DUMP_MAX_LEN];
 	extern void abort(void);
-    
+
     // need to tell kernel that pointers from within the 
     // kernel address space are valid (needed to do 
     // file ops from kernel)
@@ -340,27 +340,27 @@ void DUMP_CP_assert_log(void)
 
 	if( BCMLOG_CPCRASH_SDCARD == BCMLOG_GetCpCrashDumpDevice() )
 	{
-    // get current time
-    getnstimeofday(&ts);
-    rtc_time_to_tm(ts.tv_sec, &tm);
-    snprintf(assertFileName, CP_CRASH_DUMP_MAX_LEN,
-            "%s%s%d_%02d_%02d_%02d_%02d_%02d%s",
-            CP_CRASH_DUMP_DIR,
-            CP_CRASH_DUMP_BASE_FILE_NAME,
-            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
-            tm.tm_hour, tm.tm_min, tm.tm_sec,
-            CP_CRASH_DUMP_FILE_EXT );
-
-	sdDumpFile = filp_open( assertFileName, O_WRONLY|O_TRUNC|O_LARGEFILE|O_CREAT, 666);
-	if ( IS_ERR(sdDumpFile)  )
-	{
-		IPC_DEBUG(DBG_ERROR,"failed to open sdDumpFile %s\n", assertFileName);
-		sdDumpFile = NULL;
-	}
-	else
-	{
-		IPC_DEBUG(DBG_ERROR,"sdDumpFile %s opened OK\n",assertFileName);
-	}
+	    // get current time
+	    getnstimeofday(&ts);
+	    rtc_time_to_tm(ts.tv_sec, &tm);
+	    snprintf(assertFileName, CP_CRASH_DUMP_MAX_LEN,
+	            "%s%s%d_%02d_%02d_%02d_%02d_%02d%s",
+	            CP_CRASH_DUMP_DIR,
+	            CP_CRASH_DUMP_BASE_FILE_NAME,
+	            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+	            tm.tm_hour, tm.tm_min, tm.tm_sec,
+	            CP_CRASH_DUMP_FILE_EXT );
+		
+		sdDumpFile = filp_open( assertFileName, O_WRONLY|O_TRUNC|O_LARGEFILE|O_CREAT, 666);
+		if ( IS_ERR(sdDumpFile)  )
+		{
+			IPC_DEBUG(DBG_ERROR,"failed to open sdDumpFile %s\n", assertFileName);
+			sdDumpFile = NULL;
+		}
+		else
+		{
+			IPC_DEBUG(DBG_ERROR,"sdDumpFile %s opened OK\n",assertFileName);
+		}
 	}
        
     // put logging driver into crash dump mode; messages will be sent straight out to MTT via 

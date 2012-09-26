@@ -1,7 +1,7 @@
 VERSION = 2
 PATCHLEVEL = 6
 SUBLEVEL = 35
-EXTRAVERSION = .7
+EXTRAVERSION = .14
 NAME = Yokohama
 
 BRCM_MODULES := ../modules
@@ -191,8 +191,8 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?=arm
-#CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
-CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
+CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-eabi-
+#CROSS_COMPILE	?=/root/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
@@ -353,11 +353,11 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include -Iinclude \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-#KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-#		   -fno-strict-aliasing -fno-common \
-#		   -Werror-implicit-function-declaration \
-#		   -Wno-format-security \
-#		   -fno-delete-null-pointer-checks
+KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
+		   -Wno-format-security \
+		   -fno-delete-null-pointer-checks
 
 #KBUILD_CFLAGS  := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 #		  -fno-delete-null-pointer-checks -march=armv7-a -mcpu=cortex-a9 -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -#fgcse-las \
@@ -366,15 +366,15 @@ KBUILD_CPPFLAGS := -D__KERNEL__
 #		   -fmodulo-sched -fmodulo-sched-allow-regmoves -freschedule-modulo-scheduled-loops -fvect-cost-model \
 #		   -mno-unaligned-access
 
-KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Wno-unused-but-set-variable \
-		   -fno-strict-aliasing -fno-common -fno-inline-functions-called-once \
-		   -Werror-implicit-function-declaration \
-		   -Wno-format-security -mthumb -mthumb-interwork -mfloat-abi=hard \
-		   -fno-delete-null-pointer-checks -march=armv7-a -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -fgcse-las \
-		   -fgcse-sm -fgcse-las -ftree-loop-linear -ftree-loop-im -ftree-loop-ivcanon -fivopts -funroll-loops -fbtr-bb-exclusive -fremove-local-statics \
-		   --param l2-cache-size=512 --param l1-cache-size=64 --param simultaneous-prefetches=6 --param prefetch-latency=400 --param l1-cache-line-size=64 -mvectorize-with-neon-quad \
-		   -fmodulo-sched -fmodulo-sched-allow-regmoves -freschedule-modulo-scheduled-loops -fvect-cost-model \
-		   -mno-unaligned-access -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fvect-cost-model -fipa-cp-clone
+#KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Wno-unused-but-set-variable \
+#		   -fno-strict-aliasing -fno-common -fno-inline-functions-called-once \
+#		   -Werror-implicit-function-declaration \
+#		   -Wno-format-security -mthumb -mthumb-interwork -mfloat-abi=hard \
+#		   -fno-delete-null-pointer-checks -march=armv7-a -mtune=cortex-a8 -mfpu=neon -fno-gcse -funsafe-math-optimizations -ffinite-math-only -fgcse-las \
+#		   -fgcse-sm -fgcse-las -ftree-loop-linear -ftree-loop-im -ftree-loop-ivcanon -fivopts -funroll-loops -fbtr-bb-exclusive -fremove-local-statics \
+#		   --param l2-cache-size=512 --param l1-cache-size=64 --param simultaneous-prefetches=6 --param prefetch-latency=400 --param l1-cache-line-size=64 -mvectorize-with-neon-quad \
+#		   -fmodulo-sched -fmodulo-sched-allow-regmoves -freschedule-modulo-scheduled-loops -fvect-cost-model \
+#		   -mno-unaligned-access -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fvect-cost-model -fipa-cp-clone
 		   
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
@@ -399,8 +399,10 @@ export MODVERDIR := $(if $(KBUILD_EXTMOD),$(firstword $(KBUILD_EXTMOD))/).tmp_ve
 
 # Files to ignore in find ... statements
 
-RCS_FIND_IGNORE := \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o
-export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn --exclude CVS --exclude .pc --exclude .hg --exclude .git
+RCS_FIND_IGNORE := \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS \
+		   -o -name .pc -o -name .hg -o -name .git \) -prune -o
+export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
+			 --exclude CVS --exclude .pc --exclude .hg --exclude .git
 
 # ===========================================================================
 # Rules shared between *config targets and build targets
@@ -569,6 +571,9 @@ endif
 ifndef CONFIG_CC_STACKPROTECTOR
 KBUILD_CFLAGS	+= $(call cc-option, -fno-stack-protector)
 endif
+
+# This warning generated too much noise in a regular build.
+KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 
 ifdef CONFIG_FRAME_POINTER
 KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls

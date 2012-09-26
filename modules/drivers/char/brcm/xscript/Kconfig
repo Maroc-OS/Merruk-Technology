@@ -2,7 +2,7 @@ config BRCM_XSCRIPT
 	#tristate "Broadcom XSCRIPT drivers"
 	boolean "Broadcom XSCRIPT drivers"
 	depends on BRCM_MODULES && BRCM_MODULES_PRIV
-	default N
+	default Y
 	---help---
 	  Broadcom XSCRIPT drivers
 

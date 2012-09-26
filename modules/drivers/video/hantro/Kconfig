@@ -2,6 +2,6 @@
 config HANTRO
 	tristate "Hantro support"
  	depends on BRCM_MODULES && BRCM_MODULES_PRIV && HANTRO_WRAP
-	default N
+	default Y
 	help
 	  Hantro device driver support

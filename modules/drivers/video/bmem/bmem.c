@@ -14,7 +14,9 @@ the GPL, without Broadcom's express prior written consent.
 #include <linux/broadcom/bmem_wrapper.h>
 #include <linux/module.h>
 #include <linux/slab.h>
-
+#include "linux/delay.h"
+#include "linux/sched.h"
+#include "asm/current.h"
 #include <cfg_global.h>
 /* Our header */
 #include "bmem.h"
@@ -46,6 +48,7 @@ MODULE_DESCRIPTION("Memory allocation");
 #define STAT_FRAG_CHECK  (0x1)
 #define STAT_PRN_HEAP    (0x2)
 
+// #define PRINT_BMEM_HEAP_LIST_ON_ERROR
 
 #define KLOG_TAG    "bmem.c"
 #if 1
@@ -59,8 +62,13 @@ MODULE_DESCRIPTION("Memory allocation");
 
 typedef struct _chunk{
     unsigned int address;
+#ifdef BMEM_CHECK_OVERRUN
+    void *virt_address;
+#endif
     unsigned int size;
     unsigned int handle;
+    pid_t pid;
+    pid_t tgid;
     bool used;
     struct _chunk* prev;
     struct _chunk* next;
@@ -74,11 +82,17 @@ static unsigned int debug_level = 0;
 static unsigned int stat_level = 0;
 static bmem_status_t bmem_status;
 
+#ifdef BMEM_CHECK_OVERRUN
+    static int bmem_logic_init(unsigned int memory_size, unsigned int phy_start_address, void *virt_start_address);
+#else
 static int bmem_logic_init(unsigned int memory_size, unsigned int phy_start_address);
+#endif
 static int bmem_AllocMemory(BMEM_HDL hdl, unsigned long *busaddr, unsigned int size);
 static int bmem_FreeMemory(BMEM_HDL hdl, unsigned long *busaddr);
 static int bmem_GetStatus(bmem_status_t *p_bmem_status);
 static int bmem_SetStatus(bmem_set_status_t *p_bmem_set_status);
+static int bmem_GetFreeMemorySize(void);
+static int bmem_GetUsedMemoryByTgid(pid_t tgid);
 static int FreeMemoryForHandle(BMEM_HDL hdl );
 static void CheckFragmentation(int OnStatus);
 
@@ -121,7 +135,11 @@ static int bmem_mmap(unsigned long size, unsigned long pgoff)
     chunk* head = memhead;
     while(head != NULL)
     {
+#ifdef BMEM_CHECK_OVERRUN
+        if (((head->address>> PAGE_SHIFT) == pgoff ) && (size == (head->size - PAGE_SIZE)))
+#else
         if (((head->address>> PAGE_SHIFT) == pgoff ) && (size == head->size))
+#endif
         {
             break;
         }
@@ -144,6 +162,8 @@ static struct bmem_logic bmem_fops = {
     .cleanup = NULL,
     .GetStatus = bmem_GetStatus,
     .SetStatus = bmem_SetStatus,
+    .GetFreeMemorySize = bmem_GetFreeMemorySize,
+    .GetUsedMemoryByTgid = bmem_GetUsedMemoryByTgid,
 };
 
 /*
@@ -171,8 +191,13 @@ int bmem_init(void)
  * Description : init() callback function which will be called by wrapper to initialise
  *        the allocator module.
  */
+#ifdef BMEM_CHECK_OVERRUN
+    static int bmem_logic_init(unsigned int memory_size,
+                    unsigned int phy_start_address, void *virt_start_address)
+#else
 static int bmem_logic_init(unsigned int memory_size,
                 unsigned int phy_start_address)
+#endif
 {
     memhead = kmalloc(sizeof(chunk),GFP_KERNEL);
     if (memhead == NULL) {
@@ -190,12 +215,20 @@ static int bmem_logic_init(unsigned int memory_size,
     memhead->size = memory_size;
     memhead->used = false;
     memhead->handle = 0;
+    memhead->pid = 0;
+    memhead->tgid = 0;
     memhead->prev = NULL;
     memhead->next = NULL;
     chunk_threshold = SMALL_CHUNK_THRESHOLD;
-    debug_level = 0;
     stat_level = 0;
+#ifdef BMEM_CHECK_OVERRUN
+    memhead->virt_address = virt_start_address;
+    debug_level = 0;
+    printk("bmem_logic_init addr: phys[0x%08x] virt[%p]\n", memhead->address, memhead->virt_address);
+#else
+    debug_level = 0;
     printk(KERN_DEBUG "bmem_logic_init addr: 0x%08x\n", memhead->address) ;
+#endif
 
     return 0;
 }
@@ -238,7 +271,14 @@ static int bmem_AllocMemory(BMEM_HDL hdl, unsigned long *busaddr,
 {
     chunk* curr = memhead;
     int direction = 0;
+    pid_t pid = current->pid;
+    pid_t tgid = current->tgid;
 
+#ifdef BMEM_CHECK_OVERRUN
+    unsigned char* virt_addr = NULL;
+
+    size += PAGE_SIZE;
+#endif
     if (size <= chunk_threshold) {
         direction = 1;
         curr = memtail;
@@ -262,21 +302,37 @@ static int bmem_AllocMemory(BMEM_HDL hdl, unsigned long *busaddr,
                 curr->next = temp;
                 if (direction == 0) {
                     temp->address = curr->address + size;
+#ifdef BMEM_CHECK_OVERRUN
+                    temp->virt_address = curr->virt_address + size;
+                    virt_addr = curr->virt_address;
+#endif
                     temp->size = curr->size - size;
                     temp->used = false;
                     temp->handle = 0;
+                    temp->pid = 0;
+                    temp->tgid = 0;
                     curr->size = size;
                     curr->used = true;
                     curr->handle = (unsigned int)hdl;
+                    curr->pid = pid;
+                    curr->tgid = tgid;
                     *busaddr = (unsigned long) curr->address;
                 } else {
                     temp->address = curr->address + (curr->size - size);
+#ifdef BMEM_CHECK_OVERRUN
+                    temp->virt_address = curr->virt_address + (curr->size - size);
+                    virt_addr = temp->virt_address;
+#endif
                     temp->size = size;
                     temp->used = true;
                     temp->handle = (unsigned int)hdl;
+                    temp->pid = pid;
+                    temp->tgid = tgid;
                     curr->size = curr->size - size;
                     curr->used = false;
                     curr->handle = 0;
+                    curr->pid = 0;
+                    curr->tgid = 0;
                     *busaddr = (unsigned long) temp->address;
                 }
                 if(temp->next) {
@@ -288,7 +344,12 @@ static int bmem_AllocMemory(BMEM_HDL hdl, unsigned long *busaddr,
             } else if(curr->size == size) {
                 curr->used = true;
                 curr->handle = (unsigned int)hdl;
+                curr->pid = pid;
+                curr->tgid = tgid;
                 *busaddr = (unsigned long) curr->address;
+#ifdef BMEM_CHECK_OVERRUN
+                virt_addr = curr->virt_address;
+#endif
                 bmem_status.num_buf_free -= 1;
                 break;
             }
@@ -302,6 +363,11 @@ static int bmem_AllocMemory(BMEM_HDL hdl, unsigned long *busaddr,
 
     if (*busaddr == 0) {
         bmem_status.alloc_fail_cnt++;
+#ifdef PRINT_BMEM_HEAP_LIST_ON_ERROR
+    debug_level |= 0x40;
+    CheckFragmentation(0);
+    debug_level &= ~0x40;
+#endif
         return 1;
     }
     bmem_status.alloc_pass_cnt++;
@@ -312,13 +378,62 @@ static int bmem_AllocMemory(BMEM_HDL hdl, unsigned long *busaddr,
     bmem_status.smallest_buf_request = MIN(size,bmem_status.smallest_buf_request);
     bmem_status.biggest_buf_request = MAX(size,bmem_status.biggest_buf_request);
     bmem_status.max_num_buf_free = MAX(bmem_status.num_buf_free,bmem_status.max_num_buf_free);
+#ifdef BMEM_CHECK_OVERRUN
+    memset ((virt_addr + size - PAGE_SIZE), 0xAA, PAGE_SIZE);
     if (debug_level >= DBG_PRN_ALLOC) {
-        KLOG_D("Alloc Handle[%d] addr[0x%08x] Size[%d] ", (unsigned int)hdl, (unsigned int)*busaddr, size);
+        KLOG_D("Alloc Handle[%d] pid[%d] tgid[%d] addr[0x%08x] virt_addr[0x%08x] Size[%d] ",
+            (unsigned int)hdl, pid, tgid, (unsigned int)*busaddr, (unsigned int)(virt_addr + size - PAGE_SIZE), size);
     }
+#else
+    if (debug_level >= DBG_PRN_ALLOC) {
+        KLOG_D("Alloc Handle[%d] pid[%d] tgid[%d] addr[0x%08x] Size[%d] ",
+            (unsigned int)hdl, pid, tgid, (unsigned int)*busaddr, size);
+    }
+#endif
     CheckFragmentation(0);
     return 0;
 }
 
+#ifdef BMEM_CHECK_OVERRUN
+static void bmem_check_overrun(chunk* free_hdl)
+{
+    unsigned char* virt_addr;
+    unsigned int size, i;
+#ifdef BMEM_CRASH_ON_OVERRUN
+    unsigned int *p = (unsigned int *)0;
+#endif
+    unsigned char tmp_data[16];
+    int overwrite_count = 0;
+
+    virt_addr = free_hdl->virt_address;
+    size = free_hdl->size;
+    virt_addr = virt_addr + size - PAGE_SIZE;
+    for (i=0; i<PAGE_SIZE; i++) {
+        if (*virt_addr != 0xAA) {
+            if (overwrite_count == 0) {
+                printk("Memory overrun at i[%d]", i);
+                printk("handle[%d] pid[%d], tgid[%d], address[0x%x] virt_address[%p] size[%d]",
+                    free_hdl->handle, free_hdl->pid, free_hdl->tgid, free_hdl->address, virt_addr, free_hdl->size);
+            }
+            if (overwrite_count < 16) {
+                tmp_data[overwrite_count] = *virt_addr;
+            }
+            overwrite_count++;
+        }
+        virt_addr++;
+    }
+    if (overwrite_count) {
+        printk("Num_overruns[%d] \n", overwrite_count);
+        for(i=0; i<overwrite_count && i<16; i++) {
+            printk("[%d]:[%d] ", i, tmp_data[i]);
+        }
+#ifdef BMEM_CRASH_ON_OVERRUN
+        msleep(5000);
+        *p = 1;
+#endif
+    }
+}
+#endif
 
 /*
  * bmem_FreeMemory()
@@ -331,20 +446,29 @@ static int bmem_FreeMemory(BMEM_HDL hdl, unsigned long *busaddr)
     chunk* head = memhead;
     int address = *busaddr;
     unsigned int freed_space = 0;
+    pid_t pid = -1;
+    pid_t tgid = -1;
 
     while(head != NULL) {
         if ( head->address == address) {
+#ifdef BMEM_CHECK_OVERRUN
+            bmem_check_overrun(head);
+#endif
             break;
         }
         head = head->next;
     }
     if(head != NULL) {
         if (head->handle != (unsigned int)hdl) {
-            printk (KERN_ERR "bmem free: handle[%d] addr[0x%08x] does not match owner handle[%d]",
-                (unsigned int)hdl, (int)busaddr, head->handle);
+            printk (KERN_ERR "bmem free: handle[%d] pid[%d] tgid[%d] addr[0x%08x] does not match owner handle[%d]",
+                (unsigned int)hdl, head->pid, head->tgid, (int)busaddr, head->handle);
         }
+        pid = head->pid;
+        tgid = head->tgid;
         head->used = false;
         head->handle = 0;
+        head->pid = 0;
+        head->tgid = 0;
         bmem_status.total_used_space -= head->size;
         bmem_status.total_free_space += head->size;
         bmem_status.num_buf_free += 1;
@@ -387,7 +511,8 @@ static int bmem_FreeMemory(BMEM_HDL hdl, unsigned long *busaddr)
     bmem_status.free_pass_cnt++;
     bmem_status.max_num_buf_free = MAX(bmem_status.num_buf_free,bmem_status.max_num_buf_free);
     if (debug_level >= DBG_PRN_ALLOC) {
-        KLOG_D("Free Handle[%d] addr[0x%08x] ", (unsigned int)hdl, address);
+        KLOG_D("Free Handle[%d] pid[%d] tgid[%d] addr[0x%08x] ",
+            (unsigned int)hdl, pid, tgid, address);
     }
     CheckFragmentation(0);
     return 0;
@@ -398,24 +523,34 @@ static int bmem_FreeMemory(BMEM_HDL hdl, unsigned long *busaddr)
  * Description : Routine to free all the buffers allocated through a particular handle.
  *        While free-ing, it will concatenate to adjacent free buffers to reduce fragmentation.
  */
-static int FreeMemoryForHandle(BMEM_HDL hdl )
+static int FreeMemoryForHandle(BMEM_HDL hdl)
 {
     chunk* head = memhead;
     unsigned int freed_space = 0;
+    pid_t pid = -1;
+    pid_t tgid = -1;
 
     while(head != NULL)
     {
         if ( head->handle == (unsigned int)hdl) {
+            pid = head->pid;
+            tgid = head->tgid;
             head->used = false;
             head->handle = 0;
+            head->pid = 0;
+            head->tgid = 0;
 
+#ifdef BMEM_CHECK_OVERRUN
+            bmem_check_overrun(head);
+#endif
             bmem_status.total_used_space -= head->size;
             bmem_status.total_free_space += head->size;
             bmem_status.num_buf_used -= 1;
             bmem_status.num_buf_free += 1;
             freed_space += head->size;
             if (debug_level >= DBG_PRN_ALLOC) {
-                KLOG_D("Free(On Close) Handle[%d] addr[%0x08x] ", (unsigned int)hdl, head->address);
+                 KLOG_D("Free(On Close) Handle[%d] pid[%d] tgid[%d] addr[0x%08x] ",
+                    (unsigned int)hdl, pid, tgid, head->address);
             }
             if(head->prev != NULL ) {
                 if(head->prev->used == false) {
@@ -456,6 +591,33 @@ static int FreeMemoryForHandle(BMEM_HDL hdl )
 }
 
 /*
+ * bmem_GetFreeMemorySize()
+ * Description : Get the total memory used/allocated from bmem.
+ */
+static int bmem_GetFreeMemorySize(void)
+{
+    return bmem_status.total_free_space;
+}
+
+/*
+ * bmem_GetUsedMemoryByTgid(pid_t tgid)
+ * Description : Get the memory used/allocated from bmem by the TGID.
+ */
+static int bmem_GetUsedMemoryByTgid(pid_t tgid)
+{
+    chunk* head = memhead;
+    unsigned int used_mem = 0;
+
+    while(head != NULL) {
+        if ((head->tgid == tgid) && (head->used)) {
+            used_mem += head->size;
+        }
+        head = head->next;
+    }
+    return used_mem;
+}
+
+/*
  * GetAvailMemStatus()
  * Description : Routine to identify biggest and smallest continuous free space available
  *        in the heap. Used for collecting fragmenatation statistics. Based on debug/stat level,
@@ -484,9 +646,9 @@ static void CheckFragmentation(int OnStatus)
         while(curr != NULL)
         {
             if (print_heap) {
-                KLOG_D("prev[0x%08x] CURRENT[0x%08x] next[0x%08x] : addr[0x%08x] size[%d] used[%d] hdl[%d]",
-                    (unsigned int)curr->prev, (unsigned int)curr, (unsigned int)curr->next,
-                    (unsigned int)curr->address, curr->size, (unsigned int)curr->used, curr->handle);
+                KLOG_D("CURRENT[0x%08x] : addr[0x%08x] size[%d] used[%d] hdl[%d] pid[%d] tgid[%d]",
+                    (unsigned int)curr, (unsigned int)curr->address, curr->size, (unsigned int)curr->used,
+                    curr->handle, curr->pid, curr->tgid);
             }
             if (!curr->used)
             {

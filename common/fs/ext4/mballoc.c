@@ -1178,6 +1178,8 @@ repeat_load_buddy:
 		page_cache_release(page);
 
 err:
+	if (page)
+		page_cache_release(page);
 	if (e4b->bd_bitmap_page)
 		page_cache_release(e4b->bd_bitmap_page);
 	if (e4b->bd_buddy_page)

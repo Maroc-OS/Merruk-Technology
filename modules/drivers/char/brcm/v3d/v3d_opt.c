@@ -62,7 +62,7 @@ the GPL, without Broadcom's express prior written consent.
 /* Job Error Handling variables */
 #define V3D_JOB_CACHE_CLEAR
 #ifdef V3D_JOB_CACHE_CLEAR
-#define V3D_ISR_TIMEOUT_IN_MS	(250)
+#define V3D_ISR_TIMEOUT_IN_MS	(750)
 #define V3D_CACHE_MAX_RETRIES	(1)
 #define V3D_JOB_TIMEOUT_IN_MS	(V3D_ISR_TIMEOUT_IN_MS * (V3D_CACHE_MAX_RETRIES+1))
 #else
@@ -1311,7 +1311,7 @@ static int v3d_thread(void *data)
 			KLOG_V("wait exit, v3d_in_use[%d], timeout[%d]", v3d_in_use, timeout);
 			if (timeout && (timeout < timout_min)) {
 				timout_min = timeout;
-				KLOG_V("Minimum jiffies before timeout[%d]. Actual timeout set in jiffies[%d]", 
+				KLOG_V("Minimum jiffies before timeout[%d]. Actual timeout set in jiffies[%d]",
 					timout_min, (u32)msecs_to_jiffies(V3D_ISR_TIMEOUT_IN_MS));
 			}
 
@@ -1386,7 +1386,7 @@ static int v3d_thread(void *data)
 					}
                                 } else if (v3d_job_curr->job_intern_state == 0) {
                                         ret = v3d_job_start(1);
-				} else {
+                                } else {
                                         KLOG_E("Assert: v3d thread wait exited as 'done' or 'killed' but job state not valid");
 				}
 			}else {
@@ -1771,7 +1771,7 @@ static int v3d_ioctl(struct inode *inode, struct file *filp, unsigned int cmd, u
 #ifdef CONFIG_BCM21553_V3D_SYNC_ENABLE
 			unsigned long flags;
 #endif
-			if (copy_from_user(&reg_addr, (u32 *)arg, sizeof(reg_addr))) {
+			if (copy_from_user(&reg_addr, (u32 *)arg, sizeof(u32))) {
 				KLOG_E("V3D_IOCTL_READ_REG copy_from_user failed");
 				ret = -EFAULT;
 				break;
@@ -1780,12 +1780,16 @@ static int v3d_ioctl(struct inode *inode, struct file *filp, unsigned int cmd, u
 #ifdef CONFIG_BCM21553_V3D_SYNC_ENABLE
 			spin_lock_irqsave(&dev->lock, flags);
 #endif
+		if(reg_addr > 0xF23) {
+		    KLOG_E("reg_addr greater than the max V3D reg address space\n");
+		    reg_addr = 0;
+		}
 		reg_value = v3d_read(reg_addr);
 #ifdef CONFIG_BCM21553_V3D_SYNC_ENABLE
 			spin_unlock_irqrestore(&dev->lock, flags);
 #endif
 
-			if (copy_to_user((u32 *)arg, &reg_value, sizeof(reg_value))) {
+			if (copy_to_user((u32 *)arg, &reg_value, sizeof(u32))) {
 				KLOG_E("V3D_IOCTL_READ_REG copy_to_user failed");
 				ret = -EFAULT;
 			}
@@ -1945,6 +1949,15 @@ int __init v3d_opt_init(void)
 	KLOG_D("v3d bin oom2 phys[0x%08x], size[0x%08x] cpuaddr[0x%08x]", 
 		v3d_bin_oom_block2, v3d_bin_oom_size2, (int)v3d_bin_oom_cpuaddr2);
 
+	v3d_id = 1;
+	v3d_in_use = 0;
+	init_MUTEX(&v3d_sem);
+	INIT_ACQUIRE;
+	init_waitqueue_head(&v3d_isr_done_q);
+	init_waitqueue_head(&v3d_start_q);
+	v3d_job_head = NULL;
+	v3d_job_curr = NULL;
+
 	v3d_thread_task = kthread_run(&v3d_thread,v3d_dev,"v3d_thread");
 	if ((int)v3d_thread_task == -ENOMEM) {
 		KLOG_E("Kernel Thread did not start [0x%08x]", (int)v3d_thread_task);
@@ -1959,15 +1972,6 @@ int __init v3d_opt_init(void)
 		goto err;
 	}
 
-	v3d_id = 1;
-	v3d_in_use = 0;
-	init_MUTEX(&v3d_sem);
-	INIT_ACQUIRE;
-	init_waitqueue_head(&v3d_isr_done_q);
-	init_waitqueue_head(&v3d_start_q);
-	v3d_job_head = NULL;
-	v3d_job_curr = NULL;
-	
 #ifdef ENABLE_PROCFS
 	v3d_proc_file = create_proc_entry(V3D_DEV_NAME, 0644, NULL);
 	if (v3d_proc_file) {

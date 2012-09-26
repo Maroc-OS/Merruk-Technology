@@ -493,8 +493,6 @@ int sysdev_resume(void)
 	return 0;
 }
 EXPORT_SYMBOL_GPL(sysdev_resume);
-EXPORT_SYMBOL_GPL(sysdev_register);
-EXPORT_SYMBOL_GPL(sysdev_unregister);
 
 int __init system_bus_init(void)
 {
@@ -503,6 +501,9 @@ int __init system_bus_init(void)
 		return -ENOMEM;
 	return 0;
 }
+
+EXPORT_SYMBOL_GPL(sysdev_register);
+EXPORT_SYMBOL_GPL(sysdev_unregister);
 
 #define to_ext_attr(x) container_of(x, struct sysdev_ext_attribute, attr)
 
