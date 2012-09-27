@@ -35,14 +35,14 @@ modules.builtin
 #
 # Top-level generic files
 #
-/tags
-/TAGS
-/linux
-/vmlinux
-/vmlinuz
-/System.map
-/Module.markers
-/Module.symvers
+tags
+TAGS
+linux
+vmlinux
+vmlinuz
+System.map
+Module.markers
+Module.symvers
 
 #
 # git files that we don't want to ignore even it they are dot-files
@@ -56,6 +56,9 @@ modules.builtin
 include/config
 include/linux/version.h
 include/generated
+include/config/auto.conf
+include/generated/autoconf.h
+include/generated/compile.h
 
 # stgit generated dirs
 patches-*

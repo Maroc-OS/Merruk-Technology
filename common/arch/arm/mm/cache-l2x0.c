@@ -41,17 +41,18 @@ extern u32 l2_evt_virt_buf;
 
 static int l2_flushall_after_boot = 0;
 static int ways;
-void __init l2x0_late_init (void)
+static int __init l2x0_late_init (void)
 {
-       l2_flushall_after_boot = 1;
+	int ret=0;
+    l2_flushall_after_boot = 1;
+	return ret;
 }
 late_initcall(l2x0_late_init);
 
 static inline void cache_wait_way(void __iomem *reg, unsigned long mask)
 {
 	/* wait for cache operation by line or way to complete */
-	while (readl_relaxed(L2CACHE_READREG_OFFSET + reg) & mask)
-		;
+	while (readl_relaxed(L2CACHE_READREG_OFFSET + reg) & mask);
 }
 
 #ifdef CONFIG_CACHE_PL310
@@ -406,9 +407,9 @@ void __init l2x0_init(void __iomem *base, __u32 aux_val, __u32 aux_mask)
 		break;
 	}
 
-	writel(aux, l2x0_base + L2X0_AUX_CTRL);
+	/*writel(aux, l2x0_base + L2X0_AUX_CTRL);*/
 	l2x0_way_mask = (1 << ways) - 1;
-	l2x0_inv_all();
+	/*l2x0_inv_all();*/
 
 	/*
 	 * L2 cache Size =  Way size * Number of ways

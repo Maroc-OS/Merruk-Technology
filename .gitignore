@@ -28,7 +28,7 @@
 *.symtypes
 *.order
 modules.builtin
-/common/modules.builtin
+common/modules.builtin
 *.elf
 *.bin
 *.gz
@@ -45,19 +45,19 @@ kernel_log*
 #
 # Top-level generic files
 #
-/common/tags
-/common/TAGS
-/common/linux
-/common/vmlinux
-/common/vmlinuz
-/common/System.map
-/common/Module.markers
-/common/Module.symvers
+common/tags
+common/TAGS
+common/linux
+common/vmlinux
+common/vmlinuz
+common/System.map
+common/Module.markers
+common/Module.symvers
 
 #
 # Merruk-Tools Directory
 #
-/Tools/*
+./Tools/*
 
 #
 # git files that we don't want to ignore even it they are dot-files
@@ -68,9 +68,12 @@ kernel_log*
 #
 # Generated include files
 #
-/common/include/config
-/common/include/linux/version.h
-/common/include/generated
+common/include/config
+common/include/linux/version.h
+common/include/generated
+common/include/config/auto.conf
+common/include/generated/autoconf.h
+common/include/generated/compile.h
 
 # stgit generated dirs
 patches-*
@@ -95,15 +98,15 @@ GTAGS
 \#*#
 
 # compressed boot files
-/common/arch/arm/boot/compressed/lib1funcs.S
-/common/arch/arm/boot/compressed/piggy.gzip
-/common/arch/arm/boot/compressed/piggy.lzma
-/common/arch/arm/boot/compressed/vmlinux
-/common/arch/arm/boot/compressed/*
+common/arch/arm/boot/compressed/lib1funcs.S
+common/arch/arm/boot/compressed/piggy.gzip
+common/arch/arm/boot/compressed/piggy.lzma
+common/arch/arm/boot/compressed/vmlinux
+common/arch/arm/boot/compressed/*
 
 # just in case & 3rd party softs
-/common/.config
-/common/.config.old
+#common/.config
+#common/.config.old
 .cproject
 .project
 .settings
@@ -115,8 +118,6 @@ Image
 zImage
 .version
 *boot*
-auto.conf
-autoconf.h
 compile.h
 asm-offsets.s
 bounds.s
