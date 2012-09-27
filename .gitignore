@@ -1,34 +1,119 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# NOTE! Please use 'git ls-files -i --exclude-standard'
+# command after changing this file, to see if there are
+# any tracked files which get ignored after the change.
+#
+# Normal rules
+#
+.*
 .DS_Store
 *~
+*.o
+*.o.*
+*.a
+*.s
 *.ko
+*.so
+*.so.dbg
+*.mod.c
 *.tmp*
 *.cmd
 *.cmd.*
-*.o
-*.a
+*.i
+*.lst
+*.symtypes
+*.order
+modules.builtin
+/common/modules.builtin
+*.elf
+*.bin
+*.gz
+*.bz2
+*.lzma
+*.lzo
+*.patch
+*.gcno
 *.cpio
 *.lzma
 *.lds
-*.mod.c
-*.order
-*.builtin
-*vmlinux
-logo_*
-Image
-zImage
-.version
-./common/.config
-./common/.config.old
+
+#
+# Top-level generic files
+#
+/common/tags
+/common/TAGS
+/common/linux
+/common/vmlinux
+/common/vmlinuz
+/common/System.map
+/common/Module.markers
+/common/Module.symvers
+
+#
+# Merruk-Tools Directory
+#
+/Tools/*
+
+#
+# git files that we don't want to ignore even it they are dot-files
+#
+!.gitignore
+!.mailmap
+
+#
+# Generated include files
+#
+/common/include/config
+/common/include/linux/version.h
+/common/include/generated
+
+# stgit generated dirs
+patches-*
+
+# quilt's files
+patches
+series
+
+# cscope files
+cscope.*
+ncscope.*
+
+# gnu global files
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+
+*.orig
+*.rej
+*~
+\#*#
+
+# compressed boot files
+/common/arch/arm/boot/compressed/lib1funcs.S
+/common/arch/arm/boot/compressed/piggy.gzip
+/common/arch/arm/boot/compressed/piggy.lzma
+/common/arch/arm/boot/compressed/vmlinux
+/common/arch/arm/boot/compressed/*
+
+# just in case & 3rd party softs
+/common/.config
+/common/.config.old
 .cproject
 .project
 .settings
 .settings/*
 .initramfs*
 .missing-syscalls.d
-./common/System.map
-*generated*
+logo_*
+Image
+zImage
+.version
 *boot*
-*compressed*
 auto.conf
 autoconf.h
 compile.h
@@ -38,8 +123,3 @@ initramfs_data.cpio
 gen_init_cpio
 gen_crc32table
 initramfs_data.c
-Module.order
-./common/Module.symvers
-./common/modules.builtin
-Tools/*
-
