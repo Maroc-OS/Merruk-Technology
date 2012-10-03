@@ -179,18 +179,16 @@ static int gememalloc_wrapper_ioctl(struct inode *inode, struct file *filp,
 	case GEMEMALLOC_WRAP_COPY_BUFFER:
 		{
 			DmaStruct dma_buffers;
-			int tries = 0;
 			__copy_from_user(&dma_buffers, (const void *)arg,
 					 sizeof(dma_buffers));
 
 			/*Request the channel */
-			while(OSDAL_DMA_Obtain_Channel(OSDAL_DMA_CLIENT_MEMORY, OSDAL_DMA_CLIENT_MEMORY,(UInt32 *)&gDmaChannel) != OSDAL_ERR_OK) {
-				msleep(20);
-				tries++;
+			if (OSDAL_ERR_OK != OSDAL_DMA_Obtain_Channel(OSDAL_DMA_CLIENT_MEMORY, OSDAL_DMA_CLIENT_MEMORY,(UInt32 *)&gDmaChannel))
+			{
+				pr_info("---->OSDAL_DMA_Obtain_Channel failed for channel %d \n",gDmaChannel);
+				dma_cleanup();
+				return -1;
 			}
-			if (tries)
-				pr_debug("memwrapper: channel 11 obtain tried for %d times\n", tries);
-			
 			//printk("Channel num=%d\n",gDmaChannel);
 
 			//Allocate memory for array of pointers

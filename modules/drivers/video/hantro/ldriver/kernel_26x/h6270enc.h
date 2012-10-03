@@ -78,10 +78,10 @@ the GPL, without Broadcom's express prior written consent.
  * X means "eXchange": G and S atomically
  * H means "sHift": T and Q atomically
  */
- /*
-  * #define H6270ENC_IOCGBUFBUSADDRESS _IOR(H6270ENC_IOC_MAGIC,  1, unsigned long *)
-  * #define H6270ENC_IOCGBUFSIZE       _IOR(H6270ENC_IOC_MAGIC,  2, unsigned int *)
-  */
+
+#define H6270ENC_IOCGBUFBUSADDRESS _IOR(H6270ENC_IOC_MAGIC,  1, unsigned long *)
+#define H6270ENC_IOCGBUFSIZE       _IOR(H6270ENC_IOC_MAGIC,  2, unsigned int *)
+
 #define H6270ENC_IOCGHWOFFSET      _IOR(H6270ENC_IOC_MAGIC,  3, unsigned long *)
 #define H6270ENC_IOCGHWIOSIZE      _IOR(H6270ENC_IOC_MAGIC,  4, unsigned int *)
 #define H6270ENC_IOC_CLI           _IO(H6270ENC_IOC_MAGIC,  5)

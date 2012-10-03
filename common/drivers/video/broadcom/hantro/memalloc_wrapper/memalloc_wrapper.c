@@ -499,7 +499,12 @@ static int memalloc_wrapper_ioctl(struct inode *inode, struct file *filp,
 			return ret;
 		}
 		temp_hw_OutBuf.busAddress = getItemFromList(temp_hw_OutBuf.virtualaddress);
-		copy_to_user(((MemallocwrapParams*)arg), &temp_hw_OutBuf,sizeof(MemallocwrapParams));
+		ret = copy_to_user(((MemallocwrapParams*)arg), &temp_hw_OutBuf,sizeof(MemallocwrapParams));
+		if(ret != 0) {
+			printk("HANTRO_GET_OUTBUFFER: Error in copying to user");
+			spin_unlock(&mem_lock);
+			return ret;
+		}
 		spin_unlock(&mem_lock);
 	}
 	break;

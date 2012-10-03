@@ -19,7 +19,7 @@
 #include "linux/types.h"
 
 #if defined (CONFIG_BRCM_V3D_OPT)
-#define BMEM_SIZE  (1024*1024*80)
+#define BMEM_SIZE  (1024*1024*100)
 #else
 #define BMEM_SIZE  (1024*1024*24)
 #endif

@@ -38,8 +38,14 @@
 #define REG_LCDC_DBICTR		0x0024
 #define REG_LCDC_TEDELAY	0x0028
 
+#define REG_DSI_DATR		0x0140
+
+
 /* physical address of the LCD data register */
 #define REG_LCDC_DATR_PADDR	(BCM21553_IO_PHYSICAL + BCM21553_LCDC_BASE + REG_LCDC_DATR)
+#define REG_DSI_DATR_PADDR	(BCM21553_IO_PHYSICAL + BCM21553_DSI_BASE + REG_DSI_DATR)
+
+
 
 /*
  * LCD_WTR - LCD Write Timing Register

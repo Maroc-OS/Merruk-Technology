@@ -55,13 +55,16 @@ typedef enum {
 	LCD_SPI,
 	LCD_ETM,
 	LCD_MSPRO,
-	LCD_SD2
+	LCD_SD2,
+	LCD_DSI,
 } LCD_Intf_t;
 
 /* LCD bus width */
 typedef enum {
 	LCD_16BIT = 16,
-	LCD_18BIT = 18
+	LCD_18BIT = 18,
+	LCD_24BIT = 24,
+	LCD_32BIT = 32,
 } LCD_Bus_t;
 
 struct timing_config_t {
@@ -107,6 +110,7 @@ typedef enum
 	WR_CMND,
 	WR_DATA,
 	WR_CMND_DATA,
+	WR_CMND_MULTIPLE_DATA,
 	SLEEP_MS,
 	CTRL_END,
 }ctrl_t;
@@ -116,7 +120,24 @@ typedef struct lcd_init_t
     ctrl_t type;
     uint16_t cmd;
     uint16_t data;
-
+    uint32_t datasize;   //< data size for multiple paramerter
+    uint8_t* dataptr;
 } Lcd_init_t;
+
+
+typedef struct lcd_interface_drv_t
+{
+	void (*lcd_get_interface_info)(uint32_t* phy_addr);
+	void (*lcd_init_panels) (void);
+	void (*lcd_poweroff_panels)(void);
+	void (*lcd_display_black_background)(void);
+	void (*lcd_update_column)(LCD_dev_info_t * dev, unsigned int column);
+
+	int (*lcd_update_rect_dma)(LCD_dev_info_t * dev, void*  req);
+	int (*lcd_probe)(struct platform_device *pdev);
+	void (*lcd_send_data) (uint16_t * p, int img_width, int img_height, bool rle);
+	void (*lcd_lock_csl_handle)(void);
+	void (*lcd_unlock_csl_handle)(void);
+}LCD_Interface_Drv_t;
 
 #endif /* __BCM_LCD_H */

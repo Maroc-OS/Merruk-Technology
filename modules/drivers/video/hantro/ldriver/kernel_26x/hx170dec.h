@@ -77,17 +77,17 @@ the GPL, without Broadcom's express prior written consent.
  * X means "eXchange": G and S atomically
  * H means "sHift": T and Q atomically
  */
- /*
-    #define HX170DEC_IOCGBUFBUSADDRESS _IOR(HX170DEC_IOC_MAGIC,  1, unsigned long *)
-    #define HX170DEC_IOCGBUFSIZE       _IOR(HX170DEC_IOC_MAGIC,  2, unsigned int *)
-    #define HX170DEC_IOCGHWOFFSET      _IOR(HX170DEC_IOC_MAGIC,  3, unsigned long *)
-    #define HX170DEC_IOCGHWIOSIZE      _IOR(HX170DEC_IOC_MAGIC,  4, unsigned int *)
-  */
+ 
+#define HX170DEC_IOCGBUFBUSADDRESS _IOR(HX170DEC_IOC_MAGIC,  1, unsigned long *)
+#define HX170DEC_IOCGBUFSIZE       _IOR(HX170DEC_IOC_MAGIC,  2, unsigned int *)
+#define HX170DEC_IOCGHWOFFSET      _IOR(HX170DEC_IOC_MAGIC,  3, unsigned long *)
+#define HX170DEC_IOCGHWIOSIZE      _IOR(HX170DEC_IOC_MAGIC,  4, unsigned int *)
+
 #define HX170DEC_IOC_CLI           _IO(HX170DEC_IOC_MAGIC,  5)
 #define HX170DEC_IOC_STI           _IO(HX170DEC_IOC_MAGIC,  6)
-/*
+
 #define HX170DEC_IOCXVIRT2BUS      _IOWR(HX170DEC_IOC_MAGIC,  7, unsigned long *)
-*/
+
 #define HX170DEC_IOCHARDRESET      _IO(HX170DEC_IOC_MAGIC, 8)	/* debugging tool */
 #define HX170DEC_PP_INSTANCE       _IO(HX170DEC_IOC_MAGIC, 1)	/* the client is pp instance */
 #define HX170DEC_DEC_INSTANCE       _IO(HX170DEC_IOC_MAGIC, 2)   /* the client is dec instance */

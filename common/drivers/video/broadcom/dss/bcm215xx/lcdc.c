@@ -47,7 +47,7 @@ static struct cpufreq_client_desc *lcdc_client;
 /* globals to: communicate with the update thread */
 /*   control access to LCD registers */
 /*  manage DMA channel */
-int gInitialized;
+static int gInitialized;
 EXPORT_SYMBOL(gInitialized);
 
 #ifdef CONFIG_HAS_WAKELOCK
@@ -69,7 +69,7 @@ static int lcd_release(struct inode *inode, struct file *file);
 void lcd_display_test(LCD_dev_info_t *dev);
 void lcd_display_rect(LCD_dev_info_t *dev, LCD_Rect_t *r);
 static void lcd_update_column(LCD_dev_info_t *dev, unsigned int column);
-int lcd_pm_update(PM_CompPowerLevel compPowerLevel,
+static int lcd_pm_update(PM_CompPowerLevel compPowerLevel,
 			 PM_PowerLevel sysPowerLevel);
 
 static void lcd_send_cmd_sequence(Lcd_init_t *init);
@@ -78,7 +78,7 @@ static inline void lcd_poweroff_panels(void);
 static void lcd_setup_for_data(LCD_dev_info_t *dev);
 static void lcd_csl_cb(CSL_LCD_RES_T, CSL_LCD_HANDLE, void*);
 
-#if defined(CONFIG_ENABLE_QVGA) || defined(CONFIG_ENABLE_HVGA)
+#if defined(CONFIG_ENABLE_QVGA) || defined(CONFIG_ENABLE_HVGA) || defined(CONFIG_BOARD_ACAR)
 void display_black_background(void);
 #endif
 
@@ -477,7 +477,7 @@ static void lcd_send_data(uint16_t * p, int len, bool rle)
 					--rle_count;
 				}
 			} else {
-		for (i = 0; i < len; i++) {
+				for (i = 0; i < len; i++) {
 					lcd_write_data(*p >> 8);
 					lcd_write_data(*p++);
 				}
@@ -516,9 +516,9 @@ static void lcd_send_data(uint16_t * p, int len, bool rle)
 				}
 				lcd_write_data(pixel_data);
 				--rle_count;
-		}
-	} else {
-		for (i = 0; i < len; i++) {
+			}
+		} else {
+			for (i = 0; i < len; i++) {
 				pixel_data = *p++;
 				pixel_data |= (*p++ << 16);
 				lcd_write_data(pixel_data);
@@ -641,7 +641,7 @@ static void lcd_update_column(LCD_dev_info_t * dev, unsigned int column)
 		count &= ~1; /*Ignore one pixel in case count is odd*/
 		CSL_LCDC_Enable_RGB888U(handle, true);
 		for (i = 0; i < count; i++) {
- 			p = (uint32_t *)source;
+			p = (uint32_t *)source;
 			lcd_write_data(*p);
 			source += stride;
 		}
@@ -787,7 +787,6 @@ static struct early_suspend lcd_early_suspend_esd = {
 	case PM_COMP_PWR_STANDBY:
 		{
 			pr_info("\n[%02d:%02d:%02d.%03lu] LCDC: Power off panel\n", tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
-                       gInitialized = 0;
 #ifdef CONFIG_REGULATOR
 			if (!IS_ERR_OR_NULL(lcdc_regulator))
 				regulator_disable(lcdc_regulator);
@@ -797,6 +796,7 @@ static struct early_suspend lcd_early_suspend_esd = {
 #ifdef CONFIG_CPU_FREQ_GOV_BCM21553
 			cpufreq_bcm_dvfs_enable(lcdc_client);
 #endif
+			gInitialized = 0;
 			break;
 		}
 	case PM_COMP_PWR_ON:
@@ -811,7 +811,7 @@ static struct early_suspend lcd_early_suspend_esd = {
 #endif
 			lcd_pwr_on_controll(ON);
 #if defined(CONFIG_ENABLE_QVGA) || defined(CONFIG_ENABLE_HVGA)
-			display_black_background();
+//comment for bug194796			display_black_background();
 #endif
 
 			lcd_init_panels();

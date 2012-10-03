@@ -578,7 +578,7 @@ unsigned long bcm21553_arm11_get_rate(struct clk *clk)
 
 	/* We assume that APPS PLL is active
 	& mode value less than 7 is not supported*/
-	if(mode <= 0x09)
+	if(mode <= 0x0C)
 		return clk_armahb_reg_to_arm11_freq_mapping[mode];
 
 	apps_pll_freq = bcm21553_apps_pll_get_rate();
@@ -589,7 +589,7 @@ unsigned long bcm21553_arm11_get_rate(struct clk *clk)
 int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 {
 	u32 mode;
-	u32 arm11_freq[10];
+	u32 arm11_freq[9];
 	u32 apps_pll_freq = bcm21553_apps_pll_get_rate();
 	
 	arm11_freq[0] = (apps_pll_freq*2)/8;
@@ -601,7 +601,7 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 	arm11_freq[6] = apps_pll_freq;
 	arm11_freq[7] = (apps_pll_freq*2)/16;
 	arm11_freq[8] = (apps_pll_freq*2)/12;
-	arm11_freq[9] = (apps_pll_freq*3)/13;
+	/*arm11_freq[9] = (apps_pll_freq*3)/13;*/
     /* 1248, 936, 832, 624, 468, 416, 312, 288, 208, 156 */
 	/*we support only two modes - 0x0C/0x0F - thats what he said*/
 	if (val == arm11_freq[0])
@@ -640,10 +640,10 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 	{
 		mode = 0x11;
 	}
-	else if (val == arm11_freq[9])
+	/*else if (val == arm11_freq[9])
 	{
 		mode = 0x12;
-	} else
+	}*/ else
 	{
 		return -EINVAL;
 	}
@@ -654,7 +654,7 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 
 long bcm21553_arm11_round_rate(struct clk *clk, unsigned long desired_val)
 {
-	u32 arm11_freq[10];
+	u32 arm11_freq[9];
 	u32 apps_pll_freq = bcm21553_apps_pll_get_rate();
 
 	/*we support only two freq  - 312Mhz & appPll/1.5*/
@@ -668,11 +668,11 @@ long bcm21553_arm11_round_rate(struct clk *clk, unsigned long desired_val)
 	arm11_freq[6] = apps_pll_freq; /*(apps_pll_freq-((apps_pll_freq*2)/12));*/
 	arm11_freq[7] = (apps_pll_freq*2)/16;
 	arm11_freq[8] = (apps_pll_freq*2)/12;
-	arm11_freq[9] = (apps_pll_freq*3)/13;
+	/*arm11_freq[9] = (apps_pll_freq*3)/13;*/
 
 	return (long)bcm21553_generic_round_rate(desired_val,
 						 arm11_freq,
-						 10);
+						 9);
 }
 
 /*AHB clock*/
@@ -681,7 +681,7 @@ unsigned long bcm21553_ahb_get_rate(struct clk *clk)
 	u32 mode = 0, ahb;
 	u32 apps_pll_freq = 0;
 	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
-	if(mode < 0x09)
+	if(mode < 0x0C)
 		ahb = clk_armahb_reg_to_ahb_freq_mapping[mode];
 	else
 	{
@@ -703,7 +703,7 @@ unsigned long bcm21553_ahb_fast_get_rate(struct clk *clk)
 	u32 apps_pll_freq = 0;
 	mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
 
-	if(mode < 0x09)
+	if(mode < 0x0C)
 		ahb_fast = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 	else
 	{
@@ -1027,7 +1027,7 @@ unsigned long bcm21553_sdram_get_rate(struct clk *clk)
 	if (sdram_mode & CLK_SDRAM_SYC_MODE)
 	{
 		mode = readl(ADDR_CLKPWR_CLK_ARMAHB_MODE) & 0x0F;
-		if(mode < 0x09)
+		if(mode < 0x0C)
 			sdram_clk_speed = clk_armahb_reg_to_ahb_fast_freq_mapping[mode];
 		else
 			/*STUPID THINGS AGAIN [ (mode <= 8) ? apps_pll_freq/9 :  ]*/
@@ -1053,11 +1053,11 @@ unsigned long bcm21553_nvsram_get_rate(struct clk *clk)
 	} else {
 		switch (regVal & 0x03) {
 		case 0x00:
-			return FREQ_MHZ(78);
+			return FREQ_MHZ(62);
 		case 0x01:
-			return FREQ_MHZ(104);
+			return FREQ_MHZ(78);
 		case 0x02:
-			return FREQ_MHZ(156);
+			return FREQ_MHZ(104);
 		}
 	}
 	return 0;
@@ -1939,7 +1939,7 @@ brcm_clk_proc_read(char *page, char **start,
 
 	/* We assume that APPS PLL is active
 	& mode value less than 0xC is not supported*/
-	if(mode <= 0x09)
+	if(mode <= 0x0C)
 	{
 		arm11	 = clk_armahb_reg_to_arm11_freq_mapping[mode];
 		cp_clk	 = clk_armahb_reg_to_cp_freq_mapping[mode];

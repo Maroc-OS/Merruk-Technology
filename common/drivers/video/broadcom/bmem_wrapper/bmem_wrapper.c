@@ -32,6 +32,8 @@
 #include <linux/list.h>
 /* for current pid */
 #include <linux/sched.h>
+#include <linux/oom.h>
+#include "linux/types.h"
 
 #include <asm/io.h>
 #include <asm/uaccess.h>
@@ -110,6 +112,43 @@ typedef struct {
 	bmem_pmem_data_t bmem_pmem_data;
 } bmem_wrapper_data_t;
 
+#define ENABLE_BMEM_OOM_VALUES
+#ifdef ENABLE_BMEM_OOM_VALUES
+
+static int bmem_adj[6] = {
+	0,
+	1,
+	7,
+};
+static int bmem_adj_size = 3;
+static size_t bmem_minfree[6] = {
+	1 * 1024 * 1024,	/* 1MB */
+	2 * 1024 * 1024,	/* 2MB */
+#if BMEM_SIZE > (66*1024*1024)
+	12 * 1024 * 1024,	/* 12MB */
+#else
+	6 * 1024 * 1024,	/* 6MB */
+#endif
+};
+static int bmem_minfree_size = 3;
+static int bmem_adj_on_fail = 2;
+static int bmem_kill_curr_on_fail = 0;
+
+#else
+
+static int bmem_adj[6] = {
+	OOM_ADJUST_MAX+1,
+	OOM_ADJUST_MAX+1,
+};
+static int bmem_adj_size = 2;
+static size_t bmem_minfree[6] = {
+    0, 0
+};
+static int bmem_minfree_size = 2;
+static int bmem_adj_on_fail = OOM_ADJUST_MAX+1;
+static int bmem_kill_curr_on_fail = 0;
+
+#endif
 
 #define MAX_STR_SIZE (50)
 #define KLOG_TAG	"bmem_wrapper.c"
@@ -119,7 +158,7 @@ typedef struct {
 #endif
 
 /* Error Logs */
-#if 1
+#if 0
 #define KLOG_E(fmt,args...) \
 					do { printk(KERN_ERR "Error: [%s:%s:%d] "fmt"\n", KLOG_TAG, __func__, __LINE__, \
 		    ##args); } \
@@ -129,7 +168,7 @@ typedef struct {
 #endif
 
 /* Debug Logs */
-#if 1
+#if 0
 #define KLOG_D(fmt,args...) \
 		do { printk(KERN_INFO KLOG_TAG "[%s:%d] "fmt"\n", __func__, __LINE__, \
 		    ##args); } \
@@ -147,6 +186,185 @@ typedef struct {
 #else
 #define KLOG_V(x...) do {} while (0)
 #endif
+
+/*
+ * bmem_find_adj()
+ * Description : Look through OOM table for bmem watermarks to find oom_adj value
+ */
+static int bmem_oom_find_adj(void)
+{
+    int array_size = ARRAY_SIZE(bmem_adj);
+    int bmem_free = BMEM_SIZE;
+    int min_adj = OOM_ADJUST_MAX + 1;
+    int i;
+
+    KLOG_V("array_size(%d) bmem_adj_size(%d) bmem_minfree_size(%d)", array_size, bmem_adj_size, bmem_minfree_size);
+	if (bmem_adj_size < array_size)
+		array_size = bmem_adj_size;
+	if (bmem_minfree_size < array_size)
+		array_size = bmem_minfree_size;
+    if (logic.GetFreeMemorySize != NULL) {
+        bmem_free = logic.GetFreeMemorySize();
+    }
+	for (i = 0; i < array_size; i++) {
+        KLOG_V("[%d]: minfree(%#x) adj(%d)", i, bmem_minfree[i], bmem_adj[i]);
+		if (bmem_free < bmem_minfree[i]) {
+			min_adj = bmem_adj[i];
+			break;
+		}
+	}
+
+    KLOG_V("free(%#x) i(%d) min_adj(%d)", bmem_free, i, min_adj);
+    return min_adj;
+}
+
+/*
+ * bmem_oom_kill_task()
+ * Description : Kill the task having oom_adj value >= parameter and taking max bmem
+ */
+static int bmem_oom_kill_task(int min_adj, pid_t *tgid_killed)
+{
+    struct task_struct *p;
+    struct task_struct *selected = NULL;
+    int selected_bmem_size = 0;
+    int selected_oom_adj = OOM_ADJUST_MAX + 1;
+
+    read_lock(&tasklist_lock);
+    for_each_process(p) {
+        struct mm_struct *mm;
+        struct signal_struct *sig;
+        pid_t tgid;
+        int oom_adj, bmem_used_by_tgid = 0;
+
+        task_lock(p);
+        mm = p->mm;
+        sig = p->signal;
+        tgid = p->tgid;
+        if (!mm || !sig) {
+#if 0
+            if (logic.GetUsedMemoryByTgid != NULL) {
+                bmem_used_by_tgid = logic.GetUsedMemoryByTgid(p->tgid);
+            }
+            KLOG_V("Skip-kp %s: pid(%d) tgid(%d) bmem(%d)", p->comm, p->pid, p->tgid, bmem_used_by_tgid);
+#endif
+            task_unlock(p);
+            continue;
+        }
+
+        oom_adj = sig->oom_adj;
+        task_unlock(p);
+        if (oom_adj < min_adj) {
+#if 0
+            if (logic.GetUsedMemoryByTgid != NULL) {
+                bmem_used_by_tgid = logic.GetUsedMemoryByTgid(p->tgid);
+            }
+            KLOG_D("Skip-adj %s: pid(%d) tgid(%d) bmem(%d) oom_adj(%d) ", p->comm, p->pid, p->tgid, bmem_used_by_tgid, oom_adj);
+#endif
+            continue;
+        }
+
+        if (logic.GetUsedMemoryByTgid != NULL) {
+            bmem_used_by_tgid = logic.GetUsedMemoryByTgid(tgid);
+        }
+        if (selected_bmem_size >= bmem_used_by_tgid) {
+            KLOG_V("Skip-size %s: pid(%d) tgid(%d) bmem(%d) oom_adj(%d) ", p->comm, p->pid, p->tgid, bmem_used_by_tgid, oom_adj);
+            continue;
+        }
+        selected = p;
+        selected_bmem_size = bmem_used_by_tgid;
+        selected_oom_adj = oom_adj;
+        KLOG_V("Select %s: pid(%d) tgid(%d) bmem(%d) oom_adj(%d) ", selected->comm, selected->pid, selected->tgid, selected_bmem_size, selected_oom_adj);
+    }
+    if (selected_bmem_size > 0) {
+        int bmem_free = BMEM_SIZE;
+
+        if (logic.GetFreeMemorySize != NULL) {
+            bmem_free = logic.GetFreeMemorySize();
+        }
+        KLOG_E("Kill %s: [pid(%d) bmem(%#x) oom_adj(%d)] bmem_free(%#x) min_adj(%d)",
+            selected->comm, selected->tgid, selected_bmem_size, selected_oom_adj, bmem_free, min_adj);
+        *tgid_killed = selected->tgid;
+        force_sig(SIGKILL, selected);
+    }
+    read_unlock(&tasklist_lock);
+    return selected_bmem_size;
+}
+
+/*
+ * bmem_oom_check()
+ * Description : Look for bmem status and see bmem shrink is needed?
+ */
+static int bmem_oom_check(void)
+{
+    int min_adj;
+    pid_t tgid_killed;
+
+    min_adj = bmem_oom_find_adj();
+    if (min_adj >= OOM_ADJUST_MAX + 1) {
+        return 0;
+    }
+    return (bmem_oom_kill_task(min_adj, &tgid_killed));
+}
+
+/*
+ * bmem_oom_on_failure()
+ * Description : Aggressively free mem if allocation fails. Kill current as last option
+ */
+static int bmem_oom_on_failure(int bmem_to_be_freed)
+{
+    int bmem_freed = 0;
+    int bmem_freed_sum = 0;
+    int bmem_used = 0;
+#if 0
+    int bmem_free = BMEM_SIZE;
+#endif
+    int retry_cnt;
+    pid_t tgid_killed;
+
+    KLOG_V("bmem fail current %s: [pid(%d)] bmem_to_be_freed(%#x) ",
+        current->comm, current->tgid, bmem_to_be_freed);
+    do {
+        bmem_freed = bmem_oom_kill_task(bmem_adj_on_fail, &tgid_killed);
+        if (bmem_freed > 0) {
+            retry_cnt = 50;
+            do {
+                if (logic.GetUsedMemoryByTgid != NULL) {
+                    bmem_used = logic.GetUsedMemoryByTgid(tgid_killed);
+                }
+                up(&bmem_sem);
+                msleep(100);
+                down(&bmem_sem);
+#if 0
+                if (logic.GetFreeMemorySize != NULL) {
+                    bmem_free = logic.GetFreeMemorySize();
+                }
+                KLOG_E("bmem kill bmem_to_be_freed(%#x) bmem_freed(%#x) bmem_used(%#x) bmem_free(%#x) retry_cnt(%d)",
+                    bmem_to_be_freed, bmem_freed, bmem_used, bmem_free, retry_cnt);
+#endif
+            } while((--retry_cnt > 0) && (bmem_used != 0));
+        }
+        bmem_freed_sum += bmem_freed;
+    } while ((bmem_freed_sum < bmem_to_be_freed) && (bmem_freed > 0));
+
+    if ((bmem_freed_sum < bmem_to_be_freed) && (bmem_kill_curr_on_fail)) {
+        int bmem_free = BMEM_SIZE, bmem_used_by_tgid = 0, oom_adj = OOM_ADJUST_MAX + 1;
+
+        if (logic.GetFreeMemorySize != NULL) {
+            bmem_free = logic.GetFreeMemorySize();
+        }
+        if (logic.GetUsedMemoryByTgid != NULL) {
+            bmem_used_by_tgid = logic.GetUsedMemoryByTgid(current->tgid);
+        }
+        if (current->signal) {
+            oom_adj = current->signal->oom_adj;
+        }
+        KLOG_E("Kill current %s: [pid(%d) bmem(%#x) oom_adj(%d)] bmem_free(%#x) fail_adj(%d)",
+            current->comm, current->tgid, bmem_used_by_tgid, oom_adj, bmem_free, bmem_adj_on_fail);
+        force_sig(SIGKILL, current);
+    }
+
+    return bmem_freed_sum;
+}
 
 /*
  * dma_transfer_isr()
@@ -322,7 +540,7 @@ static unsigned long get_from_virt_list(unsigned long virtualaddress)
 		curr = curr->nextAddress;
 	}
 
-	KLOG_E("Item not found");
+	KLOG_V("Item not found");
 	return 0;
 }
 
@@ -386,28 +604,29 @@ static void bmem_print_status(void)
 	}
 
 	down(&bmem_status_sem);
-	KLOG_E("\n  %-30s: ", "Current Usage Info");
-	KLOG_E("\t%-30s: %d ", "Used space in bytes", bmem_status.total_used_space);
-	KLOG_E("\t%-30s: %d ", "Free space in bytes", bmem_status.total_free_space);
-	KLOG_E("\t%-30s: %d ", "Num Buffers in Use", bmem_status.num_buf_used);
+	KLOG_V("Free space[%d], Biggest Free Buffer Avl[%d]", bmem_status.total_free_space, bmem_status.biggest_chunk_avlbl);
+	KLOG_V("\n  %-30s: ", "Current Usage Info");
+	KLOG_V("\t%-30s: %d ", "Used space in bytes", bmem_status.total_used_space);
+	KLOG_V("\t%-30s: %d ", "Free space in bytes", bmem_status.total_free_space);
+	KLOG_V("\t%-30s: %d ", "Num Buffers in Use", bmem_status.num_buf_used);
 
-	KLOG_E("  %-30s: ", "Statistics");
-	KLOG_E("\t%-30s: %d ", "Maximum Memory usage", bmem_status.max_used_space);
-	KLOG_E("\t%-30s: %d ", "Biggest Buffer Requested", bmem_status.biggest_buf_request);
-	KLOG_E("\t%-30s: %d ", "Smallest Buffer Requested", bmem_status.smallest_buf_request);
-	KLOG_E("\t%-30s: %d ", "Allocate Success Count", bmem_status.alloc_pass_cnt);
-	KLOG_E("\t%-30s: %d ", "Mem Free Success Count", bmem_status.free_pass_cnt);
+	KLOG_V("  %-30s: ", "Statistics");
+	KLOG_V("\t%-30s: %d ", "Maximum Memory usage", bmem_status.max_used_space);
+	KLOG_V("\t%-30s: %d ", "Biggest Buffer Requested", bmem_status.biggest_buf_request);
+	KLOG_V("\t%-30s: %d ", "Smallest Buffer Requested", bmem_status.smallest_buf_request);
+	KLOG_V("\t%-30s: %d ", "Allocate Success Count", bmem_status.alloc_pass_cnt);
+	KLOG_V("\t%-30s: %d ", "Mem Free Success Count", bmem_status.free_pass_cnt);
 
-	KLOG_E("  %-30s: ", "Fragmentation Info");
-	KLOG_E("\t%-30s: %d ", "Num Buffers Free", bmem_status.num_buf_free);
-	KLOG_E("\t%-30s: %d ", "Biggest Buffer Available", bmem_status.biggest_chunk_avlbl);
-	KLOG_E("\t%-30s: %d ", "Smallest Buffer Available", bmem_status.smallest_chunk_avlbl);
-	KLOG_E("\t%-30s: %d ", "Max Num Holes occured", bmem_status.max_num_buf_free);
-	KLOG_E("\t%-30s: %d ", "Max Fragmented", bmem_status.max_fragmented_size);
+	KLOG_V("  %-30s: ", "Fragmentation Info");
+	KLOG_V("\t%-30s: %d ", "Num Buffers Free", bmem_status.num_buf_free);
+	KLOG_V("\t%-30s: %d ", "Biggest Buffer Available", bmem_status.biggest_chunk_avlbl);
+	KLOG_V("\t%-30s: %d ", "Smallest Buffer Available", bmem_status.smallest_chunk_avlbl);
+	KLOG_V("\t%-30s: %d ", "Max Num Holes occured", bmem_status.max_num_buf_free);
+	KLOG_V("\t%-30s: %d ", "Max Fragmented", bmem_status.max_fragmented_size);
 
-	KLOG_E("  %-30s: ", "Error Info");
-	KLOG_E("\t%-30s: %d ", "Allocate Failures", bmem_status.alloc_fail_cnt);
-	KLOG_E("\t%-30s: %d \n", "Mem Free Failures", bmem_status.free_fail_cnt);
+	KLOG_V("  %-30s: ", "Error Info");
+	KLOG_V("\t%-30s: %d ", "Allocate Failures", bmem_status.alloc_fail_cnt);
+	KLOG_V("\t%-30s: %d \n", "Mem Free Failures", bmem_status.free_fail_cnt);
 
 	up(&bmem_status_sem);
 
@@ -724,6 +943,15 @@ static int bmem_wrapper_ioctl(struct inode *inode, struct file *filp,
 					    logic.AllocMemory(p_data->bmem_handle,
 							      &memparams.busAddress,
 							      memparams.size);
+					if (result) {
+						if (bmem_oom_on_failure(page_aligned_size) >= page_aligned_size) {
+							result =
+								logic.AllocMemory(p_data->bmem_handle,
+									&memparams.busAddress,
+									memparams.size);
+						}
+					}
+					bmem_oom_check();
 					up(&bmem_sem);
 				} else {
 					KLOG_E("AllocMemory() is NULL");
@@ -944,6 +1172,16 @@ static int bmem_wrapper_ioctl(struct inode *inode, struct file *filp,
 								  &memparams.busAddress,
 								  memparams.size);
 					memparams.nextAddress = NULL;
+					if (result) {
+						if (bmem_oom_on_failure(page_aligned_size) >= page_aligned_size) {
+							result =
+								logic.AllocMemory(p_data->bmem_handle,
+									&memparams.busAddress,
+									memparams.size);
+							memparams.nextAddress = NULL;
+						}
+					}
+					bmem_oom_check();
 					up(&bmem_sem);
 				} else {
 					KLOG_E("AllocMemory() is NULL");
@@ -976,7 +1214,7 @@ static int bmem_wrapper_ioctl(struct inode *inode, struct file *filp,
 				return ret;
 			}
 
-			if (logic.AllocMemory != NULL) {
+			if (logic.FreeMemory != NULL) {
 				down(&bmem_sem);
 				result = logic.FreeMemory(p_data->bmem_handle, &temp_hw_OutBuf.busAddress);
 				up(&bmem_sem);
@@ -1036,7 +1274,7 @@ static int bmem_wrapper_ioctl(struct inode *inode, struct file *filp,
 	case HANTRO_DMA_COPY:
 		{
 			DmaStruct dma_buffers;
-                        int tries = 0;
+			int tries = 0;
 			int ret = 0;
 			ret = copy_from_user(&dma_buffers, (const void *)arg,
 					 sizeof(dma_buffers));
@@ -1256,10 +1494,16 @@ static int bmem_wrapper_mmap(struct file *file,
 				KLOG_E("Zero size alloction requested");
 				busAddress = 0;
 				return -EFAULT;
-			}			
+			}
 			if (logic.AllocMemory != NULL) {
 				down(&bmem_sem);
 				r = logic.AllocMemory(p_data->bmem_handle, &busAddress, page_aligned_size);
+				if (r) {
+					if (bmem_oom_on_failure(page_aligned_size) >= page_aligned_size) {
+						r = logic.AllocMemory(p_data->bmem_handle, &busAddress, page_aligned_size);
+					}
+				}
+				bmem_oom_check();
 				up(&bmem_sem);
 			} else {
 				KLOG_E("AllocMemory() is NULL");
@@ -1329,7 +1573,11 @@ int register_bmem_wrapper(struct bmem_logic *bmem_fops)
 	}
 
 	if (logic.init != NULL) {
+#ifdef BMEM_CHECK_OVERRUN
+		return logic.init(BMEM_SIZE, dma_cohr_start_addr, bmem_mempool_base);
+#else
 		return logic.init(BMEM_SIZE, dma_cohr_start_addr);
+#endif
 	} else {
 		KLOG_E("init() is NULL");
 		return -1;
@@ -1419,6 +1667,13 @@ void __exit bmem_wrapper_cleanup(void)
 	pr_notice("bmem_wrapper: module removed\n");
 	return;
 }
+
+module_param_array_named(adj, bmem_adj, int, &bmem_adj_size,
+			 S_IRUGO | S_IWUSR);
+module_param_array_named(minfree, bmem_minfree, uint, &bmem_minfree_size,
+			 S_IRUGO | S_IWUSR);
+module_param_named(adj_on_fail, bmem_adj_on_fail, uint, S_IRUGO | S_IWUSR);
+module_param_named(kill_curr_on_fail, bmem_kill_curr_on_fail, uint, S_IRUGO | S_IWUSR);
 
 module_init(bmem_wrapper_init);
 module_exit(bmem_wrapper_cleanup);

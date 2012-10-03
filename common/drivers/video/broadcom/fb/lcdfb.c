@@ -69,6 +69,11 @@
 #define LCD_DEBUG(fmt, args...)
 #endif
 
+//add by wangpl for bug209298
+static struct fb_info *info_default;
+
+
+
 static int gLcdDisplayWidth;
 static int gLcdDisplayHeight;
 static int gLcdBitsPerPixel;
@@ -982,6 +987,36 @@ static void lcdfb_fillrect_color(struct fb_info *info,
 }
 #endif /* CONFIG_FB_VC_ACCELE */
 
+
+
+//add by wangpl for bug209298
+static int lcd_dma_update(void)
+{
+	if (info_default == NULL)
+		return 0;
+	lcdfb_pan_display(&(info_default->var), info_default);
+	printk("\n\n---by wangpl, in func<%s>, LCD DMA triggered\n\n", __func__);
+	return 1;
+}
+
+static int write_fb_black(void)
+{
+	unsigned int count = 320*480*2;
+	unsigned short *ptr = NULL;
+	
+	if (info_default == NULL)
+		return 0;
+	
+	ptr = (unsigned short *)(info_default->screen_base);
+	
+	while (count--)
+		*ptr++ = 0;
+
+	printk("\n\n---by wangpl, in func<%s>, write framebuffer black\n\n", __func__);
+	return 1;
+}
+//end add by wangpl
+
 /****************************************************************************
 *
 *  lcdfb early suspend operations
@@ -1002,6 +1037,8 @@ static void lcdfb_early_suspend(struct early_suspend *h)
 	{
             //printk("[LCD] lcdfb_early_suspend==>EARLY_SUSPEND_LEVEL_STOP_DRAWING\n");
 		gLcdfbEarlySuspendStopDraw = 1;
+//add by wangpl for bug209298
+		write_fb_black();
 	}
 	else if (h->level == EARLY_SUSPEND_LEVEL_DISABLE_FB) {
 		int i;
@@ -1031,6 +1068,8 @@ static void lcdfb_late_resume(struct early_suspend *h)
 	{
              //printk("[LCD] lcdfb_late_resume==> EARLY_SUSPEND_LEVEL_STOP_DRAWING\n");
                gLcdfbEarlySuspendStopDraw = 0;
+	//add by wangpl for bug209298	
+		lcd_dma_update();
 	}
 	else if (h->level == EARLY_SUSPEND_LEVEL_DISABLE_FB) {
 		int i;
@@ -1135,6 +1174,9 @@ static int __init lcdfb_probe(struct platform_device *pdev)
 	if (retval < 0)
 		goto err1;
 
+//add by wangpl for bug209298
+	info_default = info;
+	
 	retval = register_framebuffer(info);
 	if (retval < 0)
 		goto err2;
@@ -1227,7 +1269,7 @@ int __init lcdfb_init(void)
 {
 	LCD_Info_t lcdInfo;
 	int ret = 0;
-
+	memset(&lcdInfo, 0, sizeof(LCD_Info_t));
 #ifndef MODULE
 	char *option = NULL;
 
