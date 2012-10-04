@@ -1,8 +1,8 @@
-/* This file is auto generated, version 196 */
+/* This file is auto generated, version 197 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#196 PREEMPT Wed Oct 3 17:00:23 CEST 2012"
-#define LINUX_COMPILE_TIME "17:00:23"
+#define UTS_VERSION "#197 PREEMPT Thu Oct 4 22:06:16 CEST 2012"
+#define LINUX_COMPILE_TIME "22:06:16"
 #define LINUX_COMPILE_BY "MT-2.5"
 #define LINUX_COMPILE_HOST "By-Merruk's-Team"
 #define LINUX_COMPILE_DOMAIN "(none)"

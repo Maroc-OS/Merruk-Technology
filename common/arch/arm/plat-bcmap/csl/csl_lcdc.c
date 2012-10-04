@@ -25,6 +25,7 @@
 
 #define LCDC_MAX_HANDLES                2
 #define LCDC_USE_DYN_AHB_CLK
+#define MAX_SCHEDULE_TIMEOUT
 #undef  LCDC_USE_SYSCFG_OPEN_OS_RDB
 
 #if ( !defined(BSP_PLUS_BUILD_INCLUDED) )
