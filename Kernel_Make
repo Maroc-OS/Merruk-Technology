@@ -87,7 +87,10 @@ else
 
 	elif [ "$1" == "MENU" ];
 		then
-			make menuconfig arch/arm/configs/bcm21553_totoro_05_defconfig
+			rm -Rf .config
+			cp arch/arm/configs/bcm21553_totoro_05_defconfig .config
+			make menuconfig
+
 	elif [ "$1" == "-H" ];
 		then
 			Help
