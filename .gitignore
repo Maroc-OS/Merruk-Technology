@@ -27,8 +27,9 @@
 *.lst
 *.symtypes
 *.order
+*.builtin
+modules.order
 modules.builtin
-common/modules.builtin
 *.elf
 *.bin
 *.gz

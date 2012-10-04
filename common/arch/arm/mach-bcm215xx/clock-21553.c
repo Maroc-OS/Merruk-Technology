@@ -599,9 +599,9 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 	arm11_freq[4] = (apps_pll_freq*2)/3;
 	arm11_freq[5] = (apps_pll_freq*3)/4;
 	arm11_freq[6] = apps_pll_freq;
-	arm11_freq[7] = (apps_pll_freq*2)/16;
-	arm11_freq[8] = (apps_pll_freq*2)/12;
-	/*arm11_freq[9] = (apps_pll_freq*3)/13;*/
+	/*arm11_freq[7] = (apps_pll_freq*2)/16;*/
+	arm11_freq[7] = (apps_pll_freq*2)/12;
+	arm11_freq[8] = (apps_pll_freq*3)/13;
     /* 1248, 936, 832, 624, 468, 416, 312, 288, 208, 156 */
 	/*we support only two modes - 0x0C/0x0F - thats what he said*/
 	if (val == arm11_freq[0])
@@ -666,9 +666,9 @@ long bcm21553_arm11_round_rate(struct clk *clk, unsigned long desired_val)
 	arm11_freq[4] = (apps_pll_freq*2)/3;
 	arm11_freq[5] = (apps_pll_freq*3)/4;
 	arm11_freq[6] = apps_pll_freq; /*(apps_pll_freq-((apps_pll_freq*2)/12));*/
-	arm11_freq[7] = (apps_pll_freq*2)/16;
+	/*arm11_freq[7] = (apps_pll_freq*2)/16;*/
 	arm11_freq[8] = (apps_pll_freq*2)/12;
-	/*arm11_freq[9] = (apps_pll_freq*3)/13;*/
+	arm11_freq[9] = (apps_pll_freq*3)/13;
 
 	return (long)bcm21553_generic_round_rate(desired_val,
 						 arm11_freq,

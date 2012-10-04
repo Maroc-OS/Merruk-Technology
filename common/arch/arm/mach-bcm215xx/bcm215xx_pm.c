@@ -46,6 +46,8 @@
 
 #include "bcm215xx_pm.h"
 
+#define TLB_POWERED                    1
+
 struct bcm_pm_sleep *bcm_pm_sleep_buf;
 EXPORT_SYMBOL(bcm_pm_sleep_buf);
 struct bcm_pm_sleep *bcm_pm_sleep_buf_phys;

@@ -1,5 +1,0 @@
-kernel/drivers/char/broadcom/bcm_auxadc.ko
-kernel/drivers/char/broadcom/bcm_pwm.ko
-kernel/drivers/char/broadcom/bcm_i2sdai.ko
-kernel/drivers/char/broadcom/i2s_drv_osdal.ko
-kernel/drivers/char/broadcom/bcm_otp.ko

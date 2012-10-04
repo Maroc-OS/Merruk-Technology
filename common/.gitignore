@@ -22,6 +22,8 @@
 *.lst
 *.symtypes
 *.order
+*.builtin
+modules.order
 modules.builtin
 *.elf
 *.bin

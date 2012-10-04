@@ -1,3 +1,0 @@
-kernel/drivers/video/backlight/lcd.ko
-kernel/drivers/video/backlight/backlight.ko
-kernel/drivers/video/backlight/aat1401_bl.ko
