@@ -37,7 +37,7 @@ function Help
 	echo "  -CL					: Make AClean Compilation From Scratch."
 	echo "  -CPU [Number Of Cores]		: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)."
 	echo "  -Help/-H				: Show This Help Prompt."
-	echo "  MENU					: Edit DefConfig File : totoro_brcm21553_05_defconfig."
+	echo "  MENU				: Edit DefConfig File : totoro_brcm21553_05_defconfig."
 	exit 1
 } # end help
 
