@@ -37,6 +37,7 @@ function Help
 	echo "  -CL					: Make AClean Compilation From Scratch."
 	echo "  -CPU [Number Of Cores]		: Specefie Number Of Cores You Wanna Use (By Default Script Calculate All Your's)."
 	echo "  -Help/-H				: Show This Help Prompt."
+	echo "  MENU				: Edit DefConfig File : totoro_brcm21553_05_defconfig."
 	exit 1
 } # end help
 
@@ -83,6 +84,12 @@ else
 			echo ""
 			make bcm21553_totoro_05_defconfig
 			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$2 EXTRA_AFLAGS='-mfpu=neon -ftree-vectorize -mfloat-abi=softfp' > ../kernel_log.$$ 2>&1
+
+	elif [ "$1" == "MENU" ];
+		then
+			rm -Rf .config
+			cp arch/arm/configs/bcm21553_totoro_05_defconfig .config
+			make menuconfig
 
 	elif [ "$1" == "-H" ];
 		then

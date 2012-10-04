@@ -47,6 +47,9 @@ For compiling Merruk Technology kernel open the command prompt `(CONSOLE)` and s
   <tr>
 	<td>Specify number of prosessors</td><td>Script guesses that automatically</td><td>Kernel_Make</td><td>-CPU [Number of cores] (all cores by default)</td>
   </tr>
+  <tr>
+	<td>Make the Totoro defconfig 05</td><td>menuconfig use the actual totoro</td><td>Kernel_Make</td><td>MENU</td>
+  </tr>
 </table>
 
 
