@@ -152,22 +152,6 @@ static int bcm_avs_drv_probe(struct platform_device *pdev)
 				      type_info->nm_voltage);
 		regulator_put(regl);
 	}
-	
-		/* It is assumed that, at boot up system is in ulower mode */
-	if (pdata->core_ulower_regl && type_info->nm2_ulower_voltage != -1)
-	{
-		regl = regulator_get(NULL, pdata->core_ulower_regl);
-		if(IS_ERR(regl))
-		{
-			pr_info("%s: Core Under_Lower mode regulator_get failed\n",
-				__func__);
-			ret = PTR_ERR(regl);
-			goto error;
-		}
-		regulator_set_voltage(regl, type_info->nm2_ulower_voltage,
-				      type_info->nm2_ulower_voltage);
-		regulator_put(regl);
-	}
 
 	/* It is assumed that, at boot up system is in lower mode */
 	if (pdata->core_lower_regl && type_info->nm2_lower_voltage != -1)

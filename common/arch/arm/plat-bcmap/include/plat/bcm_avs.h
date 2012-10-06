@@ -62,8 +62,6 @@ struct silicon_type_info
 	int nm2_starter_voltage;
 	/* NM2 lower mode voltage. Pass -1 if no update needed */
 	int nm2_lower_voltage;
-	/* NM2 ulower mode voltage. Pass -1 if no update needed */
-	int nm2_ulower_voltage;
 };
 
 struct bcm_avs_platform_data_t
@@ -77,11 +75,6 @@ struct bcm_avs_platform_data_t
 	 * Pass NULL if not supported/need not update
 	 */
 	char *core_nml_regl;
-
-	/* Name of the regulator to control core ulower mode voltage
-	 * Pass NULL if not supported/need not update
-	 */
-	char *core_ulower_regl;
 
 	/* Name of the regulator to control core lower mode voltage
 	 * Pass NULL if not supported/need not update

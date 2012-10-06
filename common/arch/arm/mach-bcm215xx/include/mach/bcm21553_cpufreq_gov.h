@@ -26,7 +26,6 @@ struct bcm21553_cpufreq_gov_plat {
 	unsigned int freq_normal;
 	unsigned int freq_starter;
 	unsigned int freq_lower;
-	unsigned int freq_ulower;
 };
 
 /* helper for cpufreq_bcm_client_get */

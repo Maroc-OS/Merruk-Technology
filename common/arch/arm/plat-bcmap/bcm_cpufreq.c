@@ -340,7 +340,6 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	unsigned int freq_normal, index_normal;
 	unsigned int freq_starter, index_starter;
 	unsigned int freq_lower, index_lower;
-	unsigned int freq_ulower, index_ulower;
 	int activate = 0;
 	int volt_new;
 	int volt_old;
@@ -444,8 +443,6 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 	freq_normal		= info->freq_tbl[index_normal].cpu_freq * 1000;
 	index_lower		= info->index_lower;
 	freq_lower		= info->freq_tbl[index_lower].cpu_freq * 1000;
-	index_ulower	= info->index_ulower;
-	freq_ulower		= info->freq_tbl[index_ulower].cpu_freq * 1000;
 
 		/* Height Frequencies Need's special hundling :) */
 		if ((freqs.new == freq_osuper)	||
@@ -462,8 +459,7 @@ static int bcm_cpufreq_set_speed(struct cpufreq_policy *policy,
 				(freqs.new == freq_umedium)	 ||
 				(freqs.new == freq_starter)	 ||
 				(freqs.new == freq_normal)	 ||
-				(freqs.new == freq_lower)	 ||
-				(freqs.new == freq_ulower))
+				(freqs.new == freq_lower))
 		{
 			clk_disable(b->appspll_en_clk);
 		}

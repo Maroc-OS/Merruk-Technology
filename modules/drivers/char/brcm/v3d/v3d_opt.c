@@ -1778,7 +1778,7 @@ static int v3d_ioctl(struct inode *inode, struct file *filp, unsigned int cmd, u
 			}
 
 #ifdef CONFIG_BCM21553_V3D_SYNC_ENABLE
-			spin_lock_irqsave(&dev->lock, flags);
+			/*spin_lock_irqsave(&dev->lock, flags);*/
 #endif
 		if(reg_addr > 0xF23) {
 		    KLOG_E("reg_addr greater than the max V3D reg address space\n");
@@ -1786,7 +1786,7 @@ static int v3d_ioctl(struct inode *inode, struct file *filp, unsigned int cmd, u
 		}
 		reg_value = v3d_read(reg_addr);
 #ifdef CONFIG_BCM21553_V3D_SYNC_ENABLE
-			spin_unlock_irqrestore(&dev->lock, flags);
+			/*spin_unlock_irqrestore(&dev->lock, flags);*/
 #endif
 
 			if (copy_to_user((u32 *)arg, &reg_value, sizeof(u32))) {

@@ -570,8 +570,7 @@ struct platform_device bcm215xx_lcdc_device = {
 
 /* List of arm core clk frequencies. */
 enum {
-	BCM21553_CORECLK_MHZ_156 = (156U * 1000),
-	BCM21553_CORECLK_MHZ_208 = (208U * 1000),
+	BCM21553_CORECLK_MHZ_234 = (234U * 1000),
 	BCM21553_CORECLK_MHZ_288 = (288U * 1000),
 	BCM21553_CORECLK_MHZ_312 = (312U * 1000),
 	BCM21553_CORECLK_MHZ_416 = (416U * 1000),
@@ -590,8 +589,7 @@ enum {
 #define BCM_CORE_CLK_UMEDIUM	BCM21553_CORECLK_MHZ_416
 #define BCM_CORE_CLK_NORMAL		BCM21553_CORECLK_MHZ_312
 #define BCM_CORE_CLK_STARTER	BCM21553_CORECLK_MHZ_288
-#define BCM_CORE_CLK_LOWER		BCM21553_CORECLK_MHZ_208
-#define BCM_CORE_CLK_ULOWER		BCM21553_CORECLK_MHZ_156
+#define BCM_CORE_CLK_LOWER		BCM21553_CORECLK_MHZ_234
 
 #if defined(CONFIG_BCM_CPU_FREQ)
 /*********************************************************************
@@ -600,7 +598,6 @@ enum {
 
 /* Indices for the voltage to frequency mapping table */
 enum {
-	BCM_ULOWER_MODE,
 	BCM_LOWER_MODE,
 	BCM_STARTER_MODE,
 	BCM_NORMAL_MODE,
@@ -615,7 +612,6 @@ enum {
 /* Voltage-Frequency mapping for BCM21553 CPU0 */
 static struct bcm_freq_tbl bcm215xx_cpu0_freq_tbl[] = {
 	/* NOW WE NEED ONLY TO FIXE VOLTAGES*/
-	FTBL_INIT(BCM_CORE_CLK_ULOWER / 1000, 1100000),
 	FTBL_INIT(BCM_CORE_CLK_LOWER / 1000, 1120000),
 	FTBL_INIT(BCM_CORE_CLK_STARTER / 1000, 1160000),
 	FTBL_INIT(BCM_CORE_CLK_NORMAL / 1000, 1180000),
@@ -645,7 +641,6 @@ static struct bcm_cpu_info bcm215xx_cpu_info[] = {
 		.index_normal = BCM_NORMAL_MODE,
 		.index_starter = BCM_STARTER_MODE,
 		.index_lower = BCM_LOWER_MODE,
-		.index_ulower = BCM_ULOWER_MODE,
 	},
 };
 /* Platform data for BCM CPU freq driver */
@@ -690,7 +685,6 @@ static struct bcm21553_cpufreq_gov_plat bcm21553_cpufreq_gov_plat = {
 	.freq_normal	= BCM_CORE_CLK_NORMAL,
 	.freq_starter	= BCM_CORE_CLK_STARTER,
 	.freq_lower		= BCM_CORE_CLK_LOWER,
-	.freq_ulower	= BCM_CORE_CLK_ULOWER,
 };
 
 struct platform_device bcm21553_cpufreq_gov = {
@@ -708,10 +702,6 @@ struct platform_device bcm21553_cpufreq_gov = {
  *********************************************************************/
 
 /* THIS IS THE MAN CORE OF OUR VOLTAGE WE NEED TO CRACK IT */
-
-#define NM2_FF_VOLTAGE_ULOWER	1040000
-#define NM2_TT_VOLTAGE_ULOWER	1100000
-#define NM2_SS_VOLTAGE_ULOWER	1140000
 
 #define NM2_FF_VOLTAGE_LOWER	1100000
 #define NM2_TT_VOLTAGE_LOWER	1120000
@@ -759,7 +749,6 @@ struct platform_device bcm21553_cpufreq_gov = {
 static struct silicon_type_info part_type_ss = {
 	.lpm_voltage = -1, /* Pass -1 if no update needed */
 	.nm_voltage = NM_SS_VOLTAGE,
-	.nm2_ulower_voltage = NM2_SS_VOLTAGE_ULOWER,
 	.nm2_lower_voltage = NM2_SS_VOLTAGE_LOWER,
 	.nm2_starter_voltage = NM2_SS_VOLTAGE_STARTER,
 	.nm2_normal_voltage = NM2_SS_VOLTAGE_NORMAL,
@@ -774,7 +763,6 @@ static struct silicon_type_info part_type_ss = {
 static struct silicon_type_info part_type_tt = {
 	.lpm_voltage = -1, /* Pass -1 if no update needed */
 	.nm_voltage = NM_TT_VOLTAGE,
-	.nm2_ulower_voltage = NM2_TT_VOLTAGE_ULOWER,
 	.nm2_lower_voltage = NM2_TT_VOLTAGE_LOWER,
 	.nm2_starter_voltage = NM2_TT_VOLTAGE_STARTER,
 	.nm2_normal_voltage = NM2_TT_VOLTAGE_NORMAL,
@@ -789,7 +777,6 @@ static struct silicon_type_info part_type_tt = {
 static struct silicon_type_info part_type_ff = {
 	.lpm_voltage = -1, /* Pass -1 if no update needed */
 	.nm_voltage = NM_FF_VOLTAGE,
-	.nm2_ulower_voltage = NM2_FF_VOLTAGE_ULOWER,
 	.nm2_lower_voltage = NM2_FF_VOLTAGE_LOWER,
 	.nm2_starter_voltage = NM2_FF_VOLTAGE_STARTER,
 	.nm2_normal_voltage = NM2_FF_VOLTAGE_NORMAL,
@@ -808,7 +795,6 @@ static struct silicon_type_info part_type_ff = {
  */
 static void bcm215xx_avs_notify(int silicon_type)
 {
-	int ulower;
 	int lower;
 	int starter;
 	int normal;
@@ -824,7 +810,6 @@ static void bcm215xx_avs_notify(int silicon_type)
 	switch(silicon_type)
 	{
 	case SILICON_TYPE_SLOW:
-		ulower	= part_type_ss.nm2_ulower_voltage;
 		lower	= part_type_ss.nm2_lower_voltage;
 		starter	= part_type_ss.nm2_starter_voltage;
 		normal	= part_type_ss.nm2_normal_voltage;
@@ -837,7 +822,6 @@ static void bcm215xx_avs_notify(int silicon_type)
 		break;
 
 	case SILICON_TYPE_TYPICAL:
-		ulower	= part_type_tt.nm2_ulower_voltage;
 		lower	= part_type_tt.nm2_lower_voltage;
 		starter	= part_type_tt.nm2_starter_voltage;
 		normal	= part_type_tt.nm2_normal_voltage;
@@ -850,7 +834,6 @@ static void bcm215xx_avs_notify(int silicon_type)
 		break;
 
 	case SILICON_TYPE_FAST:
-		ulower	= part_type_ff.nm2_ulower_voltage;
 		lower	= part_type_ff.nm2_lower_voltage;
 		starter	= part_type_ff.nm2_starter_voltage;
 		normal	= part_type_ff.nm2_normal_voltage;
@@ -863,7 +846,6 @@ static void bcm215xx_avs_notify(int silicon_type)
 		break;
 
 	default:
-		ulower	= part_type_ss.nm2_ulower_voltage;
 		lower	= part_type_ss.nm2_lower_voltage;
 		starter	= part_type_ss.nm2_starter_voltage;
 		normal	= part_type_ss.nm2_normal_voltage;
@@ -876,10 +858,6 @@ static void bcm215xx_avs_notify(int silicon_type)
 		break;
 
 	}
-
-	if (ulower > 0)
-		bcm215xx_cpu0_freq_tbl[BCM_ULOWER_MODE].cpu_voltage =
-		  (u32)ulower;
 
 	if (lower > 0)
 		bcm215xx_cpu0_freq_tbl[BCM_LOWER_MODE].cpu_voltage =
@@ -926,7 +904,6 @@ static struct bcm_avs_platform_data_t bcm_avs_pdata = {
 	/* Pass NULL if not supported/need not update */
 	.core_lpm_regl = NULL,
 	.core_nml_regl = "csr_nm1",
-	.core_ulower_regl = "csr_nm2",
 	.core_lower_regl = "csr_nm2",
 	.core_starter_regl = "csr_nm2",
 	.core_normal_regl = "csr_nm2",
@@ -1018,10 +995,6 @@ void __init update_avs_sysparm(void)
 	SYSPARM_VOLT("nm2_ff_voltage_lower", part_type_ff.nm2_lower_voltage);
 	SYSPARM_VOLT("nm2_tt_voltage_lower", part_type_tt.nm2_lower_voltage);
 	SYSPARM_VOLT("nm2_ss_voltage_lower", part_type_ss.nm2_lower_voltage);
-
-	SYSPARM_VOLT("nm2_ff_voltage_ulower", part_type_ff.nm2_ulower_voltage);
-	SYSPARM_VOLT("nm2_tt_voltage_ulower", part_type_tt.nm2_ulower_voltage);
-	SYSPARM_VOLT("nm2_ss_voltage_ulower", part_type_ss.nm2_ulower_voltage);
 
 	SYSPARM_VOLT("nm_ff_voltage", part_type_ff.nm_voltage);
 	SYSPARM_VOLT("nm_tt_voltage", part_type_tt.nm_voltage);
