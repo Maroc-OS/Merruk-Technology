@@ -600,7 +600,7 @@ int bcm21553_arm11_set_rate(struct clk *clk, unsigned long val)
 	arm11_freq[5] = (apps_pll_freq*3)/4;
 	arm11_freq[6] = apps_pll_freq;
 	/*arm11_freq[7] = (apps_pll_freq*2)/16;*/
-	arm11_freq[7] = (apps_pll_freq*2)/12;
+	arm11_freq[7] = (apps_pll_freq*3)/16;
 	arm11_freq[8] = (apps_pll_freq*3)/13;
     /* 1248, 936, 832, 624, 468, 416, 312, 288, 208, 156 */
 	/*we support only two modes - 0x0C/0x0F - thats what he said*/
@@ -667,7 +667,7 @@ long bcm21553_arm11_round_rate(struct clk *clk, unsigned long desired_val)
 	arm11_freq[5] = (apps_pll_freq*3)/4;
 	arm11_freq[6] = apps_pll_freq; /*(apps_pll_freq-((apps_pll_freq*2)/12));*/
 	/*arm11_freq[7] = (apps_pll_freq*2)/16;*/
-	arm11_freq[8] = (apps_pll_freq*2)/12;
+	arm11_freq[8] = (apps_pll_freq*3)/16;
 	arm11_freq[9] = (apps_pll_freq*3)/13;
 
 	return (long)bcm21553_generic_round_rate(desired_val,
@@ -2138,4 +2138,13 @@ static int __init clk_init(void)
 	return -ENODEV;
 }
 
+static void __exit clk_exit(void)
+{
+	int i;
+	for (i = 0; i < ARRAY_SIZE(lookups); i++)
+		clkdev_drop(&lookups[i]);
+	remove_proc_entry("bcm21553_clks", NULL);
+}
+
 arch_initcall(clk_init);
+module_exit(clk_exit);

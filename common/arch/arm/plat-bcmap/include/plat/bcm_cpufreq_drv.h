@@ -17,7 +17,7 @@
 #define BCM_CPUFREQ_DRV_H
 
 /* #define CPUFREQ_ETERNAL_LATENCY		10000000 */
-#define CPUFREQ_ETERNAL_LATENCY		300000
+#define CPUFREQ_ETERNAL_LATENCY		335000
 #ifndef CPUFREQ_ETERNAL
 #define CPUFREQ_ETERNAL				-1
 #endif
@@ -68,8 +68,6 @@ struct bcm_cpu_info {
 	int index_starter;
 	/* Index of lower mode cpu frequency in DVFS table. */
 	int index_lower;
-	/* Index of ulower mode cpu frequency in DVFS table. */
-	int index_ulower;
 };
 
 /* Platform data for BCM21553 cpufreq driver */

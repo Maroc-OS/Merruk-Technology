@@ -39,6 +39,7 @@ static inline void arch_idle(void)
 #define REBOOT_MODE_CHARGING	3
 #define REBOOT_MODE_RECOVERY	4
 #define REBOOT_MODE_ARM11_FOTA	5
+#define REBOOT_MODE_CPREBOOT	6
 #define BCM215XXINFORM 0x28004000
 #define BCM215XXINFORM3 0x28004010
 static inline void arch_reset(char mode, const char *cmd)
