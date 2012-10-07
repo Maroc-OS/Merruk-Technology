@@ -229,6 +229,10 @@ service dhcpcd /system/bin/dhcpcd -BKL eth0
 	disabled
 	oneshot
 
+#service dhcpcd_eth0 /system/bin/dhcpcd -BKL eth0
+#	disabled
+#	oneshot
+
 on property:init.svc.wpa_supplicant=stopped
 	stop dhcpcd
 

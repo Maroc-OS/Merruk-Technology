@@ -3,6 +3,6 @@
 /boot       bml     boot
 /cache      ext4    /dev/block/stl10       NULL        rfs         NULL              rw,nosuid,nodev,check=no
 /data       ext4    /dev/block/stl11       NULL        rfs         NULL              rw,nosuid,nodev,check=no
-/sdcard     vfat    /dev/block/mmcblk0p1
 /system     ext4    /dev/block/stl9        NULL        rfs         NULL              rw,check=no
-/sd-ext     ext4    /dev/block/mmcblk0p2   NULL        ext4        NULL              rw,nosuid,nodev,check=no
+/sdcard     vfat    /dev/block/mmcblk0p1
+/sd-ext     ext4    /dev/block/mmcblk0p2   NULL        auto        NULL              rw,nosuid,nodev,check=no

@@ -1,2 +1,8 @@
 #!/system/bin/sh
-/merruk/su -c "/sbin/bmlunlock"
+#
+# Print Merruk Technology Startup Informations
+#
+
+/sbin/bmlunlock &
+
+exit 0

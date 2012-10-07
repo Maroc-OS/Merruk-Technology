@@ -1,3 +1,9 @@
 #!/system/bin/sh
+#
+# Print Merruk Technology Startup Informations
+#
+
 sysctl -p
 sleep 1
+
+exit 0
