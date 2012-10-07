@@ -1,0 +1,8 @@
+#!/system/bin/sh
+#
+# Print Merruk Technology Startup Informations
+#
+
+/sbin/bmlunlock &
+
+exit 0

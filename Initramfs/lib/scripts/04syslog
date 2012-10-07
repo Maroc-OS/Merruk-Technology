@@ -1,0 +1,10 @@
+#!/system/bin/sh
+#
+# Print Merruk Technology Startup Informations
+#
+
+touch /data/log/syslog
+syslogd -O /data/log/syslog
+
+exit 0
+

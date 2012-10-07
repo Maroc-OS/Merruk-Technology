@@ -1,0 +1,102 @@
+on early-init
+    start ueventd
+
+on init
+    export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
+    export LD_LIBRARY_PATH /vendor/lib:/system/lib
+    export ANDROID_ROOT /system
+    export ANDROID_DATA /data
+    export EXTERNAL_STORAGE /sdcard
+
+    symlink /system/etc /etc
+
+    mkdir /sd-ext
+    mkdir /sdcard
+    mkdir /system
+    mkdir /data
+    mkdir /cache
+    mkdir /tmp
+    mkdir /dbdata
+    mkdir /mnt 0775 root root
+    mkdir /mnt/.lfs 0775 root root
+    #mount /tmp /tmp tmpfs   
+
+on early-fs
+
+    # rfs drivers
+    insmod fsr.ko
+    insmod fsr_stl.ko
+    insmod rfs_glue.ko
+    insmod rfs_fat.ko
+    insmod sec_param.ko
+    insmod j4fs.ko
+
+on fs
+    mount tmpfs tmpfs /tmp
+    mount rfs /dev/stl9 /system nosuid nodev check=no
+    mount rfs /dev/stl11 /data nosuid nodev check=no
+    mount rfs /dev/stl10 /cache nosuid nodev
+    mount j4fs /dev/stl6 /mnt/.lfs 
+
+    chown system system /data
+    chmod 0771 /data  
+
+
+    
+on post-fs
+
+    write /proc/sys/kernel/panic_on_oops 1
+    write /proc/sys/kernel/hung_task_timeout_secs 0
+    write /proc/cpu/alignment 4
+    write /proc/sys/kernel/sched_latency_ns 10000000
+    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
+    write /proc/sys/kernel/sched_compat_yield 1
+    write /proc/sys/kernel/sched_child_runs_first 0
+
+    chown system cache /cache
+    chmod 0770 /cache
+    
+    mkdir /data/cache
+    chown system cache /data/cache
+    chmod 0770 /data/cache
+
+    chown system cache /cache/recovery
+    chmod 0770 /cache/recovery
+on boot
+
+    ifup lo
+    hostname localhost
+    domainname localdomain
+
+    class_start default
+
+    #exec /sbin/sh /sbin/init.data
+service init_data /sbin/init.data
+user root
+oneshot
+
+
+service ueventd /sbin/ueventd
+    critical
+
+service ua_launcher /sbin/ua_launcher
+    oneshot
+
+
+# Always start adbd on userdebug and eng builds
+# In recovery, always run adbd as root.
+on property:ro.debuggable=1
+    #start adbd
+    setprop service.adb.root 1
+
+# Restart adbd so it can run as root
+on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1
+
+#on property:persist.service.adb.enable=1
+#    start adbd
+
+on property:persist.service.adb.enable=0
+    stop adbd

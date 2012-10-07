@@ -1,0 +1,105 @@
+on early-init
+    start ueventd
+
+on init
+    export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
+    export LD_LIBRARY_PATH /vendor/lib:/system/lib
+    export ANDROID_ROOT /system
+    export ANDROID_DATA /data
+    export EXTERNAL_STORAGE /sdcard
+
+    #symlink /system/etc /etc
+    mkdir /etc
+
+    mkdir /sd-ext
+    mkdir /sdcard
+    mkdir /system
+    mkdir /data
+    mkdir /cache
+    mkdir /tmp
+    mkdir /mnt 0775 root root
+
+on early-fs
+
+    # rfs drivers
+    insmod fsr.ko
+    insmod fsr_stl.ko
+    insmod rfs_glue.ko
+    insmod rfs_fat.ko
+    insmod sec_param.ko
+
+on fs
+
+    mount tmpfs tmpfs /tmp
+    mount rfs /dev/block/stl9 /system
+    mount rfs /dev/block/stl9 /system rw remount
+
+# system/userdata is moved to 'on emmc' and 'on nand' sections
+	mount ext4 /dev/block/stl11 /data nosuid nodev
+	mount rfs /dev/block/stl11 /data nosuid nodev check=no
+	#exec /system/bin/sh /sbin/ram.data
+
+	chown system system /data
+	chmod 0771 /data
+
+# /cache
+	mount ext4 /dev/block/stl10 /cache nosuid nodev
+	mount rfs /dev/block/stl10 /cache nosuid nodev
+
+# /system rw first to give the filesystem a chance to save a checkpoint
+	mount ext4 /dev/block/stl9 /system rw remount
+	mount rfs /dev/block/stl9 /system rw remount ckeck=no
+
+
+
+
+
+on post-fs
+
+    write /proc/sys/kernel/panic_on_oops 1
+    write /proc/sys/kernel/hung_task_timeout_secs 0
+    write /proc/cpu/alignment 4
+    write /proc/sys/kernel/sched_latency_ns 10000000
+    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
+    write /proc/sys/kernel/sched_compat_yield 1
+    write /proc/sys/kernel/sched_child_runs_first 0
+    write /proc/LinuStoreIII/fsbuild_check BUILDING
+
+on boot
+
+    ifup lo
+    hostname android
+    domainname merruk.ma
+
+    class_start default
+
+    exec /sbin/sh /sbin/killrecovery.sh
+
+service ueventd /sbin/ueventd
+    critical
+
+service console /system/bin/sh
+    console
+
+#service recovery /sbin/recovery
+
+service adbd /sbin/adbd recovery
+    disabled
+
+# Always start adbd on userdebug and eng builds
+# In recovery, always run adbd as root.
+on property:ro.debuggable=1
+    #start adbd
+    setprop service.adb.root 1
+
+# Restart adbd so it can run as root
+on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1
+
+on property:persist.service.adb.enable=1
+    start adbd
+
+#on property:persist.service.adb.enable=0
+#    stop adbd

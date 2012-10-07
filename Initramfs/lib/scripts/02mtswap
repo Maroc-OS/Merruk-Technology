@@ -1,0 +1,13 @@
+#!/system/bin/sh
+#
+# Print Merruk Technology Startup Informations
+#
+
+if /sbin/busybox test /dev/block/mmcblk0p3 ; then
+	swapon /dev/block/mmcblk0p3
+	sysctl -w vm.swappiness=30
+	sysctl -p
+	sleep 1
+fi
+
+exit 0
