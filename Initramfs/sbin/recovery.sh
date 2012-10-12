@@ -1,9 +1,9 @@
-#!/system/bin/sh -x
+#!/system/bin/sh
 
-# Tmp Permissions for Root
-/sbin/busybox chmod 4777 /sbin/su
+set -x
+export PATH=/:/sbin:/system/xbin:/system/bin:/tmp:$PATH
 
-exec > /data/local/CMW_log.txt 2>&1
+exec > /data/local/Recovery_userscript.txt 2>&1
 #cd sbin
 
 /sbin/busybox ln -s busybox /sbin/[
@@ -164,8 +164,8 @@ cd /
 
 # Force Umount
 umount -l /system
-#/sbin/busybox umount -l /data
-#/sbin/busybox umount -l /system
+#umount -l /data
+#umount -l /system
 
 # Make it Runs
 /sbin/recovery &

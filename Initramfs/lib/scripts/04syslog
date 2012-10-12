@@ -3,6 +3,8 @@
 # Print Merruk Technology Startup Informations
 #
 
-/sbin/bmlunlock &
+touch /data/log/syslog
+syslogd -O /data/log/syslog
 
 exit 0
+

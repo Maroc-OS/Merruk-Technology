@@ -1,3 +1,6 @@
 #!/system/bin/sh
-touch /data/local/tmp/init.d_log_test.txt
-echo "done" >> /data/local/tmp/init.d_log_test.txt
+#
+# Print Merruk Technology Startup Informations
+#
+touch /data/local/tmp/init.d.log
+echo "done" >> /data/local/tmp/init.d.log

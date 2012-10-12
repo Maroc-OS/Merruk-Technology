@@ -8,7 +8,8 @@ on init
     export ANDROID_DATA /data
     export EXTERNAL_STORAGE /sdcard
 
-    symlink /system/etc /etc
+    #symlink /system/etc /etc
+    mkdir /etc
 
     mkdir /sd-ext
     mkdir /sdcard
@@ -16,9 +17,7 @@ on init
     mkdir /data
     mkdir /cache
     mkdir /tmp
-    #mkdir /dbdata
     mkdir /mnt 0775 root root
-    #mount /tmp /tmp tmpfs   
 
 on early-fs
 
@@ -32,12 +31,12 @@ on early-fs
 on fs
 
     mount tmpfs tmpfs /tmp
-    mount ext4 /dev/stl9 /system
-    mount ext4 /dev/stl9 /system rw remount
+    mount rfs /dev/block/stl9 /system
+    mount rfs /dev/block/stl9 /system rw remount
 
 # system/userdata is moved to 'on emmc' and 'on nand' sections
 	mount ext4 /dev/block/stl11 /data nosuid nodev
-	#mount rfs /dev/stl11 /data nosuid nodev check=no
+	mount rfs /dev/block/stl11 /data nosuid nodev check=no
 	#exec /system/bin/sh /sbin/ram.data
 
 	chown system system /data
@@ -45,11 +44,11 @@ on fs
 
 # /cache
 	mount ext4 /dev/block/stl10 /cache nosuid nodev
-	#mount rfs /dev/stl10 /cache nosuid nodev
+	mount rfs /dev/block/stl10 /cache nosuid nodev
 
 # /system rw first to give the filesystem a chance to save a checkpoint
 	mount ext4 /dev/block/stl9 /system rw remount
-	#mount rfs /dev/stl9 /system rw remount ckeck=no
+	mount rfs /dev/block/stl9 /system rw remount ckeck=no
 
 
 
@@ -65,15 +64,15 @@ on post-fs
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
     write /proc/LinuStoreIII/fsbuild_check BUILDING
+
 on boot
 
     ifup lo
-    hostname localhost
-    domainname localdomain
+    hostname android
+    domainname merruk.ma
 
     class_start default
 
-    #exec /sbin/sh /sbin/init.data
     exec /sbin/sh /sbin/killrecovery.sh
 
 service ueventd /sbin/ueventd
