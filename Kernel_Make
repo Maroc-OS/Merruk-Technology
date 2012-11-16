@@ -113,7 +113,7 @@ if [ -f "common/arch/arm/boot/zImage" ];
 then
 	# Find All Compiled Modules And Copy Them into Output Directory
 
-	find . -name '*.ko' -exec cp -v {} ./MerrukTechnology_Output/system/lib/modules \;
+	find . -name '*.ko' -exec cp -fv {} ./MerrukTechnology_Output/system/lib/modules \;
 
 	echo "Merruk Technology Kernel/Modules Are Done !"
 	echo "./common/arch/arm/boot/zImage & All Modules Are copied to :"
@@ -124,7 +124,7 @@ then
 
 	# Copy The Compiled Kernel Into Output Directory
 
-	cp ./common/arch/arm/boot/zImage ./MerrukTechnology_Output/
+	cp -f ./common/arch/arm/boot/zImage ./MerrukTechnology_Output/
 else
 	echo "Merruk Technology Kernel did not Compiled !!"
 	echo "Please Check 'kernel_log.*' File For Output Errors!!"
