@@ -87,9 +87,9 @@ else
 
 	elif [ "$1" == "MENU" ];
 		then
-			rm -Rf .config
-			cp arch/arm/configs/bcm21553_totoro_05_defconfig .config
+			make bcm21553_totoro_05_defconfig
 			make menuconfig
+			make CONFIG_DEBUG_SECTION_MISMATCH=y -j$2 EXTRA_AFLAGS='-mfpu=neon -ftree-vectorize -mfloat-abi=softfp' > ../kernel_log.$$ 2>&1			
 
 	elif [ "$1" == "-H" ];
 		then
