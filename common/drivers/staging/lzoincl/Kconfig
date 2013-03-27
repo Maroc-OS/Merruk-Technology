@@ -1,0 +1,8 @@
+config INCLUDE_LZO
+	bool "Include LZO in kernel"
+	select LZO_COMPRESS
+	select LZO_DECOMPRESS
+	default n
+	---help---
+	Dummy for LZO_COMPRESS and LZO_DECOMPRESS,
+	needed for the external zram module.
