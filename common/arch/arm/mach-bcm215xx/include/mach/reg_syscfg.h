@@ -53,6 +53,7 @@
 #define ADDR_SYSCFG_SUCR			    (HW_SYSCFG_BASE + 0x008)
 #define ADDR_SYSCFG_IOCR2			    (HW_SYSCFG_BASE + 0x00c)
 #define   SYSCFG_IOCR2_OSC2_ENABLE                  (1 << 3)
+#define   SYSCFG_IOCR0_GPIO53_GPEN8_MUX_HI	    	    (1 << 21)
 #define   SYSCFG_IOCR2_LCDTE_PULL_CTRL(x)	    (((x) & 0x3) << 8)
 #define   SYSCFG_IOCR2_LCDDATA_PULL_CTRL(x)	    (((x) & 0x3) << 10)
 #define   SYSCFG_IOCR2_UARTA_PULL_CTRL(x)	    (((x) & 0x3) << 12)

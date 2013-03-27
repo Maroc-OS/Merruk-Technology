@@ -419,7 +419,7 @@ Int32 csl_dma_obtain_channel(UInt8 srcID, UInt8 dstID)
 #if (defined (_HERA_) || defined (_RHEA_) || defined (_SAMOA_))
 	chal_dmux_alloc_channel(pdma->dmuxHandle, &chan);
 #else
-	chan_scan_min = DMA_CHANNEL_4;
+	chan_scan_min = DMA_CHANNEL_5;
 	chan_scan_max = DMA_CHANNEL_11;
 
 #if defined (_ATHENA_)
@@ -431,6 +431,8 @@ Int32 csl_dma_obtain_channel(UInt8 srcID, UInt8 dstID)
 		chan = DMA_CHANNEL_0;
 	} else if (dstID == DMA_CLIENT_POLYRING_OUT_FIFO) {
 		chan = DMA_CHANNEL_1;
+	} else if (dstID == DMA_CLIENT_LCD) {
+		chan = DMA_CHANNEL_4;
 	} else
 #endif
 	{
@@ -472,7 +474,7 @@ Int32 csl_dma_obtain_channel(UInt8 srcID, UInt8 dstID)
 
 		case DMA_CHAN_PRI_HIGH:
 						/* Find one free channel from high priority to low */
-						for (idx = chan_scan_min; idx <= chan_scan_max / 2; idx++) {
+						for (idx = chan_scan_min; idx <= (chan_scan_max / 2) + 1; idx++) {
 				if (chanArray[idx].bUsed == FALSE) {
 					chan = idx;
 					break;

@@ -54,9 +54,6 @@
 #include <dhd_bus.h>
 #include <dhd_proto.h>
 #include <dhd_dbg.h>
-#ifdef CONFIG_HAS_WAKELOCK
-#include <linux/wakelock.h>
-#endif
 #ifdef CONFIG_CFG80211
 #include <wl_cfg80211.h>
 #endif
@@ -2528,10 +2525,6 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	spin_lock_init(&dhd->wakelock_spinlock);
 	dhd->wakelock_counter = 0;
 	dhd->wakelock_timeout_enable = 0;
-#ifdef CONFIG_HAS_WAKELOCK
-	wake_lock_init(&dhd->wl_wifi, WAKE_LOCK_SUSPEND, "wlan_wake");
-	wake_lock_init(&dhd->wl_rxwake, WAKE_LOCK_SUSPEND, "wlan_rx_wake");
-#endif
 	dhd_state |= DHD_ATTACH_STATE_WAKELOCKS_INIT;
 
 	/* Attach and link in the protocol */
@@ -3130,10 +3123,6 @@ dhd_detach(dhd_pub_t *dhdp)
 		unregister_pm_notifier(&dhd_sleep_pm_notifier);
 #endif
 	/* && defined(CONFIG_PM_SLEEP) */
-	#ifdef CONFIG_HAS_WAKELOCK
-		wake_lock_destroy(&dhd->wl_wifi);
-		wake_lock_destroy(&dhd->wl_rxwake);
-#endif
 	}
 }
 
@@ -3997,10 +3986,6 @@ int dhd_os_wake_lock_timeout(dhd_pub_t *pub)
 	if (dhd) {
 		spin_lock_irqsave(&dhd->wakelock_spinlock, flags);
 		ret = dhd->wakelock_timeout_enable;
-#ifdef CONFIG_HAS_WAKELOCK
-		if (dhd->wakelock_timeout_enable)
-			wake_lock_timeout(&dhd->wl_rxwake, HZ);
-#endif
 		dhd->wakelock_timeout_enable = 0;
 		spin_unlock_irqrestore(&dhd->wakelock_spinlock, flags);
 	}
@@ -4050,14 +4035,6 @@ int dhd_os_wake_lock(dhd_pub_t *pub)
 
 	if (dhd) {
 		spin_lock_irqsave(&dhd->wakelock_spinlock, flags);
-#ifdef CONFIG_HAS_WAKELOCK
-		if (!dhd->wakelock_counter)
-		{
-			wake_lock(&dhd->wl_wifi);
-			if(wlan_driver_pm_qos_req==NULL)
-				wlan_driver_pm_qos_req = pm_qos_add_request(PM_QOS_CPU_DMA_LATENCY,0);
-		}
-#endif
 		dhd->wakelock_counter++;
 		ret = dhd->wakelock_counter;
 		spin_unlock_irqrestore(&dhd->wakelock_spinlock, flags);
@@ -4088,17 +4065,6 @@ int dhd_os_wake_unlock(dhd_pub_t *pub)
 		spin_lock_irqsave(&dhd->wakelock_spinlock, flags);
 		if (dhd->wakelock_counter) {
 			dhd->wakelock_counter--;
-#ifdef CONFIG_HAS_WAKELOCK
-			if (!dhd->wakelock_counter)
-			{
-				wake_unlock(&dhd->wl_wifi);
-				if(wlan_driver_pm_qos_req!=NULL)
-				{
-					pm_qos_remove_request(wlan_driver_pm_qos_req);
-					wlan_driver_pm_qos_req = NULL;
-				}
-			}
-#endif
 			ret = dhd->wakelock_counter;
 		}
 		spin_unlock_irqrestore(&dhd->wakelock_spinlock, flags);
