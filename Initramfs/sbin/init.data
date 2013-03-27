@@ -708,6 +708,14 @@ if $TEST -f /DEBUG_KERNEL ; then
 fi
 $SYNC
 
+#Link /dev/random and /dev/urandom to /dev/erandom and /dev/frandom - this speeds up random number generation
+$ECHO " Link random and urandom to erandom and frandom " >> /data/local/Kernel-Ver
+$CHMOD 666 /dev/erandom
+$LN -f /dev/erandom /dev/random
+$CHMOD 666 /dev/frandom
+$LN -f /dev/frandom /dev/urandom
+$SYNC
+
 # Remount /System read only and continue
 $ECHO "	Re-Mount /System as R/O & Continue Booting... " >> /data/local/Kernel-Ver
 $MOUNT -o remount,rw -t ext4 /dev/stl9 /system

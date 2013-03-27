@@ -1,0 +1,6 @@
+config FRANDOM
+	tristate "Fast pseudo-random generator"
+	default N
+	---help---
+	Enable the frandom char device by Eli Billauer
+	http://www.billauer.co.il
